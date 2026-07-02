@@ -39,7 +39,7 @@ final class FlightPresentationTests: XCTestCase {
             track: 0
         )
 
-        XCTAssertEqual(flight.mapHeadingDegrees, -45)
+        XCTAssertEqual(flight.mapHeadingDegrees, -90)
     }
 
     func testBearingDegreesMatchesCardinalDirections() {

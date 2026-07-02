@@ -27,6 +27,7 @@
 		8E7B52B9F1C448C9A4B0E4C1 /* FlightFeedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6E9D0E9A9D4E8E97E7C111 /* FlightFeedRequest.swift */; };
 		9DF8560D0232B460FFD17523 /* FlightPhaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1EA55D7AA294ADBE1C1A1B /* FlightPhaseTests.swift */; };
 		A5E2D8F3C8FD4F49A4C0C2B2 /* FlightFeedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */; };
+		A5E2D8F3C8FD4F49A4C0C299 /* FlightPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D99 /* FlightPresentationTests.swift */; };
 		A1CCD47AB138A68A742D8C65 /* OverheadTrackerScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; };
 		FF6D91064BACF5CFCB3F0960 /* Flight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EB7380DD6D271AEBA1D6E3 /* Flight.swift */; };
 /* End PBXBuildFile section */
@@ -82,6 +83,7 @@
 		75D1E3B8F6F44D8E8E5E9D31 /* FlightOrdererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightOrdererTests.swift; sourceTree = "<group>"; };
 		5D6D8D8D70D44B0EB5A4C01F /* FlightOrderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightOrderer.swift; sourceTree = "<group>"; };
 		6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFeedRequestTests.swift; sourceTree = "<group>"; };
+		6B47E7F1E3D24E7F8B6D7D99 /* FlightPresentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightPresentationTests.swift; sourceTree = "<group>"; };
 		0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyFlightResponseTests.swift; sourceTree = "<group>"; };
 		1C5A0DA0D1E2445D9A5A2D3E /* RotationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationControllerTests.swift; sourceTree = "<group>"; };
 		A8422DC284A3AB28330E11AC /* ScreensaverStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensaverStateTests.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 			children = (
 				75D1E3B8F6F44D8E8E5E9D31 /* FlightOrdererTests.swift */,
 				6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */,
+				6B47E7F1E3D24E7F8B6D7D99 /* FlightPresentationTests.swift */,
 				0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */,
 				FA1EA55D7AA294ADBE1C1A1B /* FlightPhaseTests.swift */,
 				A8422DC284A3AB28330E11AC /* ScreensaverStateTests.swift */,
@@ -270,6 +273,7 @@
 				9DF8560D0232B460FFD17523 /* FlightPhaseTests.swift in Sources */,
 				3B1D9F5AC2E54E71BFB7E7C1 /* FlightOrdererTests.swift in Sources */,
 				A5E2D8F3C8FD4F49A4C0C2B2 /* FlightFeedRequestTests.swift in Sources */,
+				A5E2D8F3C8FD4F49A4C0C299 /* FlightPresentationTests.swift in Sources */,
 				9F6B7D4B3C14451DB8F8B73A /* ProxyFlightResponseTests.swift in Sources */,
 				4A187D1926D74659D8D88F40 /* ScreensaverStateTests.swift in Sources */,
 				5C2F10C5A7C84D5E8C1E7B3A /* RotationControllerTests.swift in Sources */,

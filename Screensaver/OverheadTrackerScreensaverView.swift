@@ -499,7 +499,7 @@ final class ScreensaverViewModel: ObservableObject {
         }()
 
         screensaverLogger.error("mapHeadingDegrees callsign=\(flight.callsign, privacy: .public) track=\(flight.track ?? -999.0, privacy: .public) heading=\(heading, privacy: .public)")
-        return heading - 45
+        return heading - 90
     }
 }
 
@@ -634,7 +634,7 @@ struct MapSnapshotView: View {
                                         .scaledToFit()
                                         .frame(width: isActive ? 22 : 16, height: isActive ? 22 : 16)
                                         .foregroundColor(Color.yellow)
-                                        .rotationEffect(.degrees(flight.mapHeadingDegrees))
+                                        .rotationEffect(.degrees(viewModel.mapHeadingDegrees(for: flight)))
                                         .shadow(color: .black.opacity(0.5), radius: 2, x: 0, y: 1)
 
                                     Text(flight.callsign)
@@ -652,16 +652,19 @@ struct MapSnapshotView: View {
                     }
                 }
 
-                // Home marker pin in the center
+                // Home marker pin in the center (Standard Apple user location blue/white dot)
                 ZStack {
                     Circle()
-                        .fill(Color.orange)
-                        .frame(width: 24, height: 24)
-                    Text("H")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(.white)
+                        .fill(Color.blue.opacity(0.18))
+                        .frame(width: 32, height: 32)
+                    Circle()
+                        .fill(Color.white)
+                        .frame(width: 20, height: 20)
+                        .shadow(color: Color.black.opacity(0.25), radius: 3, x: 0, y: 1)
+                    Circle()
+                        .fill(Color.blue)
+                        .frame(width: 12, height: 12)
                 }
-                .shadow(color: .black.opacity(0.5), radius: 4, x: 0, y: 2)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }

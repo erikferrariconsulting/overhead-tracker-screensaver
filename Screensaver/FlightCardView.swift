@@ -715,10 +715,10 @@ class AirportDatabase {
         }
 
         if !list.isEmpty {
-            lock.lock()
-            self.airportsList = list
-            self.lookupTable = dict
-            lock.unlock()
+            lock.withLock {
+                self.airportsList = list
+                self.lookupTable = dict
+            }
 
             if let url = cacheFileURL,
                let jsonData = try? JSONEncoder().encode(list) {
