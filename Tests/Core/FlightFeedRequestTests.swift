@@ -10,6 +10,6 @@ final class FlightFeedRequestTests: XCTestCase {
             radiusNm: 20
         )
 
-        XCTAssertEqual(url.absoluteString, "https://overhead-tracker-flight-api.cyberkallen.workers.dev/flights?lat=-33.853&lon=151.141&radius=20")
+        XCTAssertEqual(url.absoluteString, "https://overhead-tracker-flight-api.cyberkallen.workers.dev/v1/flights?lat=-33.853&lon=151.141&radius=20")
     }
 }

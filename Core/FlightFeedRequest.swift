@@ -11,7 +11,7 @@ public enum FlightFeedRequest {
             throw URLError(.badURL)
         }
 
-        components.path = components.path.appending("/flights")
+        components.path = components.path.appending("/v1/flights")
         components.queryItems = [
             URLQueryItem(name: "lat", value: String(homeLatitude)),
             URLQueryItem(name: "lon", value: String(homeLongitude)),
