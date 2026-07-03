@@ -1,0 +1,33 @@
+{
+  "originHash" : "2bd7ad9f05b3432156d1978b1550f692a5ce4a6a3a2f9cfb2e53018cfe5331fb",
+  "pins" : [
+    {
+      "identity" : "airline-logos",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cyberkallen/airline-logos.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "33d35c22265ff3d7376ed1f1e722ba1b61a946de"
+      }
+    },
+    {
+      "identity" : "iata-utils",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cyberkallen/iata-utils.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "47d40bb6d8482c51920dbf90ee15eefe6ac3a88a"
+      }
+    },
+    {
+      "identity" : "ip2location-iata-icao",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cyberkallen/ip2location-iata-icao.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "d60be79820b4b97913750bffb78ae192b326013b"
+      }
+    }
+  ],
+  "version" : 3
+}
