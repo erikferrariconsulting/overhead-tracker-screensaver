@@ -45,9 +45,10 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
     public override init?(frame: NSRect, isPreview: Bool) {
         previewMode = isPreview
         let viewModel = ScreensaverViewModel()
-        viewModel.homeLatitude = flightFeedClient.homeLatitude
-        viewModel.homeLongitude = flightFeedClient.homeLongitude
-        viewModel.geofenceRadiusKm = Double(flightFeedClient.radiusNm) * 1.852
+        let settings = SettingsManager.shared
+        viewModel.homeLatitude = settings.latitude
+        viewModel.homeLongitude = settings.longitude
+        viewModel.geofenceRadiusKm = Double(settings.radiusNm) * 1.852
         self.viewModel = viewModel
         hostingView = TransparentHostingView(rootView: OverheadTrackerScreensaverRootView(viewModel: viewModel))
         super.init(frame: frame, isPreview: isPreview)
@@ -99,12 +100,13 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
     }
 
     private func triggerMapSnapshot(width: CGFloat, height: CGFloat, scale: CGFloat) {
+        let settings = SettingsManager.shared
         let options = MKMapSnapshotter.Options()
         let center = CLLocationCoordinate2D(
-            latitude: flightFeedClient.homeLatitude,
-            longitude: flightFeedClient.homeLongitude
+            latitude: settings.latitude,
+            longitude: settings.longitude
         )
-        let spanDelta = (Double(flightFeedClient.radiusNm) * 2.4) / 60.0
+        let spanDelta = (Double(settings.radiusNm) * 2.4) / 60.0
         options.region = MKCoordinateRegion(
             center: center,
             span: MKCoordinateSpan(latitudeDelta: spanDelta, longitudeDelta: spanDelta)
@@ -237,6 +239,54 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
 
     // Map delegation and renderer now handled natively by SwiftUI BackgroundMapView coordinator
 
+    // MARK: - Screensaver Configuration Sheet
+    
+    public override var hasConfigureSheet: Bool {
+        return true
+    }
+    
+    public override var configureSheet: NSWindow? {
+        weak var weakSelf = self
+        var sheetWindow: NSWindow? = nil
+        
+        let settingsView = SettingsView {
+            if let window = sheetWindow {
+                NSApp.endSheet(window)
+                weakSelf?.reloadSettingsAndSnapshot()
+            }
+        }
+        
+        let hostingController = NSHostingController(rootView: settingsView)
+        
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 320, height: 420),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        window.contentViewController = hostingController
+        sheetWindow = window
+        
+        return window
+    }
+    
+    private func reloadSettingsAndSnapshot() {
+        let settings = SettingsManager.shared
+        viewModel.homeLatitude = settings.latitude
+        viewModel.homeLongitude = settings.longitude
+        viewModel.geofenceRadiusKm = Double(settings.radiusNm) * 1.852
+        
+        let scale = window?.backingScaleFactor ?? 2.0
+        triggerMapSnapshot(width: bounds.width, height: bounds.height, scale: scale)
+        
+        // Reset and rebuild timers with new configurations
+        refreshTimer?.invalidate()
+        refreshTimer = nil
+        rotationTimer?.invalidate()
+        rotationTimer = nil
+        startRefreshLoopIfNeeded()
+    }
+
     private func startRefreshLoopIfNeeded() {
         guard refreshTimer == nil || (previewMode && rotationTimer == nil) else { return }
 
@@ -247,7 +297,8 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
             screensaverLogger.info("requesting flights immediately")
             requestFlights()
             
-            let timer = Timer(timeInterval: 8, repeats: true) { [weak self] _ in
+            let refreshInterval = SettingsManager.shared.refreshInterval
+            let timer = Timer(timeInterval: refreshInterval, repeats: true) { [weak self] _ in
                 DispatchQueue.main.async {
                     self?.requestFlights()
                 }
@@ -257,7 +308,8 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
         }
 
         if rotationTimer == nil {
-            let timer = Timer(timeInterval: 10, repeats: true) { [weak self] _ in
+            let rotationInterval = SettingsManager.shared.rotationInterval
+            let timer = Timer(timeInterval: rotationInterval, repeats: true) { [weak self] _ in
                 DispatchQueue.main.async {
                     self?.advanceCard()
                 }
@@ -277,12 +329,13 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
         loadingWatchdog = nil
 
         let url: URL
+        let settings = SettingsManager.shared
         do {
             url = try FlightFeedRequest.flightsURL(
                 baseURL: flightFeedClient.baseURL,
-                homeLatitude: flightFeedClient.homeLatitude,
-                homeLongitude: flightFeedClient.homeLongitude,
-                radiusNm: flightFeedClient.radiusNm
+                homeLatitude: settings.latitude,
+                homeLongitude: settings.longitude,
+                radiusNm: settings.radiusNm
             )
             screensaverLogger.info("fetching flights url=\(url.absoluteString, privacy: .public)")
         } catch {

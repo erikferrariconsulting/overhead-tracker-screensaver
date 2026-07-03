@@ -13,9 +13,11 @@ struct MainView: View {
     @State private var flightFeedClient = FlightFeedClient()
     private let rotationController = RotationController(flights: [])
     
-    // Timers
-    private let refreshTimer = Timer.publish(every: 8, on: .main, in: .common).autoconnect()
-    private let rotationTimer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
+    // Settings and Timers
+    @ObservedObject private var settings = SettingsManager.shared
+    @State private var secondsSinceLastRefresh = 0.0
+    @State private var secondsSinceLastRotation = 0.0
+    private let secondTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
     
     @State private var snapshotDebounceTask: Task<Void, Never>? = nil
 
@@ -88,11 +90,19 @@ struct MainView: View {
             }
         }
         .frame(minWidth: 1024, minHeight: 768)
-        .onReceive(refreshTimer) { _ in
-            requestFlights()
-        }
-        .onReceive(rotationTimer) { _ in
-            advanceCard()
+        .onReceive(secondTimer) { _ in
+            secondsSinceLastRefresh += 1.0
+            secondsSinceLastRotation += 1.0
+            
+            if secondsSinceLastRefresh >= settings.refreshInterval {
+                secondsSinceLastRefresh = 0.0
+                requestFlights()
+            }
+            
+            if secondsSinceLastRotation >= settings.rotationInterval {
+                secondsSinceLastRotation = 0.0
+                advanceCard()
+            }
         }
         .alert(isPresented: $showingAlert) {
             Alert(title: Text(alertTitle), message: Text(alertMessage), dismissButton: .default(Text("OK")))
@@ -338,7 +348,50 @@ struct MainView: View {
     }
     
     // Installer Settings Drawer View
+    @State private var settingsTab: SettingsTab = .config
+    
+    enum SettingsTab {
+        case config
+        case install
+    }
+    
     private var installerSettingsPanel: some View {
+        VStack(spacing: 0) {
+            // Tab Picker
+            Picker("", selection: $settingsTab) {
+                Text("Settings").tag(SettingsTab.config)
+                Text("Install").tag(SettingsTab.install)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 20)
+            .padding(.top, 24)
+            .padding(.bottom, 12)
+            
+            if settingsTab == .config {
+                SettingsView(onDismiss: {
+                    withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
+                        showingSettings = false
+                    }
+                })
+                .frame(maxHeight: .infinity)
+            } else {
+                installerSettingsPanelContent
+                    .frame(maxHeight: .infinity)
+            }
+        }
+        .frame(width: 340)
+        .background(
+            Color(red: 0.08, green: 0.09, blue: 0.12).opacity(0.98)
+        )
+        .overlay(
+            Rectangle()
+                .fill(Color.white.opacity(0.12))
+                .frame(width: 1),
+            alignment: .leading
+        )
+    }
+    
+    private var installerSettingsPanelContent: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("OVERHEAD TRACKER")
                 .font(.system(size: 11, weight: .bold, design: .rounded))
@@ -424,16 +477,6 @@ struct MainView: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(32)
-        .frame(width: 380)
-        .background(
-            Color(red: 0.08, green: 0.09, blue: 0.12).opacity(0.95)
-        )
-        .overlay(
-            Rectangle()
-                .fill(Color.white.opacity(0.12))
-                .frame(width: 1),
-            alignment: .leading
-        )
+        .padding(24)
     }
 }
