@@ -9,6 +9,10 @@ public struct ProxyFlightResponse: Decodable, Sendable {
             flights = payloads.map(\.flight).filter { !$0.isGroundVehicle && !$0.isNonAircraft && $0.altitudeFt > 0 }
             return
         }
+        if let payloads = try container.decodeIfPresent([FlightPayload].self, forKey: .data) {
+            flights = payloads.map(\.flight).filter { !$0.isGroundVehicle && !$0.isNonAircraft && $0.altitudeFt > 0 }
+            return
+        }
 
         let aircraft = try container.decodeIfPresent([AircraftPayload].self, forKey: .ac) ?? []
         flights = aircraft.map(\.flight).filter { !$0.isGroundVehicle && !$0.isNonAircraft && $0.altitudeFt > 0 }
@@ -20,6 +24,7 @@ public struct ProxyFlightResponse: Decodable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case flights
+        case data
         case ac
     }
 }
@@ -30,9 +35,12 @@ private struct FlightPayload: Decodable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case id
         case flight
+        case callsign
         case airline
         case type
+        case aircraftType
         case reg
+        case registration
         case originCity
         case destinationCity
         case altitudeFt
@@ -41,32 +49,62 @@ private struct FlightPayload: Decodable, Sendable {
         case phase
         case squawk
         case category
-        case latitude = "lat"
-        case longitude = "lon"
+        case lat
+        case latitude
+        case lon
+        case longitude
         case track
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let phase = try container.decodeIfPresent(String.self, forKey: .phase)
+        
+        let id = try container.decode(String.self, forKey: .id)
+        
+        let callsign = try container.decodeIfPresent(String.self, forKey: .callsign)
+            ?? container.decode(String.self, forKey: .flight)
+            
+        let airline = try container.decode(String.self, forKey: .airline)
+        
+        let aircraftType = try container.decodeIfPresent(String.self, forKey: .aircraftType)
+            ?? container.decode(String.self, forKey: .type)
+            
+        let registration = try container.decodeIfPresent(String.self, forKey: .registration)
+            ?? container.decode(String.self, forKey: .reg)
+            
+        let originCity = try container.decode(String.self, forKey: .originCity)
+        let destinationCity = try container.decode(String.self, forKey: .destinationCity)
+        let altitudeFt = try container.decode(Int.self, forKey: .altitudeFt)
+        let speedKt = try container.decode(Int.self, forKey: .speedKt)
+        let distanceKm = try container.decode(Double.self, forKey: .distanceKm)
+        
+        let phaseStr = try container.decodeIfPresent(String.self, forKey: .phase)
+        let phase = FlightPhase(rawValue: phaseStr ?? "") ?? .unknown
+        
+        let squawk = try container.decodeIfPresent(String.self, forKey: .squawk)
         let category = try container.decodeIfPresent(String.self, forKey: .category)
-        let latitude = try? container.decodeIfPresent(Double.self, forKey: .latitude)
-        let longitude = try? container.decodeIfPresent(Double.self, forKey: .longitude)
+        
+        let latitude = (try? container.decodeIfPresent(Double.self, forKey: .latitude))
+            ?? (try? container.decodeIfPresent(Double.self, forKey: .lat))
+            
+        let longitude = (try? container.decodeIfPresent(Double.self, forKey: .longitude))
+            ?? (try? container.decodeIfPresent(Double.self, forKey: .lon))
+            
         let track = Self.decodeDoubleOptional(container, key: .track)
 
         flight = Flight(
-            id: try container.decode(String.self, forKey: .id),
-            callsign: try container.decode(String.self, forKey: .flight),
-            airline: try container.decode(String.self, forKey: .airline),
-            aircraftType: try container.decode(String.self, forKey: .type),
-            registration: try container.decode(String.self, forKey: .reg),
-            originCity: try container.decode(String.self, forKey: .originCity),
-            destinationCity: try container.decode(String.self, forKey: .destinationCity),
-            altitudeFt: try container.decode(Int.self, forKey: .altitudeFt),
-            speedKt: try container.decode(Int.self, forKey: .speedKt),
-            distanceKm: try container.decode(Double.self, forKey: .distanceKm),
-            phase: FlightPhase(rawValue: phase ?? "") ?? .unknown,
-            squawk: try container.decodeIfPresent(String.self, forKey: .squawk),
+            id: id,
+            callsign: callsign,
+            airline: airline,
+            aircraftType: aircraftType,
+            registration: registration,
+            originCity: originCity,
+            destinationCity: destinationCity,
+            altitudeFt: altitudeFt,
+            speedKt: speedKt,
+            distanceKm: distanceKm,
+            phase: phase,
+            squawk: squawk,
             category: category,
             latitude: latitude,
             longitude: longitude,

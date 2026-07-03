@@ -8,6 +8,7 @@ public enum LocationMode: String, Codable {
     case custom
 }
 
+@MainActor
 public final class SettingsManager: ObservableObject {
     public static let shared = SettingsManager()
     
@@ -21,8 +22,6 @@ public final class SettingsManager: ObservableObject {
         return UserDefaults.standard
     }()
     
-    private init() {}
-    
     // Keys
     private let keyLocationMode = "locationMode"
     private let keyLatitude = "latitude"
@@ -31,84 +30,50 @@ public final class SettingsManager: ObservableObject {
     private let keyRefreshInterval = "refreshInterval"
     private let keyRotationInterval = "rotationInterval"
     
-    @MainActor
-    public var locationMode: LocationMode {
-        get {
-            guard let raw = defaults?.string(forKey: keyLocationMode),
-                  let mode = LocationMode(rawValue: raw) else {
-                return .gps
-            }
-            return mode
-        }
-        set {
-            defaults?.set(newValue.rawValue, forKey: keyLocationMode)
-            defaults?.synchronize()
-            objectWillChange.send()
-        }
+    @Published public var locationMode: LocationMode = .gps {
+        didSet { save(locationMode.rawValue, forKey: keyLocationMode) }
+    }
+    @Published public var latitude: Double = -33.7749 {
+        didSet { save(latitude, forKey: keyLatitude) }
+    }
+    @Published public var longitude: Double = 151.28783 {
+        didSet { save(longitude, forKey: keyLongitude) }
+    }
+    @Published public var radiusNm: Int = 20 {
+        didSet { save(radiusNm, forKey: keyRadius) }
+    }
+    @Published public var refreshInterval: Double = 8.0 {
+        didSet { save(refreshInterval, forKey: keyRefreshInterval) }
+    }
+    @Published public var rotationInterval: Double = 10.0 {
+        didSet { save(rotationInterval, forKey: keyRotationInterval) }
     }
     
-    @MainActor
-    public var latitude: Double {
-        get {
-            let val = defaults?.double(forKey: keyLatitude) ?? 0.0
-            return val == 0.0 ? -33.7749 : val // Sydney default fallback
+    private init() {
+        // Load initial values from defaults
+        if let rawMode = defaults?.string(forKey: keyLocationMode),
+           let mode = LocationMode(rawValue: rawMode) {
+            self.locationMode = mode
         }
-        set {
-            defaults?.set(newValue, forKey: keyLatitude)
-            defaults?.synchronize()
-            objectWillChange.send()
-        }
+        
+        let lat = defaults?.double(forKey: keyLatitude) ?? 0.0
+        if lat != 0.0 { self.latitude = lat }
+        
+        let lon = defaults?.double(forKey: keyLongitude) ?? 0.0
+        if lon != 0.0 { self.longitude = lon }
+        
+        let rad = defaults?.integer(forKey: keyRadius) ?? 0
+        if rad != 0 { self.radiusNm = rad }
+        
+        let ref = defaults?.double(forKey: keyRefreshInterval) ?? 0.0
+        if ref != 0.0 { self.refreshInterval = ref }
+        
+        let rot = defaults?.double(forKey: keyRotationInterval) ?? 0.0
+        if rot != 0.0 { self.rotationInterval = rot }
     }
     
-    @MainActor
-    public var longitude: Double {
-        get {
-            let val = defaults?.double(forKey: keyLongitude) ?? 0.0
-            return val == 0.0 ? 151.28783 : val // Sydney default fallback
-        }
-        set {
-            defaults?.set(newValue, forKey: keyLongitude)
-            defaults?.synchronize()
-            objectWillChange.send()
-        }
-    }
-    
-    @MainActor
-    public var radiusNm: Int {
-        get {
-            let val = defaults?.integer(forKey: keyRadius) ?? 0
-            return val == 0 ? 20 : val
-        }
-        set {
-            defaults?.set(newValue, forKey: keyRadius)
-            defaults?.synchronize()
-            objectWillChange.send()
-        }
-    }
-    
-    @MainActor
-    public var refreshInterval: Double {
-        get {
-            let val = defaults?.double(forKey: keyRefreshInterval) ?? 0.0
-            return val == 0.0 ? 8.0 : val
-        }
-        set {
-            defaults?.set(newValue, forKey: keyRefreshInterval)
-            defaults?.synchronize()
-            objectWillChange.send()
-        }
-    }
-    
-    @MainActor
-    public var rotationInterval: Double {
-        get {
-            let val = defaults?.double(forKey: keyRotationInterval) ?? 0.0
-            return val == 0.0 ? 10.0 : val
-        }
-        set {
-            defaults?.set(newValue, forKey: keyRotationInterval)
-            defaults?.synchronize()
-            objectWillChange.send()
-        }
+    private func save(_ value: Any, forKey key: String) {
+        defaults?.set(value, forKey: key)
+        defaults?.synchronize()
     }
 }

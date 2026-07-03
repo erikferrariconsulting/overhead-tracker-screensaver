@@ -14,7 +14,7 @@ struct MainView: View {
     private let rotationController = RotationController(flights: [])
     
     // Settings and Timers
-    @ObservedObject private var settings = SettingsManager.shared
+    @StateObject private var settings = SettingsManager.shared
     @State private var secondsSinceLastRefresh = 0.0
     @State private var secondsSinceLastRotation = 0.0
     private let secondTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
@@ -85,23 +85,14 @@ struct MainView: View {
             .onChange(of: geometry.size) { oldValue, newValue in
                 debounceSnapshot(for: newValue)
             }
-            .onChange(of: settings.locationMode) { oldValue, newValue in
-                if newValue == .gps {
+            .onReceive(settings.objectWillChange) { _ in
+                print("MainView: settings objectWillChange fired")
+                DispatchQueue.main.async {
                     setupInitialState(size: geometry.size)
-                } else {
-                    reloadRadarAndMap(size: geometry.size)
                 }
             }
-            .onChange(of: settings.latitude) { oldValue, newValue in
-                reloadRadarAndMap(size: geometry.size)
-            }
-            .onChange(of: settings.longitude) { oldValue, newValue in
-                reloadRadarAndMap(size: geometry.size)
-            }
-            .onChange(of: settings.radiusNm) { oldValue, newValue in
-                reloadRadarAndMap(size: geometry.size)
-            }
             .onAppear {
+                print("MainView: onAppear initial position mode=\(settings.locationMode), lat=\(settings.latitude), lon=\(settings.longitude)")
                 setupInitialState(size: geometry.size)
             }
         }
@@ -162,6 +153,7 @@ struct MainView: View {
     }
     
     private func reloadRadarAndMap(size: CGSize) {
+        print("MainView: reloadRadarAndMap coordinates: lat=\(settings.latitude), lon=\(settings.longitude), radius=\(settings.radiusNm)")
         viewModel.homeLatitude = settings.latitude
         viewModel.homeLongitude = settings.longitude
         viewModel.geofenceRadiusKm = Double(settings.radiusNm) * 1.852
@@ -313,17 +305,20 @@ struct MainView: View {
             do {
                 let client = FlightFeedClient(homeLatitude: lat, homeLongitude: lon, radiusNm: radiusNm)
                 let flights = try await client.fetchFlights()
+                print("MainView: fetchFlights success, count=\(flights.count)")
                 
                 await MainActor.run {
                     self.currentFlights = flights
                     let maxDistanceKm = Double(self.flightFeedClient.radiusNm) * 1.852
                     let insideCircleFlights = flights.filter { $0.isInsideGeofence(radiusKm: maxDistanceKm) }
+                    print("MainView: flights inside geofence (\(maxDistanceKm) km) count=\(insideCircleFlights.count)")
                     
                     self.rotationController.update(flights: insideCircleFlights)
                     self.updateState(with: flights)
                     self.viewModel.updateStats(with: flights)
                 }
             } catch {
+                print("MainView: fetchFlights failed: \(error.localizedDescription) (Full: \(error))")
                 await MainActor.run {
                     if !isRefreshingLiveContent {
                         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {

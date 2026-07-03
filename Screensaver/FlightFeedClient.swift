@@ -48,7 +48,14 @@ public struct FlightFeedClient {
             homeLongitude: homeLongitude,
             radiusNm: radiusNm
         )
-        let (data, _) = try await session.data(from: url)
+        print("FlightFeedClient: fetching URL: \(url.absoluteString)")
+        let (data, response) = try await session.data(from: url)
+        if let httpResponse = response as? HTTPURLResponse {
+            print("FlightFeedClient: HTTP status code: \(httpResponse.statusCode)")
+        }
+        if let utf8String = String(data: data, encoding: .utf8) {
+            print("FlightFeedClient: response data (first 300 chars): \(String(utf8String.prefix(300)))")
+        }
         let decoded = try JSONDecoder().decode(ProxyFlightResponse.self, from: data)
         return decoded.flights
     }
