@@ -314,23 +314,18 @@ private struct FlightArtworkTileView: View {
     let accentColor: Color
 
     @State private var photoImage: NSImage?
+    @State private var photoAttribution: String?
 
     init(flight: Flight, accentColor: Color) {
         self.flight = flight
         self.accentColor = accentColor
-        
-        let reg = flight.registration.trimmingCharacters(in: .whitespacesAndNewlines)
-        var key: String? = nil
-        if !reg.isEmpty && reg != "---" && reg != "Unknown" {
-            key = "photo:reg:\(reg.uppercased())"
-        } else if let hex = flight.hex?.trimmingCharacters(in: .whitespacesAndNewlines), !hex.isEmpty {
-            key = "photo:hex:\(hex.uppercased())"
-        }
-        
-        if let key = key, let cached = FlightImageCache.shared.image(for: key) {
-            _photoImage = State(initialValue: cached)
+
+        if let cached = Self.cachedPhoto(for: flight) {
+            _photoImage = State(initialValue: cached.image)
+            _photoAttribution = State(initialValue: cached.attribution)
         } else {
             _photoImage = State(initialValue: nil)
+            _photoAttribution = State(initialValue: nil)
         }
     }
 
@@ -365,11 +360,27 @@ private struct FlightArtworkTileView: View {
                 .shadow(color: Color.black.opacity(0.35), radius: 14, x: 0, y: 8)
 
             if let photoImage {
-                Image(nsImage: photoImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 240, height: 172)
-                    .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+                VStack(spacing: 0) {
+                    Image(nsImage: photoImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 240, height: 128)
+                        .clipped()
+
+                    if let photoAttribution, !photoAttribution.isEmpty {
+                        Text(photoAttribution)
+                            .font(.system(size: 10, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.78))
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.78)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(Color.black.opacity(0.42))
+                    }
+                }
+                .frame(width: 240, height: 172)
+                .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
             } else {
                 VStack(spacing: 12) {
                     Image(systemName: "airplane")
@@ -385,21 +396,19 @@ private struct FlightArtworkTileView: View {
         .task(id: artworkKey) {
             guard !artworkKey.isEmpty else {
                 photoImage = nil
+                photoAttribution = nil
                 return
             }
 
-            guard let photoKey else {
-                photoImage = nil
-                return
-            }
-
-            if let cachedPhoto = FlightImageCache.shared.image(for: photoKey) {
-                photoImage = cachedPhoto
+            if let cachedPhoto = Self.cachedPhoto(for: flight) {
+                photoImage = cachedPhoto.image
+                photoAttribution = cachedPhoto.attribution
             } else {
                 photoImage = nil
+                photoAttribution = nil
                 if let loadedPhoto = await FlightArtworkFetcher.loadAircraftPhoto(flight: flight) {
-                    photoImage = loadedPhoto
-                    FlightImageCache.shared.store(loadedPhoto, for: photoKey)
+                    photoImage = loadedPhoto.image
+                    photoAttribution = loadedPhoto.attribution
                 }
             }
         }
@@ -416,33 +425,39 @@ private struct FlightArtworkTileView: View {
         ].joined(separator: "|")
     }
 
-    private var photoKey: String? {
-        let reg = flight.registration.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !reg.isEmpty && reg != "---" && reg != "Unknown" {
-            return "photo:reg:\(reg.uppercased())"
+    private static func cachedPhoto(for flight: Flight) -> CachedArtwork? {
+        for candidate in FlightArtworkFetcher.photoSearchCandidates(for: flight) {
+            if let cached = FlightImageCache.shared.artwork(for: candidate.cacheKey) {
+                return cached
+            }
         }
-        guard let hex = flight.hex?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !hex.isEmpty else {
-            return nil
-        }
-        return "photo:hex:\(hex.uppercased())"
+        return nil
     }
 }
 
 @MainActor
 private final class FlightImageCache {
     static let shared = FlightImageCache()
-    private var images: [String: NSImage] = [:]
+    private var artworks: [String: CachedArtwork] = [:]
 
     func image(for key: String) -> NSImage? {
-        images[key]
+        artworks[key]?.image
     }
 
-    func store(_ image: NSImage, for key: String) {
-        images[key] = image
+    func artwork(for key: String) -> CachedArtwork? {
+        artworks[key]
+    }
+
+    func store(_ artwork: CachedArtwork, for key: String) {
+        artworks[key] = artwork
+    }
+
+    func store(_ image: NSImage, attribution: String? = nil, for key: String) {
+        artworks[key] = CachedArtwork(image: image, attribution: attribution)
     }
 }
 
+@MainActor
 private enum FlightArtworkFetcher {
     static func loadAirlineLogo(prefix: String) async -> NSImage? {
         let code = prefix.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
@@ -455,53 +470,59 @@ private enum FlightArtworkFetcher {
             return image
         }
 
-        // 2. Try custom github repository first (cyberkallen/airline-logos)
-        if let githubURL = URL(string: "https://raw.githubusercontent.com/cyberkallen/airline-logos/main/logos/\(code).png") {
-            var request = URLRequest(url: githubURL)
-            request.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
-            if let (data, response) = try? await URLSession.shared.data(for: request),
-               let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode),
-               let image = NSImage(data: data) {
-                return image
-            }
-        }
-
-        // 3. Fall back to airhex.com
-        guard let url = URL(string: "https://content.airhex.com/content/logos/airlines_\(code)_120_120_c.png?theme=dark") else { return nil }
-
-        var request = URLRequest(url: url)
-        request.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
-
-        do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
-                return nil
-            }
-            return NSImage(data: data)
-        } catch {
-            return nil
-        }
+        return nil
     }
 
-    static func loadAircraftPhoto(flight: Flight) async -> NSImage? {
-        let reg = flight.registration.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !reg.isEmpty && reg != "---" && reg != "Unknown" {
-            if let image = await fetchPhoto(from: "https://api.planespotters.net/pub/photos/reg/\(reg)") {
-                return image
+    static func loadAircraftPhoto(flight: Flight) async -> CachedArtwork? {
+        for candidate in photoSearchCandidates(for: flight) {
+            if let cached = FlightImageCache.shared.artwork(for: candidate.cacheKey) {
+                return cached
             }
-        }
 
-        if let hex = flight.hex?.trimmingCharacters(in: .whitespacesAndNewlines), !hex.isEmpty {
-            if let image = await fetchPhoto(from: "https://api.planespotters.net/pub/photos/hex/\(hex)") {
-                return image
+            if let fetched = await fetchCommonsPhoto(searchTerm: candidate.searchTerm) {
+                FlightImageCache.shared.store(fetched, for: candidate.cacheKey)
+                return fetched
             }
         }
 
         return nil
     }
 
-    private static func fetchPhoto(from urlString: String) async -> NSImage? {
-        guard let url = URL(string: urlString) else { return nil }
+    static func photoSearchCandidates(for flight: Flight) -> [PhotoSearchCandidate] {
+        var candidates: [PhotoSearchCandidate] = []
+        let reg = flight.registration.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !reg.isEmpty && reg != "---" && reg != "Unknown" {
+            candidates.append(PhotoSearchCandidate(
+                cacheKey: "commons:reg:\(reg.uppercased())",
+                searchTerm: "\"\(reg)\""
+            ))
+        }
+
+        if let hex = flight.hex?.trimmingCharacters(in: .whitespacesAndNewlines), !hex.isEmpty {
+            candidates.append(PhotoSearchCandidate(
+                cacheKey: "commons:hex:\(hex.uppercased())",
+                searchTerm: "\"\(hex)\""
+            ))
+        }
+
+        let type = flight.aircraftType.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let family = aircraftFamilyLabel(for: type) {
+            candidates.append(PhotoSearchCandidate(
+                cacheKey: "commons:family:\(family.uppercased())",
+                searchTerm: family
+            ))
+        } else if !type.isEmpty {
+            candidates.append(PhotoSearchCandidate(
+                cacheKey: "commons:type:\(type.uppercased())",
+                searchTerm: type
+            ))
+        }
+
+        return candidates
+    }
+
+    private static func fetchCommonsPhoto(searchTerm: String) async -> CachedArtwork? {
+        guard let url = commonsSearchURL(for: searchTerm) else { return nil }
 
         var request = URLRequest(url: url)
         request.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
@@ -511,14 +532,16 @@ private enum FlightArtworkFetcher {
             if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
                 return nil
             }
-            
-            let decoded = try JSONDecoder().decode(PlanespottersPhotoResponse.self, from: data)
-            guard let photoURL = decoded.bestPhotoURL else { return nil }
 
-            let cacheKey = photoURL.absoluteString
-            if let cached = await FlightImageCache.shared.image(for: cacheKey) {
-                return cached
+            let decoded = try JSONDecoder().decode(WikimediaCommonsSearchResponse.self, from: data)
+            guard let page = decoded.bestPage,
+                  let imageInfo = page.imageinfo?.first,
+                  let photoURL = imageInfo.bestImageURL else {
+                return nil
             }
+
+            let attribution = imageInfo.bestAttribution
+            guard let attribution, !attribution.isEmpty else { return nil }
 
             var photoRequest = URLRequest(url: photoURL)
             photoRequest.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
@@ -527,40 +550,166 @@ private enum FlightArtworkFetcher {
             if let httpPhotoResponse = photoResponse as? HTTPURLResponse, !(200...299).contains(httpPhotoResponse.statusCode) {
                 return nil
             }
-            
+
             guard let image = NSImage(data: photoData) else { return nil }
-            await FlightImageCache.shared.store(image, for: cacheKey)
-            return image
+            return CachedArtwork(image: image, attribution: attribution)
         } catch {
             return nil
         }
     }
 }
 
-private struct PlanespottersPhotoResponse: Decodable {
-    let photos: [PlanespottersPhoto]
+private struct CachedArtwork {
+    let image: NSImage
+    let attribution: String?
+}
 
-    var bestPhotoURL: URL? {
-        photos.first?.bestThumbnailURL
+private struct PhotoSearchCandidate {
+    let cacheKey: String
+    let searchTerm: String
+}
+
+private struct WikimediaCommonsSearchResponse: Decodable {
+    let query: WikimediaCommonsQuery?
+
+    var bestPage: WikimediaCommonsPage? {
+        guard let query else { return nil }
+        if let pageids = query.pageids {
+            for pageid in pageids {
+                if let page = query.pages[pageid] {
+                    return page
+                }
+            }
+        }
+        return query.pages.values.first
     }
 }
 
-private struct PlanespottersPhoto: Decodable {
-    let thumbnailLarge: PlanespottersPhotoThumbnail?
-    let thumbnail: PlanespottersPhotoThumbnail?
+private struct WikimediaCommonsQuery: Decodable {
+    let pageids: [String]?
+    let pages: [String: WikimediaCommonsPage]
+}
 
-    enum CodingKeys: String, CodingKey {
-        case thumbnailLarge = "thumbnail_large"
-        case thumbnail
+private struct WikimediaCommonsPage: Decodable {
+    let pageid: Int?
+    let title: String?
+    let imageinfo: [WikimediaCommonsImageInfo]?
+}
+
+private struct WikimediaCommonsImageInfo: Decodable {
+    let thumburl: URL?
+    let url: URL?
+    let descriptionurl: URL?
+    let extmetadata: [String: WikimediaCommonsMetadata]?
+
+    var bestImageURL: URL? {
+        thumburl ?? url
     }
 
-    var bestThumbnailURL: URL? {
-        thumbnailLarge?.src ?? thumbnail?.src
+    var bestAttribution: String? {
+        let artist = extmetadata?["Artist"]?.plainTextValue
+        let license = extmetadata?["LicenseShortName"]?.plainTextValue ?? extmetadata?["UsageTerms"]?.plainTextValue
+        let title = extmetadata?["ObjectName"]?.plainTextValue
+        var parts: [String] = []
+
+        if let title = title?.trimmingCharacters(in: .whitespacesAndNewlines), !title.isEmpty {
+            parts.append(title)
+        }
+        if let artist = artist?.trimmingCharacters(in: .whitespacesAndNewlines), !artist.isEmpty {
+            parts.append("by \(artist)")
+        }
+        if let license = license?.trimmingCharacters(in: .whitespacesAndNewlines), !license.isEmpty {
+            parts.append(license)
+        }
+        parts.append("Wikimedia Commons")
+
+        return parts.joined(separator: " • ")
     }
 }
 
-private struct PlanespottersPhotoThumbnail: Decodable {
-    let src: URL?
+private struct WikimediaCommonsMetadata: Decodable {
+    let value: String?
+
+    var plainTextValue: String? {
+        guard let value else { return nil }
+        return value.htmlToPlainText()
+    }
+}
+
+private extension String {
+    func htmlToPlainText() -> String {
+        guard let data = data(using: .utf8) else { return self }
+        if let attributed = try? NSAttributedString(
+            data: data,
+            options: [
+                .documentType: NSAttributedString.DocumentType.html,
+                .characterEncoding: String.Encoding.utf8.rawValue
+            ],
+            documentAttributes: nil
+        ) {
+            return attributed.string.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+private extension WikimediaCommonsSearchResponse {
+    static func searchURL(for term: String) -> URL? {
+        var components = URLComponents(string: "https://commons.wikimedia.org/w/api.php")
+        components?.queryItems = [
+            URLQueryItem(name: "action", value: "query"),
+            URLQueryItem(name: "format", value: "json"),
+            URLQueryItem(name: "generator", value: "search"),
+            URLQueryItem(name: "gsrsearch", value: term),
+            URLQueryItem(name: "gsrnamespace", value: "6"),
+            URLQueryItem(name: "gsrlimit", value: "10"),
+            URLQueryItem(name: "prop", value: "imageinfo"),
+            URLQueryItem(name: "iiprop", value: "url|extmetadata"),
+            URLQueryItem(name: "iiurlwidth", value: "480")
+        ]
+        return components?.url
+    }
+}
+
+private extension FlightArtworkFetcher {
+    static func commonsSearchURL(for term: String) -> URL? {
+        WikimediaCommonsSearchResponse.searchURL(for: term)
+    }
+}
+
+private func aircraftFamilyLabel(for aircraftType: String) -> String? {
+    let type = aircraftType.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+    switch type {
+    case "A318", "A319", "A320", "A20N", "A321", "A21N":
+        return "Airbus A320 family"
+    case "A220", "BCS1", "BCS3":
+        return "Airbus A220 family"
+    case "A330", "A332", "A333", "A339", "A33X":
+        return "Airbus A330 family"
+    case "A350", "A359", "A35K":
+        return "Airbus A350 family"
+    case "B737", "B38M", "B739", "B738", "B737-700", "B737-800", "B737-900":
+        return "Boeing 737 family"
+    case "B747", "B748":
+        return "Boeing 747 family"
+    case "B757":
+        return "Boeing 757 family"
+    case "B767":
+        return "Boeing 767 family"
+    case "B777", "B77L", "B77W", "B772", "B773":
+        return "Boeing 777 family"
+    case "B787", "B788", "B789", "B78X":
+        return "Boeing 787 Dreamliner"
+    case "E190", "E195", "E170", "E175", "E2", "E190-E2", "E195-E2":
+        return "Embraer E-Jet family"
+    case "CRJ7", "CRJ9", "CRJX", "CRJ2":
+        return "Bombardier CRJ family"
+    case "DH8A", "DH8B", "DH8C", "DH8D":
+        return "De Havilland Canada Dash 8 family"
+    default:
+        return nil
+    }
 }
 
 private func airlinePrefix(from callsign: String) -> String {
