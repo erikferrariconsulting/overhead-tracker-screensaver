@@ -45,6 +45,7 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
     public override init?(frame: NSRect, isPreview: Bool) {
         previewMode = isPreview
         let viewModel = ScreensaverViewModel()
+        viewModel.homeLatitude = flightFeedClient.homeLatitude
         viewModel.homeLongitude = flightFeedClient.homeLongitude
         viewModel.geofenceRadiusKm = Double(flightFeedClient.radiusNm) * 1.852
         self.viewModel = viewModel
@@ -330,6 +331,7 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
                     let insideCircleFlights = flights.filter { $0.isInsideGeofence(radiusKm: maxDistanceKm) }
                     self.rotationController.update(flights: insideCircleFlights)
                     self.updateState(with: flights)
+                    self.viewModel.updateStats(with: flights)
                 } catch {
                     screensaverLogger.error("decode failed error=\(error.localizedDescription, privacy: .public)")
                     if !isRefreshingLiveContent {
@@ -450,12 +452,66 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
 
 @MainActor
 final class ScreensaverViewModel: ObservableObject {
+    struct SessionStats {
+        var uniqueAircraftHexes: Set<String> = []
+        var maxCapacity: Int = 0
+        var largestAircraftType: String = "None"
+        var maxAltitudeFt: Int = 0
+        var maxSpeedKt: Int = 0
+        var maxDistanceOriginName: String = "None"
+        var maxDistanceOriginKm: Double = 0.0
+    }
+
     @Published var state: ScreensaverState = .loading
     @Published var backgroundImage: NSImage? = nil
     @Published var mapSnapshot: MKMapSnapshotter.Snapshot? = nil
     @Published var flightTrails: [String: [CLLocationCoordinate2D]] = [:]
+    @Published var sessionStats = SessionStats()
+    var homeLatitude: Double = FlightFeedClient.defaultHomeLatitude
     var homeLongitude: Double = FlightFeedClient.defaultHomeLongitude
     var geofenceRadiusKm: Double = Double(FlightFeedClient.defaultRadiusNm) * 1.852
+
+    func updateStats(with flights: [Flight]) {
+        var stats = sessionStats
+        let maxDistanceCircleKm = geofenceRadiusKm
+
+        for flight in flights {
+            guard flight.isInsideGeofence(radiusKm: maxDistanceCircleKm) else { continue }
+
+            let hex = flight.hex ?? flight.callsign
+            stats.uniqueAircraftHexes.insert(hex)
+
+            let capacity = flight.passengerCapacity
+            if capacity > stats.maxCapacity {
+                stats.maxCapacity = capacity
+                stats.largestAircraftType = flight.aircraftType
+            }
+
+            if flight.altitudeFt > stats.maxAltitudeFt {
+                stats.maxAltitudeFt = flight.altitudeFt
+            }
+
+            if flight.speedKt > stats.maxSpeedKt {
+                stats.maxSpeedKt = flight.speedKt
+            }
+
+            if !flight.originCity.isEmpty && flight.originCity != "Unknown" {
+                if let originCoords = AirportDatabase.shared.airportCoordinates(for: flight.originCity) {
+                    let distance = Flight.distanceKm(
+                        fromLatitude: homeLatitude,
+                        longitude: homeLongitude,
+                        toLatitude: originCoords.latitude,
+                        longitude: originCoords.longitude
+                    )
+                    if distance > stats.maxDistanceOriginKm {
+                        stats.maxDistanceOriginKm = distance
+                        stats.maxDistanceOriginName = AirportDatabase.shared.airportName(for: flight.originCity) ?? flight.originCity
+                    }
+                }
+            }
+        }
+        self.sessionStats = stats
+    }
 
     func updateTrails(with flights: [Flight]) {
         var newTrails: [String: [CLLocationCoordinate2D]] = [:]
@@ -681,8 +737,106 @@ struct OverheadTrackerScreensaverRootView: View {
                 .ignoresSafeArea()
 
             CardOverlayView(viewModel: viewModel)
+
+            if shouldShowStats {
+                VStack {
+                    HStack {
+                        SessionStatsCardView(stats: viewModel.sessionStats)
+                            .padding(.top, 40)
+                            .padding(.leading, 40)
+                        Spacer()
+                    }
+                    Spacer()
+                }
+            }
         }
         .background(Color.clear)
+    }
+
+    private var shouldShowStats: Bool {
+        switch viewModel.state {
+        case .live, .noFlights:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+struct SessionStatsCardView: View {
+    let stats: ScreensaverViewModel.SessionStats
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("WHILE YOU WERE AWAY")
+                .font(.system(size: 10, weight: .bold, design: .rounded))
+                .foregroundColor(.orange)
+                .tracking(1.5)
+
+            Text("\(stats.uniqueAircraftHexes.count) Aircraft")
+                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .foregroundColor(.white)
+                .padding(.bottom, 2)
+
+            Divider()
+                .background(Color.white.opacity(0.15))
+                .padding(.vertical, 2)
+
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 8) {
+                    Text("Largest:")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(.white.opacity(0.6))
+                        .frame(width: 55, alignment: .leading)
+                    Text(stats.largestAircraftType != "None" ? stats.largestAircraftType : "—")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+
+                HStack(spacing: 8) {
+                    Text("Highest:")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(.white.opacity(0.6))
+                        .frame(width: 55, alignment: .leading)
+                    Text(stats.maxAltitudeFt > 0 ? "FL\(stats.maxAltitudeFt / 100)" : "—")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+
+                HStack(spacing: 8) {
+                    Text("Fastest:")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(.white.opacity(0.6))
+                        .frame(width: 55, alignment: .leading)
+                    Text(stats.maxSpeedKt > 0 ? "\(stats.maxSpeedKt) kts" : "—")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+
+                HStack(spacing: 8) {
+                    Text("Furthest:")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(.white.opacity(0.6))
+                        .frame(width: 55, alignment: .leading)
+                    Text(stats.maxDistanceOriginName != "None" ? "\(stats.maxDistanceOriginName)" : "—")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                }
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .frame(width: 210)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color(red: 0.08, green: 0.09, blue: 0.12).opacity(0.85))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.white.opacity(0.12), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.35), radius: 10, x: 0, y: 5)
     }
 }
 

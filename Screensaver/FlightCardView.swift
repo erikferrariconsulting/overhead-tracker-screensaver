@@ -603,6 +603,17 @@ class AirportDatabase {
         return lookupTable[cleaned]
     }
 
+    func airportCoordinates(for code: String) -> CLLocationCoordinate2D? {
+        let cleaned = code.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        guard !cleaned.isEmpty else { return nil }
+        return lock.withLock {
+            if let airport = airportsList.first(where: { $0.iata == cleaned || $0.icao == cleaned }) {
+                return CLLocationCoordinate2D(latitude: airport.latitude, longitude: airport.longitude)
+            }
+            return nil
+        }
+    }
+
     struct ProjectedAirport {
         let name: String
         let code: String
