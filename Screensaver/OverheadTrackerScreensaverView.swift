@@ -376,7 +376,10 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
             return
         }
 
-        guard let index = flights.firstIndex(where: { $0.id == currentFlight.id }) else {
+        let maxDistanceKm = Double(self.flightFeedClient.radiusNm) * 1.852
+        let activeFlights = FlightOrderer.closestFirst(flights.filter { $0.isInsideGeofence(radiusKm: maxDistanceKm) })
+
+        guard let index = activeFlights.firstIndex(where: { $0.id == currentFlight.id }) else {
             screensaverLogger.info(
                 "updateState current flight missing id=\(currentFlight.id, privacy: .public) total=\(flights.count, privacy: .public)"
             )
@@ -385,9 +388,9 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
         }
 
         screensaverLogger.info(
-            "updateState showing card=\(index + 1, privacy: .public)/\(flights.count, privacy: .public) callsign=\(currentFlight.callsign, privacy: .public)"
+            "updateState showing card=\(index + 1, privacy: .public)/\(activeFlights.count, privacy: .public) callsign=\(currentFlight.callsign, privacy: .public)"
         )
-        viewModel.state = .live(flights, index: index)
+        viewModel.state = .live(activeFlights, index: index)
     }
 
     private func advanceCard() {

@@ -51,7 +51,7 @@ struct FlightCardView: View {
             VStack(alignment: .leading, spacing: 18) {
                 HStack(alignment: .top, spacing: 24) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(flight.callsign)
+                        Text(formatCallsign(flight.callsign))
                             .font(.system(size: 72, weight: .bold, design: .rounded))
                             .lineLimit(1)
                             .minimumScaleFactor(0.6)
@@ -61,7 +61,9 @@ struct FlightCardView: View {
                                 Image(nsImage: logoImage)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(width: 32, height: 32)
+                                    .frame(maxHeight: 24)
+                                    .padding(.horizontal, 8)
+                                    .frame(height: 32)
                                     .background(Color.white.opacity(0.08))
                                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                                     .overlay(
@@ -445,8 +447,48 @@ private func airlineBrandColor(for prefix: String) -> Color? {
     }
 }
 
+private let icaoToIataCallsignMap: [String: String] = [
+    "ASA": "AS",
+    "QFA": "QF",
+    "QLK": "QF",
+    "UAL": "UA",
+    "AAL": "AA",
+    "DLH": "LH",
+    "DAL": "DL",
+    "BAW": "BA",
+    "AFR": "AF",
+    "ANZ": "NZ",
+    "SIA": "SQ",
+    "UAE": "EK",
+    "ETD": "EY",
+    "VOZ": "VA",
+    "JST": "JQ",
+    "CPA": "CX",
+    "CSN": "CZ",
+    "CES": "MU",
+    "CCA": "CA",
+    "HAL": "HA",
+    "WJA": "WS",
+    "AIC": "AI",
+    "JAL": "JL",
+    "ANA": "NH",
+    "THY": "TK",
+    "QTR": "QR"
+]
+
+private func formatCallsign(_ callsign: String) -> String {
+    let trimmed = callsign.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+    let letters = trimmed.prefix(while: { $0.isLetter })
+    let suffix = trimmed.dropFirst(letters.count)
+    if let iata = icaoToIataCallsignMap[String(letters)] {
+        return "\(iata)\(suffix)"
+    }
+    return trimmed
+}
+
 private func lookupAirlineName(for prefix: String) -> String? {
     switch prefix.uppercased() {
+    // Australia & Pacific
     case "QLK": return "QantasLink"
     case "QFA": return "Qantas"
     case "VOZ": return "Virgin Australia"
@@ -454,15 +496,41 @@ private func lookupAirlineName(for prefix: String) -> String? {
     case "RXA": return "Regional Express"
     case "NZM": return "Air New Zealand Link"
     case "ANZ": return "Air New Zealand"
+    case "FJI": return "Fiji Airways"
+    case "ANG": return "Air Niugini"
+    case "UTY": return "Alliance Airlines"
+    case "PEL": return "Pel-Air"
+    // North America
+    case "ASA": return "Alaska Airlines"
+    case "QXE": return "Horizon Air"
+    case "UAL": return "United Airlines"
+    case "AAL": return "American Airlines"
+    case "DAL": return "Delta Air Lines"
+    case "JBU": return "JetBlue"
+    case "SWA": return "Southwest Airlines"
+    case "WJA": return "WestJet"
+    case "ACA": return "Air Canada"
+    case "SKW": return "SkyWest Airlines"
+    case "RPA": return "Republic Airways"
+    case "EDV": return "Endeavor Air"
+    case "GJS": return "GoJet Airlines"
+    case "SCX": return "Sun Country Airlines"
+    case "MES": return "Mesaba Airlines"
+    case "PDT": return "Piedmont Airlines"
+    case "PSA": return "PSA Airlines"
+    case "HAL": return "Hawaiian Airlines"
+    // Europe
+    case "BAW": return "British Airways"
+    case "AFR": return "Air France"
+    case "DLH": return "Lufthansa"
+    case "THY": return "Turkish Airlines"
+    // Asia & Middle East
     case "SIA": return "Singapore Airlines"
     case "QTR": return "Qatar Airways"
     case "UAE": return "Emirates"
     case "ETD": return "Etihad Airways"
-    case "FJI": return "Fiji Airways"
-    case "ANG": return "Air Niugini"
     case "TGW": return "Scoot"
     case "MAS": return "Malaysia Airlines"
-    case "THY": return "Turkish Airlines"
     case "VJC": return "VietJet Air"
     case "PAL": return "Philippine Airlines"
     case "EVA": return "EVA Air"
@@ -470,10 +538,24 @@ private func lookupAirlineName(for prefix: String) -> String? {
     case "CSN": return "China Southern"
     case "CES": return "China Eastern"
     case "CCA": return "Air China"
-    case "FDX": return "FedEx"
+    case "FDM": return "Flyadeal"
+    case "KAL": return "Korean Air"
+    case "AAR": return "Asiana Airlines"
+    case "CHH": return "Hainan Airlines"
+    case "CXA": return "XiamenAir"
+    case "CEB": return "Cebu Pacific"
+    case "JAL": return "Japan Airlines"
+    case "ANA": return "All Nippon Airways"
+    case "AIC": return "Air India"
+    case "CRK": return "Hong Kong Airlines"
+    // Cargo & others
+    case "FDX": return "FedEx Express"
     case "UPS": return "UPS Airlines"
-    case "PEL": return "Pel-Air"
-    case "UTY": return "Alliance Airlines"
+    case "GTI": return "Atlas Air"
+    case "CLX": return "Cargolux"
+    case "DHK": return "DHL Air UK"
+    case "TAY": return "ASL Airlines Belgium"
+    case "NJT": return "NetJets"
     default: return nil
     }
 }
