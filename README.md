@@ -25,20 +25,47 @@ It is part of the [Overhead Tracker](https://overheadtracker.com) system.
 - Xcode 15.0 or newer (for building from source)
 
 ### Local Debugging & Testing
-You can run and preview the screensaver directly in a standard desktop window without installing it into macOS System Settings. 
+You can run and preview the screensaver directly in a standard desktop window without installing it into macOS System Settings.
 
-From the repository root, run the Swift debug runner script:
+First, ensure the core framework has been built by Xcode:
 ```bash
-swift debug_runner.swift
+xcodebuild build -scheme OverheadTrackerScreensaverCore
+```
+
+Then, compile the debug runner linking it against the framework with the correct runtime search path (`rpath`):
+```bash
+swiftc -parse-as-library \
+  -I ~/Library/Developer/Xcode/DerivedData/OverheadTrackerScreensaver-*/Build/Products/Debug \
+  -F ~/Library/Developer/Xcode/DerivedData/OverheadTrackerScreensaver-*/Build/Products/Debug \
+  -framework OverheadTrackerScreensaverCore \
+  -Xlinker -rpath -Xlinker ~/Library/Developer/Xcode/DerivedData/OverheadTrackerScreensaver-*/Build/Products/Debug \
+  debug_runner.swift Screensaver/*.swift \
+  -o debug_runner
+```
+
+Run the compiled executable:
+```bash
+./debug_runner
+```
+
+### Running Unit Tests
+To run the project's unit tests:
+```bash
+xcodebuild test -scheme OverheadTrackerScreensaverCore -destination 'platform=macOS'
 ```
 
 ### Building & Installing
 1. Open `OverheadTrackerScreensaver.xcodeproj` in Xcode.
-2. Select the `OverheadTrackerScreensaver` scheme and configure build destination to **My Mac**.
+2. Select the `OverheadTrackerScreensaver` scheme and configure the build destination to **My Mac**.
 3. Build the project (`Product` -> `Build`, or `Cmd + B`).
 4. Xcode will generate the compiled bundle `OverheadTrackerScreensaver.saver` inside the build products folder.
 5. Copy the `.saver` bundle to your User Screen Savers directory:
    ```bash
-   cp -R "/path/to/build/OverheadTrackerScreensaver.saver" "$HOME/Library/Screen Savers/"
+   rm -rf "$HOME/Library/Screen Savers/OverheadTrackerScreensaver.saver"
+   cp -R ~/Library/Developer/Xcode/DerivedData/OverheadTrackerScreensaver-*/Build/Products/Release/OverheadTrackerScreensaver.saver "$HOME/Library/Screen Savers/"
    ```
-6. Open **System Settings** -> **Screen Saver** on your Mac to preview and select the screensaver.
+6. Force-restart the screensaver host engine to clear cached versions:
+   ```bash
+   killall -9 legacyScreenSaver
+   ```
+7. Open **System Settings** -> **Screen Saver** on your Mac to preview and select the screensaver.
