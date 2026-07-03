@@ -41,6 +41,28 @@ struct FlightCardView: View {
         airlinePrefix(from: flight.callsign)
     }
 
+    private var isAustralianAmbulance: Bool {
+        let trimmed = flight.callsign.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        guard trimmed.hasPrefix("AM") else { return false }
+        let suffix = trimmed.dropFirst(2)
+        guard !suffix.isEmpty && suffix.allSatisfy({ $0.isNumber }) else { return false }
+        
+        let homeLat = FlightFeedClient.defaultHomeLatitude
+        let homeLon = FlightFeedClient.defaultHomeLongitude
+        let isNearAustralia = (homeLat < 0 && homeLat > -45) && (homeLon > 110 && homeLon < 155)
+        
+        return isNearAustralia
+    }
+
+    private func isAustralianAirport(_ code: String) -> Bool {
+        guard let coords = AirportDatabase.shared.airportCoordinates(for: code) else {
+            return false
+        }
+        let lat = coords.latitude
+        let lon = coords.longitude
+        return (lat < 0 && lat > -45) && (lon > 110 && lon < 155)
+    }
+
     private var logoKey: String {
         "logo:\(prefix)"
     }
@@ -83,7 +105,21 @@ struct FlightCardView: View {
                             .minimumScaleFactor(0.6)
 
                         HStack(alignment: .center, spacing: 12) {
-                            if let logoImage {
+                            if isAustralianAmbulance {
+                                Image(systemName: "staroflife.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(maxHeight: 22)
+                                    .foregroundStyle(.red)
+                                    .padding(.horizontal, 8)
+                                    .frame(height: 32)
+                                    .background(Color.white.opacity(0.08))
+                                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                            .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
+                                    )
+                            } else if let logoImage {
                                 Image(nsImage: logoImage)
                                     .resizable()
                                     .scaledToFit()
@@ -99,6 +135,9 @@ struct FlightCardView: View {
                             }
 
                             let airlineText: String = {
+                                if isAustralianAmbulance {
+                                    return "NSW Ambulance"
+                                }
                                 if let resolved = lookupAirlineName(for: prefix) {
                                     return resolved
                                 }
@@ -127,6 +166,18 @@ struct FlightCardView: View {
                                 return cleaned
                             }
                             
+                            if isAustralianAmbulance {
+                                if hasOrigin && hasDestination && isAustralianAirport(origin) && isAustralianAirport(destination) {
+                                    return "\(formatAirport(origin)) to \(formatAirport(destination))"
+                                } else if hasOrigin && isAustralianAirport(origin) {
+                                    return "Departing \(formatAirport(origin))"
+                                } else if hasDestination && isAustralianAirport(destination) {
+                                    return "Arriving at \(formatAirport(destination))"
+                                } else {
+                                    return "Air Ambulance Mission"
+                                }
+                            }
+                            
                             if !hasOrigin && !hasDestination {
                                 return "Local / Untracked Route"
                             } else if hasOrigin && !hasDestination {
@@ -140,7 +191,7 @@ struct FlightCardView: View {
 
                         Text(routeText)
                             .font(.system(size: 28, weight: .medium, design: .rounded))
-                            .foregroundStyle(accentColor)
+                            .foregroundStyle(isAustralianAmbulance ? .red : accentColor)
                     }
 
                     Spacer(minLength: 12)
@@ -209,6 +260,7 @@ struct FlightCardView: View {
         }
         .task(id: logoKey) {
             logoImage = nil
+            if isAustralianAmbulance { return }
             guard !prefix.isEmpty else { return }
 
             if let cachedLogo = FlightImageCache.shared.image(for: logoKey) {
@@ -245,7 +297,19 @@ private struct FlightArtworkTileView: View {
     }
 
     private var brandColor: Color {
-        airlineBrandColor(for: prefix) ?? accentColor
+        let trimmed = flight.callsign.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        let isAmbulance: Bool = {
+            guard trimmed.hasPrefix("AM") else { return false }
+            let suffix = trimmed.dropFirst(2)
+            guard !suffix.isEmpty && suffix.allSatisfy({ $0.isNumber }) else { return false }
+            let homeLat = FlightFeedClient.defaultHomeLatitude
+            let homeLon = FlightFeedClient.defaultHomeLongitude
+            return (homeLat < 0 && homeLat > -45) && (homeLon > 110 && homeLon < 155)
+        }()
+        if isAmbulance {
+            return .red
+        }
+        return airlineBrandColor(for: prefix) ?? accentColor
     }
 
     var body: some View {
