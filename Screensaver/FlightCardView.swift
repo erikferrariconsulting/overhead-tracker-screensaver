@@ -37,6 +37,19 @@ struct FlightCardView: View {
 
     @State private var logoImage: NSImage?
 
+    init(flight: Flight, positionText: String?) {
+        self.flight = flight
+        self.positionText = positionText
+        
+        let prefix = airlinePrefix(from: flight.callsign)
+        let key = "logo:\(prefix)"
+        if let cached = FlightImageCache.shared.image(for: key) {
+            _logoImage = State(initialValue: cached)
+        } else {
+            _logoImage = State(initialValue: nil)
+        }
+    }
+
     private var prefix: String {
         airlinePrefix(from: flight.callsign)
     }
@@ -259,15 +272,23 @@ struct FlightCardView: View {
             }
         }
         .task(id: logoKey) {
-            logoImage = nil
-            if isAustralianAmbulance { return }
-            guard !prefix.isEmpty else { return }
+            if isAustralianAmbulance {
+                logoImage = nil
+                return
+            }
+            guard !prefix.isEmpty else {
+                logoImage = nil
+                return
+            }
 
             if let cachedLogo = FlightImageCache.shared.image(for: logoKey) {
                 logoImage = cachedLogo
-            } else if let loadedLogo = await FlightArtworkFetcher.loadAirlineLogo(prefix: prefix) {
-                logoImage = loadedLogo
-                FlightImageCache.shared.store(loadedLogo, for: logoKey)
+            } else {
+                logoImage = nil
+                if let loadedLogo = await FlightArtworkFetcher.loadAirlineLogo(prefix: prefix) {
+                    logoImage = loadedLogo
+                    FlightImageCache.shared.store(loadedLogo, for: logoKey)
+                }
             }
         }
     }
@@ -280,6 +301,8 @@ struct FlightCardView: View {
 
             Text(value)
                 .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                .contentTransition(.numericText())
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: value)
         }
         .frame(minWidth: 110, alignment: .leading)
     }
@@ -291,6 +314,25 @@ private struct FlightArtworkTileView: View {
     let accentColor: Color
 
     @State private var photoImage: NSImage?
+
+    init(flight: Flight, accentColor: Color) {
+        self.flight = flight
+        self.accentColor = accentColor
+        
+        let reg = flight.registration.trimmingCharacters(in: .whitespacesAndNewlines)
+        var key: String? = nil
+        if !reg.isEmpty && reg != "---" && reg != "Unknown" {
+            key = "photo:reg:\(reg.uppercased())"
+        } else if let hex = flight.hex?.trimmingCharacters(in: .whitespacesAndNewlines), !hex.isEmpty {
+            key = "photo:hex:\(hex.uppercased())"
+        }
+        
+        if let key = key, let cached = FlightImageCache.shared.image(for: key) {
+            _photoImage = State(initialValue: cached)
+        } else {
+            _photoImage = State(initialValue: nil)
+        }
+    }
 
     private var prefix: String {
         airlinePrefix(from: flight.callsign)
@@ -341,21 +383,24 @@ private struct FlightArtworkTileView: View {
             }
         }
         .task(id: artworkKey) {
-            photoImage = nil
-
             guard !artworkKey.isEmpty else {
+                photoImage = nil
                 return
             }
 
             guard let photoKey else {
+                photoImage = nil
                 return
             }
 
             if let cachedPhoto = FlightImageCache.shared.image(for: photoKey) {
                 photoImage = cachedPhoto
-            } else if let loadedPhoto = await FlightArtworkFetcher.loadAircraftPhoto(flight: flight) {
-                photoImage = loadedPhoto
-                FlightImageCache.shared.store(loadedPhoto, for: photoKey)
+            } else {
+                photoImage = nil
+                if let loadedPhoto = await FlightArtworkFetcher.loadAircraftPhoto(flight: flight) {
+                    photoImage = loadedPhoto
+                    FlightImageCache.shared.store(loadedPhoto, for: photoKey)
+                }
             }
         }
     }

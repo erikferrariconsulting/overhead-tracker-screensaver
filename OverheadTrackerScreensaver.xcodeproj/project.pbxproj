@@ -77,7 +77,7 @@
 		1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViews.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F014 /* FlightFeedClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFeedClient.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F015 /* RotationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationController.swift; sourceTree = "<group>"; };
-		1AE4A9D5E3494C1AA1B1F016 /* ScreenSaver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScreenSaver.framework; path = ScreenSaver.framework; sourceTree = SDKROOT; };
+		1AE4A9D5E3494C1AA1B1F016 /* ScreenSaver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ScreenSaver.framework; sourceTree = SDKROOT; };
 		1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OverheadTrackerScreensaver.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C5A0DA0D1E2445D9A5A2D3E /* RotationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationControllerTests.swift; sourceTree = "<group>"; };
 		25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OverheadTrackerScreensaverCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,7 +161,16 @@
 				1AE4A9D5E3494C1AA1B1F021 /* Screensaver */,
 				B28DF0B620BA6452028BF3A1 /* Core */,
 				33F287992BFC0F9A22531952 /* Products */,
+				95BD8FE12FF7B8AF001113DE /* Recovered References */,
 			);
+			sourceTree = "<group>";
+		};
+		95BD8FE12FF7B8AF001113DE /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				1AE4A9D5E3494C1AA1B1F016 /* ScreenSaver.framework */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		B28DF0B620BA6452028BF3A1 /* Core */ = {
@@ -246,8 +255,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = 5D0E30A19E631808811C2659 /* Build configuration list for PBXProject "OverheadTrackerScreensaver" */;
 			developmentRegion = en;
@@ -335,7 +342,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = KMRQ76B22J;
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -344,7 +355,8 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver.coretests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.erikferrari.overheadtracker.screensaver.coretests;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 			};
@@ -353,9 +365,11 @@
 		1AE4A9D5E3494C1AA1B1F036 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMRQ76B22J;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSPrincipalClass = OverheadTrackerScreensaverView;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -364,6 +378,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
@@ -374,9 +389,11 @@
 		1AE4A9D5E3494C1AA1B1F037 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMRQ76B22J;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSPrincipalClass = OverheadTrackerScreensaverView;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -385,6 +402,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
@@ -395,9 +413,11 @@
 		1CD83019155E267123EE5785 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMRQ76B22J;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -408,7 +428,8 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver.core;
+				PRODUCT_BUNDLE_IDENTIFIER = com.erikferrari.overheadtracker.screensaver.core;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
@@ -475,7 +496,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = KMRQ76B22J;
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -484,7 +509,8 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver.coretests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.erikferrari.overheadtracker.screensaver.coretests;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 			};
@@ -493,9 +519,11 @@
 		CA60D3EEA5BDFC31EF427B3C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KMRQ76B22J;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -506,7 +534,8 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver.core;
+				PRODUCT_BUNDLE_IDENTIFIER = com.erikferrari.overheadtracker.screensaver.core;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;

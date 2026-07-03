@@ -222,7 +222,9 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
     }
 
     public func render(state: ScreensaverState) {
-        viewModel.state = state
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+            viewModel.state = state
+        }
     }
 
     public override func draw(_ rect: NSRect) {
@@ -286,7 +288,9 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
         } catch {
             screensaverLogger.error("failed to build flights url")
             if !isRefreshingLiveContent {
-                viewModel.state = .offline(message: "Unable to load aircraft data")
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                    viewModel.state = .offline(message: "Unable to load aircraft data")
+                }
             }
             return
         }
@@ -305,7 +309,9 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
                 if let error {
                     screensaverLogger.error("request failed error=\(error.localizedDescription, privacy: .public)")
                     if !isRefreshingLiveContent {
-                        self.viewModel.state = .offline(message: error.localizedDescription)
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            self.viewModel.state = .offline(message: error.localizedDescription)
+                        }
                     } else {
                         screensaverLogger.info("keeping existing live card after refresh failure")
                     }
@@ -315,7 +321,9 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
                 guard let data else {
                     screensaverLogger.error("request completed without data")
                     if !isRefreshingLiveContent {
-                        self.viewModel.state = .offline(message: "Unable to load aircraft data")
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            self.viewModel.state = .offline(message: "Unable to load aircraft data")
+                        }
                     } else {
                         screensaverLogger.info("keeping existing live card after empty refresh response")
                     }
@@ -335,7 +343,9 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
                 } catch {
                     screensaverLogger.error("decode failed error=\(error.localizedDescription, privacy: .public)")
                     if !isRefreshingLiveContent {
-                        self.viewModel.state = .offline(message: "Unable to load aircraft data")
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            self.viewModel.state = .offline(message: "Unable to load aircraft data")
+                        }
                     } else {
                         screensaverLogger.info("keeping existing live card after decode failure")
                     }
@@ -351,7 +361,9 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
             guard self.viewModel.state == .loading else { return }
             screensaverLogger.info("loading watchdog expired")
             if !isRefreshingLiveContent {
-                self.viewModel.state = .noFlights
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                    self.viewModel.state = .noFlights
+                }
             } else {
                 screensaverLogger.info("keeping existing live card after refresh watchdog expiry")
             }
@@ -372,7 +384,9 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
 
         guard let currentFlight = rotationController.currentFlight else {
             screensaverLogger.info("updateState no current flight total=\(flights.count, privacy: .public)")
-            viewModel.state = .noFlights
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                viewModel.state = .noFlights
+            }
             return
         }
 
@@ -383,14 +397,18 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
             screensaverLogger.info(
                 "updateState current flight missing id=\(currentFlight.id, privacy: .public) total=\(flights.count, privacy: .public)"
             )
-            viewModel.state = .noFlights
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                viewModel.state = .noFlights
+            }
             return
         }
 
         screensaverLogger.info(
             "updateState showing card=\(index + 1, privacy: .public)/\(activeFlights.count, privacy: .public) callsign=\(currentFlight.callsign, privacy: .public)"
         )
-        viewModel.state = .live(activeFlights, index: index)
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+            viewModel.state = .live(activeFlights, index: index)
+        }
     }
 
     private func advanceCard() {
@@ -570,32 +588,49 @@ struct CardOverlayView: View {
         switch viewModel.state {
         case .loading:
             LoadingStatusView()
+                .transition(.opacity.combined(with: .scale(scale: 0.95)))
         case .noFlights:
             NoFlightsStatusView()
+                .transition(.opacity.combined(with: .scale(scale: 0.95)))
         case .offline(let message):
             OfflineStatusView(message: message)
+                .transition(.opacity.combined(with: .scale(scale: 0.95)))
         case .live(let flights, let index):
             if flights.indices.contains(index) {
                 let flight = flights[index]
                 let alignToRight = (flight.longitude ?? 0.0) < viewModel.homeLongitude
 
-                HStack {
-                    if alignToRight {
-                        Spacer()
-                    }
+                ZStack {
+                    HStack {
+                        if alignToRight {
+                            Spacer()
+                        }
 
-                    FlightCardView(
-                        flight: flight,
-                        positionText: "\(index + 1) / \(flights.count)"
+                        FlightCardView(
+                            flight: flight,
+                            positionText: "\(index + 1) / \(flights.count)"
+                        )
+                        .padding(.horizontal, 80)
+
+                        if !alignToRight {
+                            Spacer()
+                        }
+                    }
+                    .id(flight.id)
+                    .transition(
+                        .asymmetric(
+                            insertion: .opacity
+                                .combined(with: .scale(scale: 0.98))
+                                .combined(with: .offset(x: alignToRight ? 50 : -50)),
+                            removal: .opacity
+                                .combined(with: .scale(scale: 0.98))
+                                .combined(with: .offset(x: alignToRight ? -50 : 50))
+                        )
                     )
-                    .padding(.horizontal, 80)
-
-                    if !alignToRight {
-                        Spacer()
-                    }
                 }
             } else {
                 NoFlightsStatusView()
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
             }
         }
     }
@@ -629,24 +664,39 @@ struct MapSnapshotView: View {
                         return nil
                     }()
 
-                    // 1. Draw trailing paths in aviation yellow (same solid lines for all active flights)
+                    // 1. Draw trailing paths in aviation yellow with a smooth gradient opacity (fading out towards the tail)
                     ForEach(Array(viewModel.flightTrails.keys), id: \.self) { flightId in
                          if let trail = viewModel.flightTrails[flightId], trail.count > 1 {
+                             let points = trail.map { coord -> CGPoint in
+                                 let pt = mapSnapshot.point(for: coord)
+                                 return CGPoint(x: pt.x, y: geometry.size.height - pt.y)
+                             }
+                             
+                             let tail = points.first ?? .zero
+                             let nose = points.last ?? .zero
+                             
+                             let startPoint = UnitPoint(
+                                 x: geometry.size.width > 0 ? tail.x / geometry.size.width : 0.5,
+                                 y: geometry.size.height > 0 ? tail.y / geometry.size.height : 0.5
+                             )
+                             let endPoint = UnitPoint(
+                                 x: geometry.size.width > 0 ? nose.x / geometry.size.width : 0.5,
+                                 y: geometry.size.height > 0 ? nose.y / geometry.size.height : 0.5
+                             )
+                             
                              Path { path in
-                                 let points = trail.map { coord -> CGPoint in
-                                     let pt = mapSnapshot.point(for: coord)
-                                     return CGPoint(x: pt.x, y: geometry.size.height - pt.y)
-                                 }
-                                 if let first = points.first {
-                                     path.move(to: first)
-                                     for point in points.dropFirst() {
-                                         path.addLine(to: point)
-                                     }
+                                 path.move(to: tail)
+                                 for point in points.dropFirst() {
+                                     path.addLine(to: point)
                                  }
                              }
                              .stroke(
-                                 Color.yellow.opacity(0.65),
-                                 style: StrokeStyle(lineWidth: 2.0, lineCap: .round)
+                                 LinearGradient(
+                                     colors: [Color.yellow.opacity(0.0), Color.yellow.opacity(0.65)],
+                                     startPoint: startPoint,
+                                     endPoint: endPoint
+                                 ),
+                                 style: StrokeStyle(lineWidth: 2.0, lineCap: .round, lineJoin: .round)
                              )
                          }
                     }
