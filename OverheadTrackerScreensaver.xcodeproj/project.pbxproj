@@ -19,24 +19,48 @@
 		2992368DB0B828CFE1AC2FEF /* ProxyFlightResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29B2150CF2DD185194D7782 /* ProxyFlightResponse.swift */; };
 		2B794F1D4751F7797A3AB94E /* Ip2LocationIataIcao in Frameworks */ = {isa = PBXBuildFile; productRef = B8D14851B2E88D071A59567C /* Ip2LocationIataIcao */; };
 		3B1D9F5AC2E54E71BFB7E7C1 /* FlightOrdererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1E3B8F6F44D8E8E5E9D31 /* FlightOrdererTests.swift */; };
+		4185A600E31423A9288648B1 /* OverheadTrackerScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F011 /* OverheadTrackerScreensaverView.swift */; };
 		4A187D1926D74659D8D88F40 /* ScreensaverStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422DC284A3AB28330E11AC /* ScreensaverStateTests.swift */; };
 		54E73EA2B2E5A75DFE05C7E2 /* AirlineLogos in Frameworks */ = {isa = PBXBuildFile; productRef = 00D39C8FFA8D709BA3A6D825 /* AirlineLogos */; };
+		5B0415C19D95F054400C138D /* FlightFeedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F014 /* FlightFeedClient.swift */; };
 		5C2F10C5A7C84D5E8C1E7B3A /* RotationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5A0DA0D1E2445D9A5A2D3E /* RotationControllerTests.swift */; };
 		6745A98FDC89BD3A55A65C76 /* ScreensaverState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F87E7C302A45921F12C785A /* ScreensaverState.swift */; };
 		81900DC01833C35B47BEB73C /* FlightPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D0F10B3BA2CFE96C82E782 /* FlightPhase.swift */; };
 		8B919A4DEAF407122B7BA5D8 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8E7B52B9F1C448C9A4B0E4C1 /* FlightFeedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6E9D0E9A9D4E8E97E7C111 /* FlightFeedRequest.swift */; };
+		95231AE850E16B18780152F9 /* StatusViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */; };
+		958818DC4E3F97A9A51EB6AA /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB981E93D162AB3E15357207 /* MainView.swift */; };
 		9A8F62A1A4C24D5EA6D9C0B7 /* FlightOrderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6D8D8D70D44B0EB5A4C01F /* FlightOrderer.swift */; };
 		9DF8560D0232B460FFD17523 /* FlightPhaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1EA55D7AA294ADBE1C1A1B /* FlightPhaseTests.swift */; };
 		9F6B7D4B3C14451DB8F8B73A /* ProxyFlightResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */; };
 		A1CCD47AB138A68A742D8C65 /* OverheadTrackerScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; };
+		A26EA5ED24F941AFCC02CC29 /* FlightCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F012 /* FlightCardView.swift */; };
 		A5E2D8F3C8FD4F49A4C0C299 /* FlightPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D99 /* FlightPresentationTests.swift */; };
 		A5E2D8F3C8FD4F49A4C0C2B2 /* FlightFeedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */; };
+		D3A66B9F61151F7A74E6AD66 /* OverheadTrackerScreensaver.saver in Resources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */; };
+		D7B44E7D3089005167512047 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88BF4944B104C78F19FD00A /* Cocoa.framework */; };
+		E82E382F3C90729A4C032639 /* OverheadTrackerScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; };
+		EF3F6D00832F966622A9DD76 /* OverheadTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1287644D644951B21F827E27 /* OverheadTrackerApp.swift */; };
+		FAB32404913FC999FD41E9EB /* ScreensaverInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = B268418B40928C816675C82C /* ScreensaverInstaller.swift */; };
 		FF6D91064BACF5CFCB3F0960 /* Flight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EB7380DD6D271AEBA1D6E3 /* Flight.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		1A9202FE46D1D401979976B0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4E8522B40B923DB6EC67D9C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22BA2CC6D25EF10F4705469F;
+			remoteInfo = OverheadTrackerScreensaverCore;
+		};
+		D0AAB790CD85FEF2945DF042 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4E8522B40B923DB6EC67D9C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1AE4A9D5E3494C1AA1B1F031;
+			remoteInfo = OverheadTrackerScreensaver;
+		};
+		D951A26C85ECC37D452E2827 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4E8522B40B923DB6EC67D9C6 /* Project object */;
 			proxyType = 1;
@@ -72,6 +96,7 @@
 
 /* Begin PBXFileReference section */
 		0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyFlightResponseTests.swift; sourceTree = "<group>"; };
+		1287644D644951B21F827E27 /* OverheadTrackerApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OverheadTrackerApp.swift; path = App/OverheadTrackerApp.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F011 /* OverheadTrackerScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverheadTrackerScreensaverView.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F012 /* FlightCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightCardView.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViews.swift; sourceTree = "<group>"; };
@@ -90,9 +115,13 @@
 		75D1E3B8F6F44D8E8E5E9D31 /* FlightOrdererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightOrdererTests.swift; sourceTree = "<group>"; };
 		79EB7380DD6D271AEBA1D6E3 /* Flight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flight.swift; sourceTree = "<group>"; };
 		A8422DC284A3AB28330E11AC /* ScreensaverStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensaverStateTests.swift; sourceTree = "<group>"; };
+		B268418B40928C816675C82C /* ScreensaverInstaller.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScreensaverInstaller.swift; path = App/ScreensaverInstaller.swift; sourceTree = "<group>"; };
+		BC16FAA4A8E7CE80E108C98C /* OverheadTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OverheadTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C29B2150CF2DD185194D7782 /* ProxyFlightResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyFlightResponse.swift; sourceTree = "<group>"; };
+		D88BF4944B104C78F19FD00A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		F3D0F10B3BA2CFE96C82E782 /* FlightPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightPhase.swift; sourceTree = "<group>"; };
 		FA1EA55D7AA294ADBE1C1A1B /* FlightPhaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightPhaseTests.swift; sourceTree = "<group>"; };
+		FB981E93D162AB3E15357207 /* MainView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MainView.swift; path = App/MainView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +142,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1CCD47AB138A68A742D8C65 /* OverheadTrackerScreensaverCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8F3B0CA662D13755D7B01BC8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D7B44E7D3089005167512047 /* Cocoa.framework in Frameworks */,
+				E82E382F3C90729A4C032639 /* OverheadTrackerScreensaverCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,12 +182,23 @@
 			path = Screensaver;
 			sourceTree = "<group>";
 		};
+		1D9E7E5358FE2968D1E1BF17 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				1287644D644951B21F827E27 /* OverheadTrackerApp.swift */,
+				FB981E93D162AB3E15357207 /* MainView.swift */,
+				B268418B40928C816675C82C /* ScreensaverInstaller.swift */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
 		33F287992BFC0F9A22531952 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */,
 				1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */,
 				456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */,
+				BC16FAA4A8E7CE80E108C98C /* OverheadTracker.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -162,7 +211,25 @@
 				B28DF0B620BA6452028BF3A1 /* Core */,
 				33F287992BFC0F9A22531952 /* Products */,
 				95BD8FE12FF7B8AF001113DE /* Recovered References */,
+				5D0CBC66AA55367E29AE1C1D /* Frameworks */,
+				1D9E7E5358FE2968D1E1BF17 /* App */,
 			);
+			sourceTree = "<group>";
+		};
+		42D58485DE7836F4534988AB /* OS X */ = {
+			isa = PBXGroup;
+			children = (
+				D88BF4944B104C78F19FD00A /* Cocoa.framework */,
+			);
+			name = "OS X";
+			sourceTree = "<group>";
+		};
+		5D0CBC66AA55367E29AE1C1D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				42D58485DE7836F4534988AB /* OS X */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		95BD8FE12FF7B8AF001113DE /* Recovered References */ = {
@@ -247,6 +314,25 @@
 			productReference = 456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		A57713991FCF6ACADFAF5A77 /* OverheadTracker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 818349B2CF6847B47A4A43DD /* Build configuration list for PBXNativeTarget "OverheadTracker" */;
+			buildPhases = (
+				4D580F031FE838CB606A31CF /* Sources */,
+				8F3B0CA662D13755D7B01BC8 /* Frameworks */,
+				9F20644B52876DF25C5DF45D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FBD393CE71282095DB013EF9 /* PBXTargetDependency */,
+				92A4CBE498AD437A79A39E0E /* PBXTargetDependency */,
+			);
+			name = OverheadTracker;
+			productName = OverheadTracker;
+			productReference = BC16FAA4A8E7CE80E108C98C /* OverheadTracker.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -278,9 +364,21 @@
 				22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */,
 				436C2F50266D1966C3511CF5 /* OverheadTrackerScreensaverCoreTests */,
 				1AE4A9D5E3494C1AA1B1F031 /* OverheadTrackerScreensaver */,
+				A57713991FCF6ACADFAF5A77 /* OverheadTracker */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9F20644B52876DF25C5DF45D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D3A66B9F61151F7A74E6AD66 /* OverheadTrackerScreensaver.saver in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1AE4A9D5E3494C1AA1B1F032 /* Sources */ = {
@@ -291,6 +389,20 @@
 				1AE4A9D5E3494C1AA1B1F002 /* FlightCardView.swift in Sources */,
 				1AE4A9D5E3494C1AA1B1F003 /* StatusViews.swift in Sources */,
 				1AE4A9D5E3494C1AA1B1F004 /* FlightFeedClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D580F031FE838CB606A31CF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EF3F6D00832F966622A9DD76 /* OverheadTrackerApp.swift in Sources */,
+				958818DC4E3F97A9A51EB6AA /* MainView.swift in Sources */,
+				FAB32404913FC999FD41E9EB /* ScreensaverInstaller.swift in Sources */,
+				A26EA5ED24F941AFCC02CC29 /* FlightCardView.swift in Sources */,
+				5B0415C19D95F054400C138D /* FlightFeedClient.swift in Sources */,
+				4185A600E31423A9288648B1 /* OverheadTrackerScreensaverView.swift in Sources */,
+				95231AE850E16B18780152F9 /* StatusViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +446,18 @@
 			isa = PBXTargetDependency;
 			target = 22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */;
 			targetProxy = 1A9202FE46D1D401979976B0 /* PBXContainerItemProxy */;
+		};
+		92A4CBE498AD437A79A39E0E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OverheadTrackerScreensaver;
+			target = 1AE4A9D5E3494C1AA1B1F031 /* OverheadTrackerScreensaver */;
+			targetProxy = D0AAB790CD85FEF2945DF042 /* PBXContainerItemProxy */;
+		};
+		FBD393CE71282095DB013EF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OverheadTrackerScreensaverCore;
+			target = 22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */;
+			targetProxy = D951A26C85ECC37D452E2827 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -492,6 +616,25 @@
 			};
 			name = Release;
 		};
+		AC186FE8382739FFFBAF17AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = App/OverheadTracker.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.app;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		C708E9E654B747C8216F1439 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -515,6 +658,25 @@
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 			};
 			name = Release;
+		};
+		C80C6F3B391D2F8FF275C205 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = App/OverheadTracker.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.app;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
 		};
 		CA60D3EEA5BDFC31EF427B3C /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -634,6 +796,15 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
+		};
+		818349B2CF6847B47A4A43DD /* Build configuration list for PBXNativeTarget "OverheadTracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC186FE8382739FFFBAF17AE /* Release */,
+				C80C6F3B391D2F8FF275C205 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9DE5A9665FA439301DA8B13E /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaverCoreTests" */ = {
 			isa = XCConfigurationList;
