@@ -17,64 +17,71 @@ struct MainView: View {
     private let refreshTimer = Timer.publish(every: 8, on: .main, in: .common).autoconnect()
     private let rotationTimer = Timer.publish(every: 10, on: .main, in: .common).autoconnect()
     
+    @State private var snapshotDebounceTask: Task<Void, Never>? = nil
+
     var body: some View {
-        ZStack {
-            // Re-use MapSnapshotView
-            MapSnapshotView(viewModel: viewModel)
-                .ignoresSafeArea()
-            
-            // Re-use CardOverlayView
-            CardOverlayView(viewModel: viewModel)
-            
-            // Session Stats Card Overlay
-            if shouldShowStats {
-                VStack {
-                    HStack {
-                        SessionStatsCardView(stats: viewModel.sessionStats)
-                            .padding(.top, 40)
-                            .padding(.leading, 40)
+        GeometryReader { geometry in
+            ZStack {
+                // Re-use MapSnapshotView
+                MapSnapshotView(viewModel: viewModel)
+                    .ignoresSafeArea()
+                
+                // Re-use CardOverlayView
+                CardOverlayView(viewModel: viewModel)
+                
+                // Session Stats Card Overlay
+                if shouldShowStats {
+                    VStack {
+                        HStack {
+                            SessionStatsCardView(stats: viewModel.sessionStats)
+                                .padding(.top, 40)
+                                .padding(.leading, 40)
+                            Spacer()
+                        }
                         Spacer()
                     }
-                    Spacer()
                 }
-            }
-            
-            // Top Right Controls (Settings/Installer toggle)
-            VStack {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
-                            showingSettings.toggle()
+                
+                // Top Right Controls (Settings/Installer toggle)
+                VStack {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
+                                showingSettings.toggle()
+                            }
+                        }) {
+                            Image(systemName: showingSettings ? "xmark.circle.fill" : "gearshape.fill")
+                                .font(.system(size: 20))
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
                         }
-                    }) {
-                        Image(systemName: showingSettings ? "xmark.circle.fill" : "gearshape.fill")
-                            .font(.system(size: 20))
-                            .foregroundColor(.white)
-                            .padding(10)
-                            .background(Color.black.opacity(0.6))
-                            .clipShape(Circle())
-                            .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
+                        .buttonStyle(.plain)
+                        .padding(.top, 20)
+                        .padding(.trailing, 20)
                     }
-                    .buttonStyle(.plain)
-                    .padding(.top, 20)
-                    .padding(.trailing, 20)
-                }
-                Spacer()
-            }
-            
-            // Settings and Installer Drawer
-            if showingSettings {
-                HStack {
                     Spacer()
-                    installerSettingsPanel
-                        .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
-                .background(Color.black.opacity(0.3).onTapGesture {
-                    withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
-                        showingSettings = false
+                
+                // Settings and Installer Drawer
+                if showingSettings {
+                    HStack {
+                        Spacer()
+                        installerSettingsPanel
+                            .transition(.move(edge: .trailing).combined(with: .opacity))
                     }
-                })
+                    .background(Color.black.opacity(0.3).onTapGesture {
+                        withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
+                            showingSettings = false
+                        }
+                    })
+                }
+            }
+            .onChange(of: geometry.size) { oldValue, newValue in
+                debounceSnapshot(for: newValue)
             }
         }
         .frame(minWidth: 1024, minHeight: 768)
@@ -107,15 +114,33 @@ struct MainView: View {
         viewModel.homeLongitude = flightFeedClient.homeLongitude
         viewModel.geofenceRadiusKm = Double(flightFeedClient.radiusNm) * 1.852
         
-        // Trigger map snapshot
-        triggerMapSnapshot()
-        
         // Initial flight request
         requestFlights()
     }
     
     // Map snapshot drawing
-    private func triggerMapSnapshot() {
+    private func debounceSnapshot(for size: CGSize) {
+        guard size.width > 100 && size.height > 100 else { return }
+        
+        // Cancel existing task if user is still resizing
+        snapshotDebounceTask?.cancel()
+        
+        if viewModel.backgroundImage == nil {
+            // First load: trigger immediately
+            triggerMapSnapshot(size: size)
+        } else {
+            // Subsequent resizes: debounce by 300ms to avoid overloading MapKit
+            snapshotDebounceTask = Task {
+                try? await Task.sleep(nanoseconds: 300_000_000)
+                if Task.isCancelled { return }
+                await MainActor.run {
+                    triggerMapSnapshot(size: size)
+                }
+            }
+        }
+    }
+    
+    private func triggerMapSnapshot(size: CGSize) {
         let options = MKMapSnapshotter.Options()
         let center = CLLocationCoordinate2D(
             latitude: flightFeedClient.homeLatitude,
@@ -126,7 +151,7 @@ struct MainView: View {
             center: center,
             span: MKCoordinateSpan(latitudeDelta: spanDelta, longitudeDelta: spanDelta)
         )
-        options.size = CGSize(width: 1024, height: 768) // Base size
+        options.size = size // Dynamic size matching the window bounds
         
         if #available(macOS 13.0, *) {
             let configuration = MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .muted)
