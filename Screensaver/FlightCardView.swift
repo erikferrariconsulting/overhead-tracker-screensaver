@@ -1,8 +1,34 @@
 import AppKit
-import Foundation
+import SwiftUI
 import MapKit
 import OverheadTrackerScreensaverCore
-import SwiftUI
+import Ip2LocationIataIcao
+import IataUtils
+import AirlineLogos
+
+private func findSPMBundle(named name: String) -> Bundle? {
+    for bundle in Bundle.allBundles {
+        if let ident = bundle.bundleIdentifier, ident.lowercased().contains(name.lowercased()) {
+            return bundle
+        }
+        if bundle.bundlePath.lowercased().contains(name.lowercased()) {
+            return bundle
+        }
+    }
+    for bundle in Bundle.allFrameworks {
+        if bundle.bundlePath.lowercased().contains(name.lowercased()) {
+            return bundle
+        }
+    }
+    for bundle in Bundle.allBundles {
+        if let url = bundle.url(forResource: name, withExtension: "bundle") {
+            if let b = Bundle(url: url) {
+                return b
+            }
+        }
+    }
+    return nil
+}
 
 @MainActor
 struct FlightCardView: View {
@@ -313,7 +339,14 @@ private enum FlightArtworkFetcher {
         let code = prefix.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         guard code.count >= 2 else { return nil }
 
-        // 1. Try custom github repository first (cyberkallen/airline-logos)
+        // 1. Try custom local SPM package first (AirlineLogos)
+        if let bundle = findSPMBundle(named: "AirlineLogos"),
+           let logoURL = bundle.url(forResource: code, withExtension: "png", subdirectory: "logos"),
+           let image = NSImage(contentsOf: logoURL) {
+            return image
+        }
+
+        // 2. Try custom github repository first (cyberkallen/airline-logos)
         if let githubURL = URL(string: "https://raw.githubusercontent.com/cyberkallen/airline-logos/main/logos/\(code).png") {
             var request = URLRequest(url: githubURL)
             request.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
@@ -324,7 +357,7 @@ private enum FlightArtworkFetcher {
             }
         }
 
-        // 2. Fall back to airhex.com
+        // 3. Fall back to airhex.com
         guard let url = URL(string: "https://content.airhex.com/content/logos/airlines_\(code)_120_120_c.png?theme=dark") else { return nil }
 
         var request = URLRequest(url: url)
@@ -742,90 +775,72 @@ class AirportDatabase {
         lock.lock()
         defer { lock.unlock() }
 
-        guard let url = cacheFileURL,
-              let data = try? Data(contentsOf: url),
-              let list = try? JSONDecoder().decode([AirportInfo].self, from: data) else {
-            self.lookupTable = defaultAirports
-            self.airportsList = defaultAirportsWithCoordinates
+        // 1. Try loading from SPM package first (highest priority)
+        if let bundle = findSPMBundle(named: "Ip2LocationIataIcao"),
+           let csvURL = bundle.url(forResource: "iata-icao", withExtension: "csv"),
+           let csvString = try? String(contentsOf: csvURL, encoding: .utf8) {
+            
+            let lines = csvString.components(separatedBy: .newlines)
+            var list: [AirportInfo] = []
+            var dict: [String: String] = [:]
+
+            for line in lines {
+                let cols = parseCSVRow(line)
+                guard cols.count >= 7 else { continue }
+
+                let iata = cols[2].trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+                let icao = cols[3].trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+                let airportRaw = cols[4]
+                let latRaw = cols[5]
+                let lonRaw = cols[6]
+
+                guard let latitude = Double(latRaw),
+                      let longitude = Double(lonRaw) else {
+                    continue
+                }
+
+                let cleanName = cleanAirportName(airportRaw)
+                guard !cleanName.isEmpty else { continue }
+
+                let info = AirportInfo(iata: iata, icao: icao, name: cleanName, latitude: latitude, longitude: longitude)
+                list.append(info)
+
+                if !iata.isEmpty && iata != "IATA" {
+                    dict[iata] = cleanName
+                }
+                if !icao.isEmpty && icao != "ICAO" {
+                    dict[icao] = cleanName
+                }
+            }
+
+            if !list.isEmpty {
+                self.airportsList = list
+                self.lookupTable = dict
+                return
+            }
+        }
+
+        // 2. Fall back to cached JSON file
+        if let url = cacheFileURL,
+           let data = try? Data(contentsOf: url),
+           let list = try? JSONDecoder().decode([AirportInfo].self, from: data) {
+            self.airportsList = list
+            var dict: [String: String] = [:]
+            for airport in list {
+                if !airport.iata.isEmpty { dict[airport.iata] = airport.name }
+                if !airport.icao.isEmpty { dict[airport.icao] = airport.name }
+            }
+            self.lookupTable = dict
             return
         }
-        self.airportsList = list
-        
-        var dict: [String: String] = [:]
-        for airport in list {
-            if !airport.iata.isEmpty {
-                dict[airport.iata] = airport.name
-            }
-            if !airport.icao.isEmpty {
-                dict[airport.icao] = airport.name
-            }
-        }
-        self.lookupTable = dict
+
+        // 3. Fall back to static defaults
+        self.lookupTable = defaultAirports
+        self.airportsList = defaultAirportsWithCoordinates
     }
 
     private func fetchIfNeeded() async {
-        if let url = cacheFileURL,
-           let attrs = try? FileManager.default.attributesOfItem(atPath: url.path),
-           let modificationDate = attrs[.modificationDate] as? Date,
-           Date().timeIntervalSince(modificationDate) < 14 * 24 * 3600 {
-            return
-        }
-
-        guard let downloadURL = URL(string: "https://raw.githubusercontent.com/cyberkallen/ip2location-iata-icao/master/iata-icao.csv") else { return }
-
-        var request = URLRequest(url: downloadURL)
-        request.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
-
-        guard let (data, response) = try? await URLSession.shared.data(for: request),
-              let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-              let csvString = String(data: data, encoding: .utf8) else {
-            return
-        }
-
-        let lines = csvString.components(separatedBy: .newlines)
-        var list: [AirportInfo] = []
-        var dict: [String: String] = [:]
-
-        for line in lines {
-            let cols = parseCSVRow(line)
-            guard cols.count >= 7 else { continue }
-
-            let iata = cols[2].trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-            let icao = cols[3].trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-            let airportRaw = cols[4]
-            let latRaw = cols[5]
-            let lonRaw = cols[6]
-
-            guard let latitude = Double(latRaw),
-                  let longitude = Double(lonRaw) else {
-                continue
-            }
-
-            let cleanName = cleanAirportName(airportRaw)
-            guard !cleanName.isEmpty else { continue }
-
-            let info = AirportInfo(iata: iata, icao: icao, name: cleanName, latitude: latitude, longitude: longitude)
-            list.append(info)
-
-            if !iata.isEmpty && iata != "IATA" {
-                dict[iata] = cleanName
-            }
-            if !icao.isEmpty && icao != "ICAO" {
-                dict[icao] = cleanName
-            }
-        }
-
-        if !list.isEmpty {
-            lock.withLock {
-                self.airportsList = list
-                self.lookupTable = dict
-            }
-
-            if let url = cacheFileURL,
-               let jsonData = try? JSONEncoder().encode(list) {
-                try? jsonData.write(to: url)
-            }
-        }
+        // No-op: all data is loaded locally from SPM package
     }
 
     private func cleanAirportName(_ rawName: String) -> String {
@@ -903,6 +918,15 @@ public final class AirlineDatabase: @unchecked Sendable {
     }
 
     private func loadCachedData() {
+        // 1. Try loading from SPM package first (highest priority)
+        if let bundle = findSPMBundle(named: "IataUtils"),
+           let csvURL = bundle.url(forResource: "iata_airlines", withExtension: "csv"),
+           let csvString = try? String(contentsOf: csvURL, encoding: .utf8) {
+            parseCSV(csvString)
+            return
+        }
+
+        // 2. Fall back to cached JSON file
         guard let cacheURL = cacheFileURL,
               let data = try? Data(contentsOf: cacheURL),
               let dict = try? JSONDecoder().decode(CacheStructure.self, from: data) else {
@@ -917,25 +941,7 @@ public final class AirlineDatabase: @unchecked Sendable {
     }
 
     private func fetchRemoteData() async {
-        guard let url = URL(string: "https://raw.githubusercontent.com/cyberkallen/iata-utils/master/generated/iata_airlines.csv") else { return }
-
-        var request = URLRequest(url: url)
-        request.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
-
-        do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-                return
-            }
-
-            guard let csvString = String(data: data, encoding: .utf8) else {
-                return
-            }
-
-            parseCSV(csvString)
-        } catch {
-            // Silence error
-        }
+        // No-op: all data is loaded locally from SPM package
     }
 
     private func parseCSV(_ csv: String) {

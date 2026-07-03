@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10DA75009E18666A8CEA265E /* IataUtils in Frameworks */ = {isa = PBXBuildFile; productRef = C4F157F36A4FFD42825DA2DF /* IataUtils */; };
 		1AE4A9D5E3494C1AA1B1F001 /* OverheadTrackerScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F011 /* OverheadTrackerScreensaverView.swift */; };
 		1AE4A9D5E3494C1AA1B1F002 /* FlightCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F012 /* FlightCardView.swift */; };
 		1AE4A9D5E3494C1AA1B1F003 /* StatusViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */; };
@@ -16,19 +17,21 @@
 		1AE4A9D5E3494C1AA1B1F007 /* OverheadTrackerScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; };
 		1AE4A9D5E3494C1AA1B1F008 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2992368DB0B828CFE1AC2FEF /* ProxyFlightResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29B2150CF2DD185194D7782 /* ProxyFlightResponse.swift */; };
+		2B794F1D4751F7797A3AB94E /* Ip2LocationIataIcao in Frameworks */ = {isa = PBXBuildFile; productRef = B8D14851B2E88D071A59567C /* Ip2LocationIataIcao */; };
 		3B1D9F5AC2E54E71BFB7E7C1 /* FlightOrdererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1E3B8F6F44D8E8E5E9D31 /* FlightOrdererTests.swift */; };
 		4A187D1926D74659D8D88F40 /* ScreensaverStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422DC284A3AB28330E11AC /* ScreensaverStateTests.swift */; };
+		54E73EA2B2E5A75DFE05C7E2 /* AirlineLogos in Frameworks */ = {isa = PBXBuildFile; productRef = 00D39C8FFA8D709BA3A6D825 /* AirlineLogos */; };
 		5C2F10C5A7C84D5E8C1E7B3A /* RotationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5A0DA0D1E2445D9A5A2D3E /* RotationControllerTests.swift */; };
-		9F6B7D4B3C14451DB8F8B73A /* ProxyFlightResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */; };
-		8B919A4DEAF407122B7BA5D8 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6745A98FDC89BD3A55A65C76 /* ScreensaverState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F87E7C302A45921F12C785A /* ScreensaverState.swift */; };
 		81900DC01833C35B47BEB73C /* FlightPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D0F10B3BA2CFE96C82E782 /* FlightPhase.swift */; };
-		9A8F62A1A4C24D5EA6D9C0B7 /* FlightOrderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6D8D8D70D44B0EB5A4C01F /* FlightOrderer.swift */; };
+		8B919A4DEAF407122B7BA5D8 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8E7B52B9F1C448C9A4B0E4C1 /* FlightFeedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6E9D0E9A9D4E8E97E7C111 /* FlightFeedRequest.swift */; };
+		9A8F62A1A4C24D5EA6D9C0B7 /* FlightOrderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6D8D8D70D44B0EB5A4C01F /* FlightOrderer.swift */; };
 		9DF8560D0232B460FFD17523 /* FlightPhaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1EA55D7AA294ADBE1C1A1B /* FlightPhaseTests.swift */; };
-		A5E2D8F3C8FD4F49A4C0C2B2 /* FlightFeedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */; };
-		A5E2D8F3C8FD4F49A4C0C299 /* FlightPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D99 /* FlightPresentationTests.swift */; };
+		9F6B7D4B3C14451DB8F8B73A /* ProxyFlightResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */; };
 		A1CCD47AB138A68A742D8C65 /* OverheadTrackerScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; };
+		A5E2D8F3C8FD4F49A4C0C299 /* FlightPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D99 /* FlightPresentationTests.swift */; };
+		A5E2D8F3C8FD4F49A4C0C2B2 /* FlightFeedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */; };
 		FF6D91064BACF5CFCB3F0960 /* Flight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EB7380DD6D271AEBA1D6E3 /* Flight.swift */; };
 /* End PBXBuildFile section */
 
@@ -43,17 +46,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		90390BEF24BE4A7DE056CB4F /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				8B919A4DEAF407122B7BA5D8 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1AE4A9D5E3494C1AA1B1F034 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -65,11 +57,21 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		90390BEF24BE4A7DE056CB4F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8B919A4DEAF407122B7BA5D8 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OverheadTrackerScreensaverCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3F87E7C302A45921F12C785A /* ScreensaverState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensaverState.swift; sourceTree = "<group>"; };
+		0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyFlightResponseTests.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F011 /* OverheadTrackerScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverheadTrackerScreensaverView.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F012 /* FlightCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightCardView.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViews.swift; sourceTree = "<group>"; };
@@ -77,15 +79,16 @@
 		1AE4A9D5E3494C1AA1B1F015 /* RotationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationController.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F016 /* ScreenSaver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScreenSaver.framework; path = ScreenSaver.framework; sourceTree = SDKROOT; };
 		1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OverheadTrackerScreensaver.saver; sourceTree = BUILT_PRODUCTS_DIR; };
-		456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OverheadTrackerScreensaverCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		79EB7380DD6D271AEBA1D6E3 /* Flight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flight.swift; sourceTree = "<group>"; };
+		1C5A0DA0D1E2445D9A5A2D3E /* RotationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationControllerTests.swift; sourceTree = "<group>"; };
+		25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OverheadTrackerScreensaverCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D6E9D0E9A9D4E8E97E7C111 /* FlightFeedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFeedRequest.swift; sourceTree = "<group>"; };
-		75D1E3B8F6F44D8E8E5E9D31 /* FlightOrdererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightOrdererTests.swift; sourceTree = "<group>"; };
+		3F87E7C302A45921F12C785A /* ScreensaverState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensaverState.swift; sourceTree = "<group>"; };
+		456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OverheadTrackerScreensaverCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D6D8D8D70D44B0EB5A4C01F /* FlightOrderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightOrderer.swift; sourceTree = "<group>"; };
 		6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFeedRequestTests.swift; sourceTree = "<group>"; };
 		6B47E7F1E3D24E7F8B6D7D99 /* FlightPresentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightPresentationTests.swift; sourceTree = "<group>"; };
-		0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyFlightResponseTests.swift; sourceTree = "<group>"; };
-		1C5A0DA0D1E2445D9A5A2D3E /* RotationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationControllerTests.swift; sourceTree = "<group>"; };
+		75D1E3B8F6F44D8E8E5E9D31 /* FlightOrdererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightOrdererTests.swift; sourceTree = "<group>"; };
+		79EB7380DD6D271AEBA1D6E3 /* Flight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flight.swift; sourceTree = "<group>"; };
 		A8422DC284A3AB28330E11AC /* ScreensaverStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensaverStateTests.swift; sourceTree = "<group>"; };
 		C29B2150CF2DD185194D7782 /* ProxyFlightResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyFlightResponse.swift; sourceTree = "<group>"; };
 		F3D0F10B3BA2CFE96C82E782 /* FlightPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightPhase.swift; sourceTree = "<group>"; };
@@ -93,20 +96,23 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3E93698BBC0778877337D53E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A1CCD47AB138A68A742D8C65 /* OverheadTrackerScreensaverCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1AE4A9D5E3494C1AA1B1F033 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				1AE4A9D5E3494C1AA1B1F006 /* ScreenSaver.framework in Frameworks */,
 				1AE4A9D5E3494C1AA1B1F007 /* OverheadTrackerScreensaverCore.framework in Frameworks */,
+				2B794F1D4751F7797A3AB94E /* Ip2LocationIataIcao in Frameworks */,
+				10DA75009E18666A8CEA265E /* IataUtils in Frameworks */,
+				54E73EA2B2E5A75DFE05C7E2 /* AirlineLogos in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3E93698BBC0778877337D53E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1CCD47AB138A68A742D8C65 /* OverheadTrackerScreensaverCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,16 +133,6 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
-		33F287992BFC0F9A22531952 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */,
-				1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */,
-				456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		1AE4A9D5E3494C1AA1B1F021 /* Screensaver */ = {
 			isa = PBXGroup;
 			children = (
@@ -146,6 +142,16 @@
 				1AE4A9D5E3494C1AA1B1F014 /* FlightFeedClient.swift */,
 			);
 			path = Screensaver;
+			sourceTree = "<group>";
+		};
+		33F287992BFC0F9A22531952 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */,
+				1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */,
+				456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		3D90CE465FBF9CC25A4EB738 = {
@@ -176,6 +182,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1AE4A9D5E3494C1AA1B1F031 /* OverheadTrackerScreensaver */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1AE4A9D5E3494C1AA1B1F035 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaver" */;
+			buildPhases = (
+				1AE4A9D5E3494C1AA1B1F032 /* Sources */,
+				1AE4A9D5E3494C1AA1B1F033 /* Frameworks */,
+				1AE4A9D5E3494C1AA1B1F034 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1AE4A9D5E3494C1AA1B1F038 /* PBXTargetDependency */,
+			);
+			name = OverheadTrackerScreensaver;
+			packageProductDependencies = (
+				B8D14851B2E88D071A59567C /* Ip2LocationIataIcao */,
+				C4F157F36A4FFD42825DA2DF /* IataUtils */,
+				00D39C8FFA8D709BA3A6D825 /* AirlineLogos */,
+			);
+			productName = OverheadTrackerScreensaver;
+			productReference = 1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */;
+			productType = "com.apple.product-type.bundle";
+		};
 		22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5CB240CD1810F83E314AD3E7 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaverCore" */;
@@ -187,8 +216,6 @@
 			dependencies = (
 			);
 			name = OverheadTrackerScreensaverCore;
-			packageProductDependencies = (
-			);
 			productName = OverheadTrackerScreensaverCore;
 			productReference = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */;
 			productType = "com.apple.product-type.framework";
@@ -207,31 +234,9 @@
 				37ABCBE008FF4BCEB2E78D9D /* PBXTargetDependency */,
 			);
 			name = OverheadTrackerScreensaverCoreTests;
-			packageProductDependencies = (
-			);
 			productName = OverheadTrackerScreensaverCoreTests;
 			productReference = 456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		1AE4A9D5E3494C1AA1B1F031 /* OverheadTrackerScreensaver */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1AE4A9D5E3494C1AA1B1F035 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaver" */;
-			buildPhases = (
-				1AE4A9D5E3494C1AA1B1F032 /* Sources */,
-				1AE4A9D5E3494C1AA1B1F033 /* Frameworks */,
-				1AE4A9D5E3494C1AA1B1F034 /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1AE4A9D5E3494C1AA1B1F038 /* PBXTargetDependency */,
-			);
-			name = OverheadTrackerScreensaver;
-			packageProductDependencies = (
-			);
-			productName = OverheadTrackerScreensaver;
-			productReference = 1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */;
-			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
@@ -253,6 +258,11 @@
 			);
 			mainGroup = 3D90CE465FBF9CC25A4EB738;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				362CF8CCA34D3213FAA5934A /* XCRemoteSwiftPackageReference "ip2location-iata-icao" */,
+				F3EB01AC1DEC298C51AABA81 /* XCRemoteSwiftPackageReference "iata-utils" */,
+				96F474A1597C4CB4C9100DFF /* XCRemoteSwiftPackageReference "airline-logos" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 33F287992BFC0F9A22531952 /* Products */;
 			projectDirPath = "";
@@ -266,6 +276,17 @@
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1AE4A9D5E3494C1AA1B1F032 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AE4A9D5E3494C1AA1B1F001 /* OverheadTrackerScreensaverView.swift in Sources */,
+				1AE4A9D5E3494C1AA1B1F002 /* FlightCardView.swift in Sources */,
+				1AE4A9D5E3494C1AA1B1F003 /* StatusViews.swift in Sources */,
+				1AE4A9D5E3494C1AA1B1F004 /* FlightFeedClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C6A59CAE12346C2DA7C29525 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -294,26 +315,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1AE4A9D5E3494C1AA1B1F032 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1AE4A9D5E3494C1AA1B1F001 /* OverheadTrackerScreensaverView.swift in Sources */,
-				1AE4A9D5E3494C1AA1B1F002 /* FlightCardView.swift in Sources */,
-				1AE4A9D5E3494C1AA1B1F003 /* StatusViews.swift in Sources */,
-				1AE4A9D5E3494C1AA1B1F004 /* FlightFeedClient.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		37ABCBE008FF4BCEB2E78D9D /* PBXTargetDependency */ = {
+		1AE4A9D5E3494C1AA1B1F038 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */;
 			targetProxy = 1A9202FE46D1D401979976B0 /* PBXContainerItemProxy */;
 		};
-		1AE4A9D5E3494C1AA1B1F038 /* PBXTargetDependency */ = {
+		37ABCBE008FF4BCEB2E78D9D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */;
 			targetProxy = 1A9202FE46D1D401979976B0 /* PBXContainerItemProxy */;
@@ -339,6 +349,48 @@
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 			};
 			name = Debug;
+		};
+		1AE4A9D5E3494C1AA1B1F036 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPrincipalClass = OverheadTrackerScreensaverView;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				WRAPPER_EXTENSION = saver;
+			};
+			name = Debug;
+		};
+		1AE4A9D5E3494C1AA1B1F037 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPrincipalClass = OverheadTrackerScreensaverView;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				WRAPPER_EXTENSION = saver;
+			};
+			name = Release;
 		};
 		1CD83019155E267123EE5785 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -524,51 +576,18 @@
 			};
 			name = Debug;
 		};
-		1AE4A9D5E3494C1AA1B1F036 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSPrincipalClass = OverheadTrackerScreensaverView;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
-				WRAPPER_EXTENSION = saver;
-			};
-			name = Debug;
-		};
-		1AE4A9D5E3494C1AA1B1F037 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSPrincipalClass = OverheadTrackerScreensaverView;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.overheadtracker.screensaver;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
-				WRAPPER_EXTENSION = saver;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1AE4A9D5E3494C1AA1B1F035 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1AE4A9D5E3494C1AA1B1F036 /* Debug */,
+				1AE4A9D5E3494C1AA1B1F037 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		5CB240CD1810F83E314AD3E7 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaverCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -596,16 +615,52 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		1AE4A9D5E3494C1AA1B1F035 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaver" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1AE4A9D5E3494C1AA1B1F036 /* Debug */,
-				1AE4A9D5E3494C1AA1B1F037 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		362CF8CCA34D3213FAA5934A /* XCRemoteSwiftPackageReference "ip2location-iata-icao" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cyberkallen/ip2location-iata-icao.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		96F474A1597C4CB4C9100DFF /* XCRemoteSwiftPackageReference "airline-logos" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cyberkallen/airline-logos.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		F3EB01AC1DEC298C51AABA81 /* XCRemoteSwiftPackageReference "iata-utils" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cyberkallen/iata-utils.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		00D39C8FFA8D709BA3A6D825 /* AirlineLogos */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 96F474A1597C4CB4C9100DFF /* XCRemoteSwiftPackageReference "airline-logos" */;
+			productName = AirlineLogos;
+		};
+		B8D14851B2E88D071A59567C /* Ip2LocationIataIcao */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 362CF8CCA34D3213FAA5934A /* XCRemoteSwiftPackageReference "ip2location-iata-icao" */;
+			productName = Ip2LocationIataIcao;
+		};
+		C4F157F36A4FFD42825DA2DF /* IataUtils */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F3EB01AC1DEC298C51AABA81 /* XCRemoteSwiftPackageReference "iata-utils" */;
+			productName = IataUtils;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4E8522B40B923DB6EC67D9C6 /* Project object */;
 }
