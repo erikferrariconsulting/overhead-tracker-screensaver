@@ -4,13 +4,13 @@ import OverheadTrackerScreensaverCore
 
 struct MainView: View {
     @StateObject private var viewModel = ScreensaverViewModel()
+    @StateObject private var locationManager = LocationManager()
     @State private var showingSettings = false
     @State private var showingAlert = false
     @State private var alertMessage = ""
     @State private var alertTitle = ""
     @State private var currentFlights: [Flight] = []
-    
-    private let flightFeedClient = FlightFeedClient()
+    @State private var flightFeedClient = FlightFeedClient()
     private let rotationController = RotationController(flights: [])
     
     // Timers
@@ -84,8 +84,7 @@ struct MainView: View {
                 debounceSnapshot(for: newValue)
             }
             .onAppear {
-                setupInitialState()
-                debounceSnapshot(for: geometry.size)
+                setupInitialState(size: geometry.size)
             }
         }
         .frame(minWidth: 1024, minHeight: 768)
@@ -110,13 +109,26 @@ struct MainView: View {
     }
     
     // Initial setup
-    private func setupInitialState() {
-        viewModel.homeLatitude = flightFeedClient.homeLatitude
-        viewModel.homeLongitude = flightFeedClient.homeLongitude
-        viewModel.geofenceRadiusKm = Double(flightFeedClient.radiusNm) * 1.852
-        
-        // Initial flight request
-        requestFlights()
+    private func setupInitialState(size: CGSize) {
+        locationManager.requestLocation { coordinate in
+            let lat: Double
+            let lon: Double
+            if let coordinate = coordinate {
+                lat = coordinate.latitude
+                lon = coordinate.longitude
+            } else {
+                lat = self.flightFeedClient.homeLatitude
+                lon = self.flightFeedClient.homeLongitude
+            }
+            
+            self.viewModel.homeLatitude = lat
+            self.viewModel.homeLongitude = lon
+            self.viewModel.geofenceRadiusKm = Double(self.flightFeedClient.radiusNm) * 1.852
+            
+            // Trigger initial loading and snapshots
+            self.debounceSnapshot(for: size)
+            self.requestFlights()
+        }
     }
     
     // Map snapshot drawing
@@ -144,8 +156,8 @@ struct MainView: View {
     private func triggerMapSnapshot(size: CGSize) {
         let options = MKMapSnapshotter.Options()
         let center = CLLocationCoordinate2D(
-            latitude: flightFeedClient.homeLatitude,
-            longitude: flightFeedClient.homeLongitude
+            latitude: viewModel.homeLatitude, // Dynamic homeLatitude
+            longitude: viewModel.homeLongitude // Dynamic homeLongitude
         )
         let spanDelta = (Double(flightFeedClient.radiusNm) * 2.4) / 60.0
         options.region = MKCoordinateRegion(
@@ -254,10 +266,14 @@ struct MainView: View {
     // Fetch live flights
     private func requestFlights() {
         let isRefreshingLiveContent = isShowingLiveContent
+        let lat = viewModel.homeLatitude
+        let lon = viewModel.homeLongitude
+        let radiusNm = flightFeedClient.radiusNm
         
         Task {
             do {
-                let flights = try await flightFeedClient.fetchFlights()
+                let client = FlightFeedClient(homeLatitude: lat, homeLongitude: lon, radiusNm: radiusNm)
+                let flights = try await client.fetchFlights()
                 
                 await MainActor.run {
                     self.currentFlights = flights
