@@ -83,11 +83,12 @@ struct MainView: View {
             .onChange(of: geometry.size) { oldValue, newValue in
                 debounceSnapshot(for: newValue)
             }
+            .onAppear {
+                setupInitialState()
+                debounceSnapshot(for: geometry.size)
+            }
         }
         .frame(minWidth: 1024, minHeight: 768)
-        .onAppear {
-            setupInitialState()
-        }
         .onReceive(refreshTimer) { _ in
             requestFlights()
         }
