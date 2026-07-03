@@ -85,6 +85,22 @@ struct MainView: View {
             .onChange(of: geometry.size) { oldValue, newValue in
                 debounceSnapshot(for: newValue)
             }
+            .onChange(of: settings.locationMode) { oldValue, newValue in
+                if newValue == .gps {
+                    setupInitialState(size: geometry.size)
+                } else {
+                    reloadRadarAndMap(size: geometry.size)
+                }
+            }
+            .onChange(of: settings.latitude) { oldValue, newValue in
+                reloadRadarAndMap(size: geometry.size)
+            }
+            .onChange(of: settings.longitude) { oldValue, newValue in
+                reloadRadarAndMap(size: geometry.size)
+            }
+            .onChange(of: settings.radiusNm) { oldValue, newValue in
+                reloadRadarAndMap(size: geometry.size)
+            }
             .onAppear {
                 setupInitialState(size: geometry.size)
             }
@@ -120,25 +136,38 @@ struct MainView: View {
     
     // Initial setup
     private func setupInitialState(size: CGSize) {
-        locationManager.requestLocation { coordinate in
-            let lat: Double
-            let lon: Double
-            if let coordinate = coordinate {
-                lat = coordinate.latitude
-                lon = coordinate.longitude
-            } else {
-                lat = self.flightFeedClient.homeLatitude
-                lon = self.flightFeedClient.homeLongitude
+        if settings.locationMode == .gps {
+            locationManager.requestLocation { coordinate in
+                let lat: Double
+                let lon: Double
+                if let coordinate = coordinate {
+                    lat = coordinate.latitude
+                    lon = coordinate.longitude
+                } else {
+                    lat = self.settings.latitude
+                    lon = self.settings.longitude
+                }
+                
+                self.viewModel.homeLatitude = lat
+                self.viewModel.homeLongitude = lon
+                self.viewModel.geofenceRadiusKm = Double(self.settings.radiusNm) * 1.852
+                
+                // Trigger initial loading and snapshots
+                self.debounceSnapshot(for: size)
+                self.requestFlights()
             }
-            
-            self.viewModel.homeLatitude = lat
-            self.viewModel.homeLongitude = lon
-            self.viewModel.geofenceRadiusKm = Double(self.flightFeedClient.radiusNm) * 1.852
-            
-            // Trigger initial loading and snapshots
-            self.debounceSnapshot(for: size)
-            self.requestFlights()
+        } else {
+            reloadRadarAndMap(size: size)
         }
+    }
+    
+    private func reloadRadarAndMap(size: CGSize) {
+        viewModel.homeLatitude = settings.latitude
+        viewModel.homeLongitude = settings.longitude
+        viewModel.geofenceRadiusKm = Double(settings.radiusNm) * 1.852
+        
+        debounceSnapshot(for: size)
+        requestFlights()
     }
     
     // Map snapshot drawing
