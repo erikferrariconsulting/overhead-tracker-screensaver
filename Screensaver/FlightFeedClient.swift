@@ -14,6 +14,7 @@ public struct FlightFeedClient {
     //public static let defaultHomeLatitude = 39.431111
     //public static let defaultHomeLongitude = -77.397222
     public static let defaultRadiusNm = 20
+    public static let defaultBaseURL = URL(string: "https://overhead-tracker-flight-api.cyberkallen.workers.dev")!
 
     let session: URLSession
     let baseURL: URL
@@ -28,7 +29,7 @@ public struct FlightFeedClient {
             configuration.timeoutIntervalForResource = 12
             return URLSession(configuration: configuration)
         }(),
-        baseURL: URL = URL(string: "https://api.overheadtracker.com")!,
+        baseURL: URL = defaultBaseURL,
         homeLatitude: Double = defaultHomeLatitude,
         homeLongitude: Double = defaultHomeLongitude,
         radiusNm: Int = defaultRadiusNm
