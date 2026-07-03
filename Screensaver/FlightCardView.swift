@@ -480,14 +480,22 @@ private func formatCallsign(_ callsign: String) -> String {
     let trimmed = callsign.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
     let letters = trimmed.prefix(while: { $0.isLetter })
     let suffix = trimmed.dropFirst(letters.count)
-    if let iata = icaoToIataCallsignMap[String(letters)] {
+    let key = String(letters)
+    if let iata = AirlineDatabase.shared.iataCode(foricao: key) {
+        return "\(iata)\(suffix)"
+    }
+    if let iata = icaoToIataCallsignMap[key] {
         return "\(iata)\(suffix)"
     }
     return trimmed
 }
 
 private func lookupAirlineName(for prefix: String) -> String? {
-    switch prefix.uppercased() {
+    let code = prefix.uppercased()
+    if let name = AirlineDatabase.shared.airlineName(foricao: code) {
+        return name
+    }
+    switch code {
     // Australia & Pacific
     case "QLK": return "QantasLink"
     case "QFA": return "Qantas"
@@ -856,5 +864,119 @@ class AirportDatabase {
         }
         result.append(current)
         return result
+    }
+}
+
+public final class AirlineDatabase: @unchecked Sendable {
+    public static let shared = AirlineDatabase()
+
+    private let lock = NSLock()
+    private var icaoToName: [String: String] = [:]
+    private var icaoToIata: [String: String] = [:]
+    private var isLoaded = false
+
+    private init() {
+        loadCachedData()
+        Task {
+            await fetchRemoteData()
+        }
+    }
+
+    public func airlineName(foricao icao: String) -> String? {
+        let cleaned = icao.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        guard !cleaned.isEmpty else { return nil }
+        return lock.withLock { icaoToName[cleaned] }
+    }
+
+    public func iataCode(foricao icao: String) -> String? {
+        let cleaned = icao.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        guard !cleaned.isEmpty else { return nil }
+        return lock.withLock { icaoToIata[cleaned] }
+    }
+
+    private var cacheFileURL: URL? {
+        let fileManager = FileManager.default
+        guard let cachesDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first else { return nil }
+        let appCacheDir = cachesDir.appendingPathComponent("com.overheadtracker.screensaver", isDirectory: true)
+        try? fileManager.createDirectory(at: appCacheDir, withIntermediateDirectories: true, attributes: nil)
+        return appCacheDir.appendingPathComponent("airlines_cache_v1.json")
+    }
+
+    private func loadCachedData() {
+        guard let cacheURL = cacheFileURL,
+              let data = try? Data(contentsOf: cacheURL),
+              let dict = try? JSONDecoder().decode(CacheStructure.self, from: data) else {
+            return
+        }
+
+        lock.withLock {
+            self.icaoToName = dict.icaoToName
+            self.icaoToIata = dict.icaoToIata
+            self.isLoaded = true
+        }
+    }
+
+    private func fetchRemoteData() async {
+        guard let url = URL(string: "https://raw.githubusercontent.com/cyberkallen/iata-utils/master/generated/iata_airlines.csv") else { return }
+
+        var request = URLRequest(url: url)
+        request.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                return
+            }
+
+            guard let csvString = String(data: data, encoding: .utf8) else {
+                return
+            }
+
+            parseCSV(csvString)
+        } catch {
+            // Silence error
+        }
+    }
+
+    private func parseCSV(_ csv: String) {
+        var tempName: [String: String] = [:]
+        var tempIata: [String: String] = [:]
+
+        let lines = csv.components(separatedBy: .newlines)
+        for line in lines.dropFirst() {
+            let fields = line.components(separatedBy: "^")
+            guard fields.count >= 3 else { continue }
+
+            let iata = fields[0].trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+            let icao = fields[1].trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+            let name = fields[2].trimmingCharacters(in: .whitespacesAndNewlines)
+
+            guard !icao.isEmpty else { continue }
+
+            if !name.isEmpty {
+                tempName[icao] = name
+            }
+            if !iata.isEmpty {
+                tempIata[icao] = iata
+            }
+        }
+
+        lock.withLock {
+            self.icaoToName = tempName
+            self.icaoToIata = tempIata
+            self.isLoaded = true
+        }
+
+        if let cacheURL = cacheFileURL {
+            let cacheObj = CacheStructure(icaoToName: tempName, icaoToIata: tempIata)
+            if let data = try? JSONEncoder().encode(cacheObj) {
+                try? data.write(to: cacheURL)
+            }
+        }
+    }
+
+    private struct CacheStructure: Codable {
+        let icaoToName: [String: String]
+        let icaoToIata: [String: String]
     }
 }
