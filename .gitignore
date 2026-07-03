@@ -11,3 +11,4 @@ xcuserdata/
 # local debugger executables
 debug_runner
 debug_runner.dSYM/
+build/
