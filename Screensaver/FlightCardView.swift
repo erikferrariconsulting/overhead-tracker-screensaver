@@ -609,6 +609,7 @@ private struct WikimediaCommonsImageInfo: Decodable {
     var bestAttribution: String? {
         let artist = extmetadata?["Artist"]?.plainTextValue
         let license = extmetadata?["LicenseShortName"]?.plainTextValue ?? extmetadata?["UsageTerms"]?.plainTextValue
+        guard artist != nil || license != nil else { return nil }
         let title = extmetadata?["ObjectName"]?.plainTextValue
         var parts: [String] = []
 
