@@ -252,6 +252,7 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
         let settingsView = SettingsView {
             if let window = sheetWindow {
                 NSApp.endSheet(window)
+                window.orderOut(nil)
                 weakSelf?.reloadSettingsAndSnapshot()
             }
         }

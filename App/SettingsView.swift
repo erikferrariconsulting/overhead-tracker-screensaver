@@ -79,6 +79,7 @@ struct SettingsView: View {
                         Image(systemName: "xmark")
                             .foregroundColor(.white.opacity(0.6))
                             .padding(4)
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                 }
@@ -111,6 +112,7 @@ struct SettingsView: View {
                                     RoundedRectangle(cornerRadius: 6)
                                         .fill(settings.locationMode == .gps ? Color.blue.opacity(0.85) : Color.white.opacity(0.06))
                                 )
+                                .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
                             
@@ -131,6 +133,7 @@ struct SettingsView: View {
                                     RoundedRectangle(cornerRadius: 6)
                                         .fill(settings.locationMode == .custom ? Color.blue.opacity(0.85) : Color.white.opacity(0.06))
                                 )
+                                .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
                         }
