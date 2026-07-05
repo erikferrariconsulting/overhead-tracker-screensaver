@@ -4,7 +4,7 @@ import ScreenSaver
 @main
 class DebugAppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
-    var screensaverView: OverheadTrackerScreensaverView!
+    var screensaverView: AirAboveScreensaverView!
 
     static func main() {
         let app = NSApplication.shared
@@ -22,10 +22,10 @@ class DebugAppDelegate: NSObject, NSApplicationDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "Overhead Tracker Screensaver Debugger"
+        window.title = "AirAbove Screensaver Debugger"
         window.center()
         
-        screensaverView = OverheadTrackerScreensaverView(frame: window.contentView!.bounds, isPreview: false)
+        screensaverView = AirAboveScreensaverView(frame: window.contentView!.bounds, isPreview: false)
         screensaverView.autoresizingMask = [.width, .height]
         
         window.contentView?.addSubview(screensaverView)

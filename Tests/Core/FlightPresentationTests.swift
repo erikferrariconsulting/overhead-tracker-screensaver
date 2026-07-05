@@ -1,5 +1,5 @@
 import XCTest
-@testable import OverheadTrackerScreensaverCore
+@testable import AirAboveScreensaverCore
 
 final class FlightPresentationTests: XCTestCase {
     func testIsInsideGeofenceTreatsBoundaryAsInside() {

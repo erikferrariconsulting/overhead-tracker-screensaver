@@ -2,7 +2,7 @@ import AppKit
 import CryptoKit
 import SwiftUI
 import MapKit
-import OverheadTrackerScreensaverCore
+import AirAboveScreensaverCore
 import Ip2LocationIataIcao
 import IataUtils
 import AirlineLogos
@@ -505,7 +505,7 @@ private final class FlightImageCache {
         let base = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
             ?? FileManager.default.temporaryDirectory
         return base
-            .appendingPathComponent("com.overheadtracker.screensaver", isDirectory: true)
+            .appendingPathComponent("com.airabove.screensaver", isDirectory: true)
             .appendingPathComponent("flight-artwork-cache-\(diskCacheVersion)", isDirectory: true)
     }
 
@@ -591,7 +591,7 @@ private enum FlightArtworkFetcher {
         guard let url = commonsSearchURL(for: searchTerm) else { return nil }
 
         var request = URLRequest(url: url)
-        request.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
+        request.setValue("AirAboveScreensaver/1.0 (+https://airabove.com)", forHTTPHeaderField: "User-Agent")
 
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
@@ -610,7 +610,7 @@ private enum FlightArtworkFetcher {
             guard let attribution, !attribution.isEmpty else { return nil }
 
             var photoRequest = URLRequest(url: photoURL)
-            photoRequest.setValue("OverheadTrackerScreensaver/1.0 (+https://overheadtracker.com)", forHTTPHeaderField: "User-Agent")
+            photoRequest.setValue("AirAboveScreensaver/1.0 (+https://airabove.com)", forHTTPHeaderField: "User-Agent")
 
             let (photoData, photoResponse) = try await URLSession.shared.data(for: photoRequest)
             if let httpPhotoResponse = photoResponse as? HTTPURLResponse, !(200...299).contains(httpPhotoResponse.statusCode) {
@@ -1135,7 +1135,7 @@ class AirportDatabase {
     private var cacheFileURL: URL? {
         let fileManager = FileManager.default
         guard let cachesDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first else { return nil }
-        let appCacheDir = cachesDir.appendingPathComponent("com.overheadtracker.screensaver", isDirectory: true)
+        let appCacheDir = cachesDir.appendingPathComponent("com.airabove.screensaver", isDirectory: true)
         try? fileManager.createDirectory(at: appCacheDir, withIntermediateDirectories: true, attributes: nil)
         return appCacheDir.appendingPathComponent("airports_cache_v2.json")
     }
@@ -1281,7 +1281,7 @@ public final class AirlineDatabase: @unchecked Sendable {
     private var cacheFileURL: URL? {
         let fileManager = FileManager.default
         guard let cachesDir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first else { return nil }
-        let appCacheDir = cachesDir.appendingPathComponent("com.overheadtracker.screensaver", isDirectory: true)
+        let appCacheDir = cachesDir.appendingPathComponent("com.airabove.screensaver", isDirectory: true)
         try? fileManager.createDirectory(at: appCacheDir, withIntermediateDirectories: true, attributes: nil)
         return appCacheDir.appendingPathComponent("airlines_cache_v1.json")
     }

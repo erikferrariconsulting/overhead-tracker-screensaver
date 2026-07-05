@@ -1,5 +1,5 @@
 import XCTest
-@testable import OverheadTrackerScreensaverCore
+@testable import AirAboveScreensaverCore
 
 @MainActor
 final class RotationControllerTests: XCTestCase {

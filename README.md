@@ -1,8 +1,8 @@
-# Overhead Tracker macOS Screensaver
+# AirAbove macOS Screensaver
 
 Real-time aircraft tracking screensaver for macOS. This screensaver answers: *"What planes are flying directly above me right now?"* by plotting live ADS-B aircraft positions, trajectories, and local airports onto a beautiful, dark-themed MapKit canvas.
 
-It is part of the [Overhead Tracker](https://overheadtracker.com) system.
+It is part of the [AirAbove](https://airabove.com) system.
 
 ---
 
@@ -29,16 +29,16 @@ You can run and preview the screensaver directly in a standard desktop window wi
 
 First, ensure the core framework has been built by Xcode:
 ```bash
-xcodebuild build -scheme OverheadTrackerScreensaverCore
+xcodebuild build -scheme AirAboveCore
 ```
 
 Then, compile the debug runner linking it against the framework with the correct runtime search path (`rpath`):
 ```bash
 swiftc -parse-as-library \
-  -I ~/Library/Developer/Xcode/DerivedData/OverheadTrackerScreensaver-*/Build/Products/Debug \
-  -F ~/Library/Developer/Xcode/DerivedData/OverheadTrackerScreensaver-*/Build/Products/Debug \
-  -framework OverheadTrackerScreensaverCore \
-  -Xlinker -rpath -Xlinker ~/Library/Developer/Xcode/DerivedData/OverheadTrackerScreensaver-*/Build/Products/Debug \
+  -I ~/Library/Developer/Xcode/DerivedData/AirAbove-*/Build/Products/Debug \
+  -F ~/Library/Developer/Xcode/DerivedData/AirAbove-*/Build/Products/Debug \
+  -framework AirAboveScreensaverCore \
+  -Xlinker -rpath -Xlinker ~/Library/Developer/Xcode/DerivedData/AirAbove-*/Build/Products/Debug \
   debug_runner.swift Screensaver/*.swift \
   -o debug_runner
 ```
@@ -51,18 +51,18 @@ Run the compiled executable:
 ### Running Unit Tests
 To run the project's unit tests:
 ```bash
-xcodebuild test -scheme OverheadTrackerScreensaverCore -destination 'platform=macOS'
+xcodebuild test -scheme AirAboveCore -destination 'platform=macOS'
 ```
 
 ### Building & Installing
-1. Open `OverheadTrackerScreensaver.xcodeproj` in Xcode.
-2. Select the `OverheadTrackerScreensaver` scheme and configure the build destination to **My Mac**.
+1. Open `AirAbove.xcodeproj` in Xcode.
+2. Select the `AirAbove` scheme and configure the build destination to **My Mac**.
 3. Build the project (`Product` -> `Build`, or `Cmd + B`).
-4. Xcode will generate the compiled bundle `OverheadTrackerScreensaver.saver` inside the build products folder.
+4. Xcode will generate the compiled bundle `AirAboveScreensaver.saver` inside the build products folder.
 5. Copy the `.saver` bundle to your User Screen Savers directory:
    ```bash
-   rm -rf "$HOME/Library/Screen Savers/OverheadTrackerScreensaver.saver"
-   cp -R ~/Library/Developer/Xcode/DerivedData/OverheadTrackerScreensaver-*/Build/Products/Release/OverheadTrackerScreensaver.saver "$HOME/Library/Screen Savers/"
+   rm -rf "$HOME/Library/Screen Savers/AirAboveScreensaver.saver"
+   cp -R ~/Library/Developer/Xcode/DerivedData/AirAbove-*/Build/Products/Release/AirAboveScreensaver.saver "$HOME/Library/Screen Savers/"
    ```
 6. Force-restart the screensaver host engine to clear cached versions:
    ```bash

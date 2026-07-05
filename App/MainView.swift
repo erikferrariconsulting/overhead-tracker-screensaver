@@ -1,6 +1,6 @@
 import SwiftUI
 import MapKit
-import OverheadTrackerScreensaverCore
+import AirAboveScreensaverCore
 
 struct MainView: View {
     @StateObject private var viewModel = ScreensaverViewModel()
@@ -521,7 +521,7 @@ struct MainView: View {
                         .background(Color.orange)
                         .clipShape(Circle())
                     
-                    Text("Double-click `OverheadTrackerScreensaver.saver` inside your Downloads folder to install it in macOS System Settings.")
+                    Text("Double-click `AirAboveScreensaver.saver` inside your Downloads folder to install it in macOS System Settings.")
                         .font(.system(size: 12))
                         .foregroundColor(.white.opacity(0.85))
                 }

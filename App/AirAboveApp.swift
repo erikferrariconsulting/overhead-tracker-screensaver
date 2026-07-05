@@ -1,8 +1,8 @@
 import SwiftUI
-import OverheadTrackerScreensaverCore
+import AirAboveScreensaverCore
 
 @main
-struct OverheadTrackerApp: App {
+struct AirAboveApp: App {
     var body: some Scene {
         WindowGroup {
             MainView()

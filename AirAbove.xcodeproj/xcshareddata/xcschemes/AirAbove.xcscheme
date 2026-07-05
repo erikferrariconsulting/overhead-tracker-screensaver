@@ -14,10 +14,24 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1AE4A9D5E3494C1AA1B1F031"
+               BuildableName = "AirAboveScreensaver.saver"
+               BlueprintName = "AirAboveScreensaver"
+               ReferencedContainer = "container:AirAbove.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "22BA2CC6D25EF10F4705469F"
-               BuildableName = "OverheadTrackerScreensaverCore.framework"
-               BlueprintName = "OverheadTrackerScreensaverCore"
-               ReferencedContainer = "container:OverheadTrackerScreensaver.xcodeproj">
+               BuildableName = "AirAboveScreensaverCore.framework"
+               BlueprintName = "AirAboveScreensaverCore"
+               ReferencedContainer = "container:AirAbove.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "436C2F50266D1966C3511CF5"
-               BuildableName = "OverheadTrackerScreensaverCoreTests.xctest"
-               BlueprintName = "OverheadTrackerScreensaverCoreTests"
-               ReferencedContainer = "container:OverheadTrackerScreensaver.xcodeproj">
+               BuildableName = "AirAboveScreensaverCoreTests.xctest"
+               BlueprintName = "AirAboveScreensaverCoreTests"
+               ReferencedContainer = "container:AirAbove.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +59,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "22BA2CC6D25EF10F4705469F"
-            BuildableName = "OverheadTrackerScreensaverCore.framework"
-            BlueprintName = "OverheadTrackerScreensaverCore"
-            ReferencedContainer = "container:OverheadTrackerScreensaver.xcodeproj">
+            BuildableName = "AirAboveScreensaverCore.framework"
+            BlueprintName = "AirAboveScreensaverCore"
+            ReferencedContainer = "container:AirAbove.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -57,9 +71,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "436C2F50266D1966C3511CF5"
-               BuildableName = "OverheadTrackerScreensaverCoreTests.xctest"
-               BlueprintName = "OverheadTrackerScreensaverCoreTests"
-               ReferencedContainer = "container:OverheadTrackerScreensaver.xcodeproj">
+               BuildableName = "AirAboveScreensaverCoreTests.xctest"
+               BlueprintName = "AirAboveScreensaverCoreTests"
+               ReferencedContainer = "container:AirAbove.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -78,9 +92,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "22BA2CC6D25EF10F4705469F"
-            BuildableName = "OverheadTrackerScreensaverCore.framework"
-            BlueprintName = "OverheadTrackerScreensaverCore"
-            ReferencedContainer = "container:OverheadTrackerScreensaver.xcodeproj">
+            BuildableName = "AirAboveScreensaverCore.framework"
+            BlueprintName = "AirAboveScreensaverCore"
+            ReferencedContainer = "container:AirAbove.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </LaunchAction>
@@ -94,9 +108,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "22BA2CC6D25EF10F4705469F"
-            BuildableName = "OverheadTrackerScreensaverCore.framework"
-            BlueprintName = "OverheadTrackerScreensaverCore"
-            ReferencedContainer = "container:OverheadTrackerScreensaver.xcodeproj">
+            BuildableName = "AirAboveScreensaverCore.framework"
+            BlueprintName = "AirAboveScreensaverCore"
+            ReferencedContainer = "container:AirAbove.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
