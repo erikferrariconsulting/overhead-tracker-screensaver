@@ -255,6 +255,7 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
                 weakSelf?.reloadSettingsAndSnapshot()
             }
         }
+        .frame(width: 320, height: 420)
         
         let hostingController = NSHostingController(rootView: settingsView)
         

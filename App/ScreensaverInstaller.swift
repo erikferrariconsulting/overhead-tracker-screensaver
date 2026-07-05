@@ -45,8 +45,8 @@ public struct ScreensaverInstaller {
             throw InstallError.copyFailed(error)
         }
         
-        // 4.5 Strip quarantine extended attributes recursively to bypass Gatekeeper warning
-        stripQuarantineRecursively(at: destinationURL)
+        // 4.5 Strip all extended attributes recursively to bypass Gatekeeper warning for local sandbox write
+        stripAllAttributesRecursively(at: destinationURL)
         
         // 5. Open it to launch macOS system installation
         if !NSWorkspace.shared.open(destinationURL) {
@@ -54,16 +54,36 @@ public struct ScreensaverInstaller {
         }
     }
 
-    private static func stripQuarantineRecursively(at url: URL) {
-        removexattr(url.path, "com.apple.quarantine", 0)
+    private static func stripAllAttributesRecursively(at url: URL) {
+        stripAllAttributes(at: url.path)
         
         let fileManager = FileManager.default
         var isDir: ObjCBool = false
         if fileManager.fileExists(atPath: url.path, isDirectory: &isDir), isDir.boolValue {
             if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: nil) {
                 while let fileURL = enumerator.nextObject() as? URL {
-                    removexattr(fileURL.path, "com.apple.quarantine", 0)
+                    stripAllAttributes(at: fileURL.path)
                 }
+            }
+        }
+    }
+
+    private static func stripAllAttributes(at path: String) {
+        let listSize = listxattr(path, nil, 0, 0)
+        guard listSize > 0 else { return }
+        
+        var buffer = [CChar](repeating: 0, count: listSize)
+        let bytesRead = listxattr(path, &buffer, listSize, 0)
+        guard bytesRead > 0 else { return }
+        
+        let data = Data(bytes: buffer, count: bytesRead)
+        let attributeNames = data.split(separator: 0).compactMap { subdata -> String? in
+            String(data: subdata, encoding: .utf8)
+        }
+        
+        for attrName in attributeNames {
+            if !attrName.isEmpty {
+                removexattr(path, attrName, 0)
             }
         }
     }
