@@ -521,7 +521,7 @@ struct MainView: View {
                         .background(Color.orange)
                         .clipShape(Circle())
                     
-                    Text("Double-click `AirAboveScreensaver.saver` inside your Downloads folder to install it in macOS System Settings.")
+                    Text("Double-click `AirAbove.saver` inside your Downloads folder to install it. Choose **\"Install for all users on this computer\"** when prompted to ensure the icon displays correctly in System Settings.")
                         .font(.system(size: 12))
                         .foregroundColor(.white.opacity(0.85))
                 }

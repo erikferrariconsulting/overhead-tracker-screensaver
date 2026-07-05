@@ -43,6 +43,8 @@
 		A5E2D8F3C8FD4F49A4C0C299 /* FlightPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D99 /* FlightPresentationTests.swift */; };
 		A5E2D8F3C8FD4F49A4C0C2B2 /* FlightFeedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */; };
 		CE4BE939AC0E1902CCB39BC1 /* thumbnail@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 97E901428275DCF118613A02 /* thumbnail@2x.png */; };
+		A1B2C3D4E5F6A1B2C3D4E003 /* thumbnail.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E001 /* thumbnail.tiff */; };
+		A1B2C3D4E5F6A1B2C3D4E004 /* thumbnail@2x.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A1B2C3D4E002 /* thumbnail@2x.tiff */; };
 		D3A66B9F61151F7A74E6AD66 /* AirAbove.saver in Resources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F017 /* AirAbove.saver */; };
 		D7B44E7D3089005167512047 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88BF4944B104C78F19FD00A /* Cocoa.framework */; };
 		E6B6C7B8F8E42D8E45932A7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE64C899DE7C05D707B1BC4 /* MainView.swift */; };
@@ -144,6 +146,8 @@
 		BC16FAA4A8E7CE80E108C98C /* AirAbove.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirAbove.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C29B2150CF2DD185194D7782 /* ProxyFlightResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyFlightResponse.swift; sourceTree = "<group>"; };
 		CF8531E909DAE97E127C2C5D /* thumbnail.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = thumbnail.png; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E001 /* thumbnail.tiff */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.tiff; path = thumbnail.tiff; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A1B2C3D4E002 /* thumbnail@2x.tiff */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.tiff; path = "thumbnail@2x.tiff"; sourceTree = "<group>"; };
 		D88BF4944B104C78F19FD00A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		F3D0F10B3BA2CFE96C82E782 /* FlightPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightPhase.swift; sourceTree = "<group>"; };
 		FA1EA55D7AA294ADBE1C1A1B /* FlightPhaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightPhaseTests.swift; sourceTree = "<group>"; };
@@ -205,6 +209,8 @@
 				1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */,
 				1AE4A9D5E3494C1AA1B1F014 /* FlightFeedClient.swift */,
 				CF8531E909DAE97E127C2C5D /* thumbnail.png */,
+				A1B2C3D4E5F6A1B2C3D4E001 /* thumbnail.tiff */,
+				A1B2C3D4E5F6A1B2C3D4E002 /* thumbnail@2x.tiff */,
 				97E901428275DCF118613A02 /* thumbnail@2x.png */,
 			);
 			path = Screensaver;
@@ -417,6 +423,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F08A99D2BA832EA58221F8FF /* thumbnail.png in Resources */,
+				A1B2C3D4E5F6A1B2C3D4E003 /* thumbnail.tiff in Resources */,
+				A1B2C3D4E5F6A1B2C3D4E004 /* thumbnail@2x.tiff in Resources */,
 				CE4BE939AC0E1902CCB39BC1 /* thumbnail@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -516,7 +524,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				DEVELOPMENT_TEAM = KMRQ76B22J;
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -549,7 +557,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.saver;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.screensaver;
 				PRODUCT_MODULE_NAME = AirAboveScreensaver;
 				PRODUCT_NAME = AirAbove;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -576,7 +584,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.saver;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.screensaver;
 				PRODUCT_MODULE_NAME = AirAboveScreensaver;
 				PRODUCT_NAME = AirAbove;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -592,7 +600,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = KMRQ76B22J;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -677,7 +685,7 @@
 				CODE_SIGN_ENTITLEMENTS = App/AirAbove.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				DEVELOPMENT_TEAM = KMRQ76B22J;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = AirAbove;
@@ -704,7 +712,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				DEVELOPMENT_TEAM = KMRQ76B22J;
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -729,7 +737,7 @@
 				CODE_SIGN_ENTITLEMENTS = App/AirAbove.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				DEVELOPMENT_TEAM = KMRQ76B22J;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = AirAbove;
@@ -754,7 +762,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = KMRQ76B22J;
 				DYLIB_COMPATIBILITY_VERSION = 1;
