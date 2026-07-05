@@ -40,6 +40,7 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
     private var loadingWatchdog: DispatchWorkItem?
     private var requestSequence = 0
     private var currentFlights: [Flight] = []
+    private var configSheetWindow: NSWindow?
     private let previewMode: Bool
 
     public override init?(frame: NSRect, isPreview: Bool) {
@@ -247,12 +248,12 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
     
     public override var configureSheet: NSWindow? {
         weak var weakSelf = self
-        var sheetWindow: NSWindow? = nil
         
         let settingsView = SettingsView {
-            if let window = sheetWindow {
+            if let window = weakSelf?.configSheetWindow {
                 NSApp.endSheet(window)
                 window.orderOut(nil)
+                weakSelf?.configSheetWindow = nil
                 weakSelf?.reloadSettingsAndSnapshot()
             }
         }
@@ -267,7 +268,7 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
             defer: false
         )
         window.contentViewController = hostingController
-        sheetWindow = window
+        self.configSheetWindow = window
         
         return window
     }
