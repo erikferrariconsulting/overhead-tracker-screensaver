@@ -389,8 +389,7 @@ struct MainView: View {
         routeHydrationTask?.cancel()
         let requestID = requestSequence
 
-        routeHydrationTask = Task { [weak self] in
-            guard let self else { return }
+        routeHydrationTask = Task {
             let hydrated = await Self.routeHydrationController.hydrate(flights: flights, focusIndex: focusIndex)
             guard !Task.isCancelled else { return }
 
