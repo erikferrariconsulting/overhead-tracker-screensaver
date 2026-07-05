@@ -21,7 +21,7 @@ public struct ScreensaverInstaller {
 
     public static func install() throws {
         // 1. Locate the embedded .saver bundle
-        guard let sourceURL = Bundle.main.url(forResource: "AirAboveScreensaver", withExtension: "saver") else {
+        guard let sourceURL = Bundle.main.url(forResource: "AirAbove", withExtension: "saver") else {
             throw InstallError.bundleNotFound
         }
         
@@ -31,7 +31,7 @@ public struct ScreensaverInstaller {
             throw InstallError.copyFailed(NSError(domain: "ScreensaverInstaller", code: 1, userInfo: [NSLocalizedDescriptionKey: "Downloads directory not available."]))
         }
         
-        let destinationURL = downloadsURL.appendingPathComponent("AirAboveScreensaver.saver")
+        let destinationURL = downloadsURL.appendingPathComponent("AirAbove.saver")
         
         // 3. Remove existing file in Downloads if present
         if fileManager.fileExists(atPath: destinationURL.path) {

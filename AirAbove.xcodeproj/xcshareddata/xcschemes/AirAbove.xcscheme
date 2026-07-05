@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1AE4A9D5E3494C1AA1B1F031"
-               BuildableName = "AirAboveScreensaver.saver"
+               BuildableName = "AirAbove.saver"
                BlueprintName = "AirAboveScreensaver"
                ReferencedContainer = "container:AirAbove.xcodeproj">
             </BuildableReference>
