@@ -16,16 +16,10 @@ public enum RouteLookupRequest {
             throw URLError(.badURL)
         }
 
-        let normalizedCallsign = normalizeCallsign(callsign)
-        if components.path.hasSuffix("/callsign") {
-            components.path = components.path.appending("/\(normalizedCallsign)")
-            components.queryItems = nil
-        } else {
-            components.path = components.path.appending("/v1/route")
-            components.queryItems = [
-                URLQueryItem(name: "callsign", value: normalizedCallsign)
-            ]
-        }
+        components.path = components.path.appending("/v1/route")
+        components.queryItems = [
+            URLQueryItem(name: "callsign", value: normalizeCallsign(callsign))
+        ]
 
         guard let url = components.url else {
             throw URLError(.badURL)
@@ -67,20 +61,6 @@ public struct RouteLookupResponse: Decodable, Equatable, Sendable {
         self.unknown = unknown
     }
 
-    private struct AnyCodingKey: CodingKey {
-        var stringValue: String
-        var intValue: Int?
-
-        init?(stringValue: String) {
-            self.stringValue = stringValue
-        }
-
-        init?(intValue: Int) {
-            self.stringValue = String(intValue)
-            self.intValue = intValue
-        }
-    }
-
     private enum CodingKeys: String, CodingKey {
         case callsign
         case dep
@@ -91,18 +71,6 @@ public struct RouteLookupResponse: Decodable, Equatable, Sendable {
     }
 
     public init(from decoder: Decoder) throws {
-        let topLevel = try decoder.container(keyedBy: AnyCodingKey.self)
-        if topLevel.contains(AnyCodingKey(stringValue: "response")!) || topLevel.contains(AnyCodingKey(stringValue: "data")!) {
-            let route = try Self.decodeAdsbdbRoute(from: decoder)
-            callsign = route.callsign
-            dep = route.dep
-            arr = route.arr
-            originCity = route.originCity
-            destinationCity = route.destinationCity
-            unknown = route.unknown
-            return
-        }
-
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let rawCallsign = try container.decodeIfPresent(String.self, forKey: .callsign) ?? "UNKNOWN"
         let rawDep = try container.decodeIfPresent(String.self, forKey: .dep)
@@ -123,83 +91,6 @@ public struct RouteLookupResponse: Decodable, Equatable, Sendable {
         guard let result, !result.isEmpty else { return nil }
         return result
     }
-
-    private static func decodeAdsbdbRoute(from decoder: Decoder) throws -> RouteLookupResponse {
-        struct AdsbdbEnvelope: Decodable {
-            struct Payload: Decodable {
-                let flightroute: Route?
-                let flightRoute: Route?
-                let route: Route?
-            }
-
-            struct Route: Decodable {
-                let callsign: String?
-                let callsign_icao: String?
-                let callsign_iata: String?
-                let origin: Airport?
-                let destination: Airport?
-            }
-
-            struct Airport: Decodable {
-                let iata_code: String?
-                let icao_code: String?
-                let municipality: String?
-                let name: String?
-            }
-
-            let response: Payload?
-            let data: Payload?
-            let flightroute: Route?
-            let flightRoute: Route?
-            let route: Route?
-        }
-
-        let envelope = try AdsbdbEnvelope(from: decoder)
-        let route = envelope.response?.flightroute
-            ?? envelope.response?.flightRoute
-            ?? envelope.response?.route
-            ?? envelope.data?.flightroute
-            ?? envelope.data?.flightRoute
-            ?? envelope.data?.route
-            ?? envelope.flightroute
-            ?? envelope.flightRoute
-            ?? envelope.route
-
-        guard let route else {
-            throw URLError(.cannotParseResponse)
-        }
-
-        func airportLabel(_ airport: AdsbdbEnvelope.Airport?) -> String? {
-            guard let airport else { return nil }
-            return airport.municipality?.trimmingCharacters(in: .whitespacesAndNewlines)
-                ?? airport.iata_code?.trimmingCharacters(in: .whitespacesAndNewlines)
-                ?? airport.icao_code?.trimmingCharacters(in: .whitespacesAndNewlines)
-                ?? airport.name?.trimmingCharacters(in: .whitespacesAndNewlines)
-        }
-
-        func airportCode(_ airport: AdsbdbEnvelope.Airport?) -> String? {
-            guard let airport else { return nil }
-            return airport.icao_code?.trimmingCharacters(in: .whitespacesAndNewlines)
-                ?? airport.iata_code?.trimmingCharacters(in: .whitespacesAndNewlines)
-                ?? airport.municipality?.trimmingCharacters(in: .whitespacesAndNewlines)
-                ?? airport.name?.trimmingCharacters(in: .whitespacesAndNewlines)
-        }
-
-        let callsign = Self.trimmed(route.callsign ?? route.callsign_icao ?? route.callsign_iata) ?? "UNKNOWN"
-        let dep = Self.trimmed(airportCode(route.origin))
-        let arr = Self.trimmed(airportCode(route.destination))
-        let originCity = Self.trimmed(airportLabel(route.origin)) ?? dep ?? "Unknown"
-        let destinationCity = Self.trimmed(airportLabel(route.destination)) ?? arr ?? "Unknown"
-
-        return RouteLookupResponse(
-            callsign: callsign,
-            dep: dep,
-            arr: arr,
-            originCity: originCity,
-            destinationCity: destinationCity,
-            unknown: false
-        )
-    }
 }
 
 public protocol RouteLookupFetching: Sendable {
@@ -207,7 +98,7 @@ public protocol RouteLookupFetching: Sendable {
 }
 
 public struct RouteLookupClient: RouteLookupFetching, Sendable {
-    public static let defaultBaseURL = URL(string: "https://api.adsbdb.com/v0/callsign")!
+    public static let defaultBaseURL = URL(string: "https://overhead-tracker-flight-api.cyberkallen.workers.dev")!
 
     private let session: URLSession
     private let baseURL: URL
@@ -232,7 +123,7 @@ public struct RouteLookupClient: RouteLookupFetching, Sendable {
             throw URLError(.badServerResponse)
         }
         guard (200...299).contains(httpResponse.statusCode) else {
-            if httpResponse.statusCode == 404 || httpResponse.statusCode == 429 {
+            if httpResponse.statusCode == 404 {
                 return nil
             }
             throw URLError(.badServerResponse)

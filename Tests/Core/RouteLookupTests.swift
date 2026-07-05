@@ -5,11 +5,11 @@ import XCTest
 final class RouteLookupTests: XCTestCase {
     func test_builds_route_url() throws {
         let url = try RouteLookupRequest.routeURL(
-            baseURL: URL(string: "https://api.adsbdb.com/v0/callsign")!,
+            baseURL: URL(string: "https://example.com")!,
             callsign: " qfa 1 "
         )
 
-        XCTAssertEqual(url.absoluteString, "https://api.adsbdb.com/v0/callsign/QFA1")
+        XCTAssertEqual(url.absoluteString, "https://example.com/v1/route?callsign=QFA1")
     }
 
     func test_decodes_known_route() throws {
@@ -30,39 +30,6 @@ final class RouteLookupTests: XCTestCase {
         XCTAssertEqual(decoded.dep, "YSSY")
         XCTAssertEqual(decoded.arr, "YMML")
         XCTAssertEqual(decoded.originCity, "Sydney")
-        XCTAssertEqual(decoded.destinationCity, "Melbourne")
-        XCTAssertFalse(decoded.unknown)
-    }
-
-    func test_decodes_adsbdb_route() throws {
-        let data = """
-        {
-          "response": {
-            "flightroute": {
-              "callsign": "QF772",
-              "origin": {
-                "icao_code": "YPPH",
-                "iata_code": "PER",
-                "municipality": "Perth",
-                "name": "Perth International Airport"
-              },
-              "destination": {
-                "icao_code": "YMML",
-                "iata_code": "MEL",
-                "municipality": "Melbourne",
-                "name": "Melbourne International Airport"
-              }
-            }
-          }
-        }
-        """.data(using: .utf8)!
-
-        let decoded = try JSONDecoder().decode(RouteLookupResponse.self, from: data)
-
-        XCTAssertEqual(decoded.callsign, "QF772")
-        XCTAssertEqual(decoded.dep, "YPPH")
-        XCTAssertEqual(decoded.arr, "YMML")
-        XCTAssertEqual(decoded.originCity, "Perth")
         XCTAssertEqual(decoded.destinationCity, "Melbourne")
         XCTAssertFalse(decoded.unknown)
     }
