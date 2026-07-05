@@ -45,16 +45,26 @@ public struct ScreensaverInstaller {
             throw InstallError.copyFailed(error)
         }
         
-        // 4.5 Strip quarantine extended attributes to bypass Gatekeeper warning for local build
-        let task = Process()
-        task.launchPath = "/usr/bin/xattr"
-        task.arguments = ["-cr", destinationURL.path]
-        try? task.run()
-        task.waitUntilExit()
+        // 4.5 Strip quarantine extended attributes recursively to bypass Gatekeeper warning
+        stripQuarantineRecursively(at: destinationURL)
         
         // 5. Open it to launch macOS system installation
         if !NSWorkspace.shared.open(destinationURL) {
             throw InstallError.openFailed
+        }
+    }
+
+    private static func stripQuarantineRecursively(at url: URL) {
+        removexattr(url.path, "com.apple.quarantine", 0)
+        
+        let fileManager = FileManager.default
+        var isDir: ObjCBool = false
+        if fileManager.fileExists(atPath: url.path, isDirectory: &isDir), isDir.boolValue {
+            if let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: nil) {
+                while let fileURL = enumerator.nextObject() as? URL {
+                    removexattr(fileURL.path, "com.apple.quarantine", 0)
+                }
+            }
         }
     }
 }
