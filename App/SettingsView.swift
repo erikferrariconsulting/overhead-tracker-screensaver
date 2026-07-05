@@ -93,13 +93,47 @@ struct SettingsView: View {
                             .foregroundColor(.orange.opacity(0.8))
                             .tracking(1.5)
                         
-                        Picker("Location Mode", selection: $settings.locationMode) {
-                            Text("Automatic (GPS)").tag(LocationMode.gps)
-                            Text("Custom Coordinates").tag(LocationMode.custom)
+                        HStack(spacing: 8) {
+                            Button(action: {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                    settings.locationMode = .gps
+                                }
+                            }) {
+                                HStack(spacing: 6) {
+                                    Image(systemName: settings.locationMode == .gps ? "location.fill" : "location")
+                                    Text("Automatic (GPS)")
+                                }
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(settings.locationMode == .gps ? .white : .white.opacity(0.5))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(settings.locationMode == .gps ? Color.blue.opacity(0.85) : Color.white.opacity(0.06))
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            
+                            Button(action: {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                    settings.locationMode = .custom
+                                }
+                            }) {
+                                HStack(spacing: 6) {
+                                    Image(systemName: settings.locationMode == .custom ? "mappin.circle.fill" : "mappin.circle")
+                                    Text("Custom Coords")
+                                }
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(settings.locationMode == .custom ? .white : .white.opacity(0.5))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(settings.locationMode == .custom ? Color.blue.opacity(0.85) : Color.white.opacity(0.06))
+                                )
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .pickerStyle(.radioGroup)
-                        .horizontalRadioGroupLayout()
-                        .labelsHidden()
                         
                         if settings.locationMode == .custom {
                             VStack(alignment: .leading, spacing: 10) {
@@ -254,8 +288,9 @@ struct SettingsView: View {
             }
         }
         .padding(20)
-        .frame(width: 320, height: 420)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(red: 0.08, green: 0.09, blue: 0.12).opacity(0.98))
+        .colorScheme(.dark)
         .onAppear {
             latText = String(format: "%.5f", settings.latitude)
             lonText = String(format: "%.5f", settings.longitude)
