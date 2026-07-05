@@ -45,27 +45,29 @@ struct MainView: View {
                 }
                 
                 // Top Right Controls (Settings/Installer toggle)
-                VStack {
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
-                                showingSettings.toggle()
+                if !showingSettings {
+                    VStack {
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
+                                    showingSettings = true
+                                }
+                            }) {
+                                Image(systemName: "gearshape.fill")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(.white)
+                                    .padding(10)
+                                    .background(Color.black.opacity(0.6))
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
                             }
-                        }) {
-                            Image(systemName: showingSettings ? "xmark.circle.fill" : "gearshape.fill")
-                                .font(.system(size: 20))
-                                .foregroundColor(.white)
-                                .padding(10)
-                                .background(Color.black.opacity(0.6))
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(Color.white.opacity(0.2), lineWidth: 1))
+                            .buttonStyle(.plain)
+                            .padding(.top, 20)
+                            .padding(.trailing, 20)
                         }
-                        .buttonStyle(.plain)
-                        .padding(.top, 20)
-                        .padding(.trailing, 20)
+                        Spacer()
                     }
-                    Spacer()
                 }
                 
                 // Settings and Installer Drawer
@@ -381,12 +383,68 @@ struct MainView: View {
     
     private var installerSettingsPanel: some View {
         VStack(spacing: 0) {
-            // Tab Picker
-            Picker("", selection: $settingsTab) {
-                Text("Settings").tag(SettingsTab.config)
-                Text("Install").tag(SettingsTab.install)
+            // Header: Custom Segmented Control + Close Button
+            HStack(spacing: 12) {
+                // Custom Segmented Control
+                HStack(spacing: 0) {
+                    Button(action: {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                            settingsTab = .config
+                        }
+                    }) {
+                        Text("Settings")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(settingsTab == .config ? .white : .white.opacity(0.4))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(settingsTab == .config ? Color.blue.opacity(0.85) : Color.clear)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    
+                    Button(action: {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                            settingsTab = .install
+                        }
+                    }) {
+                        Text("Install")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(settingsTab == .install ? .white : .white.opacity(0.4))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(settingsTab == .install ? Color.blue.opacity(0.85) : Color.clear)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(4)
+                .background(Color.white.opacity(0.08))
+                .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                )
+                
+                // Drawer Close Button
+                Button(action: {
+                    withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
+                        showingSettings = false
+                    }
+                }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.white.opacity(0.8))
+                        .frame(width: 28, height: 28)
+                        .background(Color.white.opacity(0.1))
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.white.opacity(0.15), lineWidth: 1))
+                }
+                .buttonStyle(.plain)
             }
-            .pickerStyle(.segmented)
             .padding(.horizontal, 20)
             .padding(.top, 24)
             .padding(.bottom, 12)
