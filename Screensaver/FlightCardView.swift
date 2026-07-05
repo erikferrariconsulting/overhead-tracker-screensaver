@@ -8,17 +8,7 @@ import IataUtils
 import AirlineLogos
 
 private func findSPMBundle(named name: String) -> Bundle? {
-    let classBundle = Bundle(for: AirlineDatabase.self)
-    if let url = classBundle.url(forResource: name, withExtension: "bundle") {
-        if let b = Bundle(url: url) {
-            return b
-        }
-    }
-    if let url = classBundle.url(forResource: "\(name)_\(name)", withExtension: "bundle") {
-        if let b = Bundle(url: url) {
-            return b
-        }
-    }
+    // 1. Check all loaded bundles for the package name
     for bundle in Bundle.allBundles {
         if let ident = bundle.bundleIdentifier, ident.lowercased().contains(name.lowercased()) {
             return bundle
@@ -32,13 +22,39 @@ private func findSPMBundle(named name: String) -> Bundle? {
             return bundle
         }
     }
+
+    // 2. If running inside the companion App, the bundle is located inside AirAbove.saver/Contents/Resources/
+    if let saverURL = Bundle.main.resourceURL?.appendingPathComponent("AirAbove.saver"),
+       let saverBundle = Bundle(url: saverURL) {
+        if let url = saverBundle.url(forResource: name, withExtension: "bundle") {
+            if let b = Bundle(url: url) { return b }
+        }
+        if let url = saverBundle.url(forResource: "\(name)_\(name)", withExtension: "bundle") {
+            if let b = Bundle(url: url) { return b }
+        }
+    }
+
+    // 3. Search inside the screensaver bundle if it is loaded (e.g. under System Settings)
     for bundle in Bundle.allBundles {
-        if let url = bundle.url(forResource: name, withExtension: "bundle") {
-            if let b = Bundle(url: url) {
-                return b
+        if bundle.bundlePath.contains("AirAbove.saver") {
+            if let url = bundle.url(forResource: name, withExtension: "bundle") {
+                if let b = Bundle(url: url) { return b }
+            }
+            if let url = bundle.url(forResource: "\(name)_\(name)", withExtension: "bundle") {
+                if let b = Bundle(url: url) { return b }
             }
         }
     }
+
+    // 4. Fallback search inside AirlineDatabase class bundle
+    let classBundle = Bundle(for: AirlineDatabase.self)
+    if let url = classBundle.url(forResource: name, withExtension: "bundle") {
+        if let b = Bundle(url: url) { return b }
+    }
+    if let url = classBundle.url(forResource: "\(name)_\(name)", withExtension: "bundle") {
+        if let b = Bundle(url: url) { return b }
+    }
+
     return nil
 }
 
@@ -377,27 +393,24 @@ private struct FlightArtworkTileView: View {
                 .shadow(color: Color.black.opacity(0.35), radius: 14, x: 0, y: 8)
 
             if let photoImage {
-                VStack(spacing: 0) {
-                    Image(nsImage: photoImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 240, height: 128)
-                        .clipped()
-
-                    if let photoAttribution, !photoAttribution.isEmpty {
-                        Text(photoAttribution)
-                            .font(.system(size: 10, weight: .medium, design: .rounded))
-                            .foregroundStyle(.white.opacity(0.78))
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.78)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(Color.black.opacity(0.42))
+                Image(nsImage: photoImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 240, height: 172)
+                    .clipped()
+                    .overlay(alignment: .bottom) {
+                        if let photoAttribution, !photoAttribution.isEmpty {
+                            Text(photoAttribution)
+                                .font(.system(size: 10, weight: .medium, design: .rounded))
+                                .foregroundStyle(.white.opacity(0.85))
+                                .lineLimit(1)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(Color.black.opacity(0.48))
+                        }
                     }
-                }
-                .frame(width: 240, height: 172)
-                .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
             } else {
                 VStack(spacing: 12) {
                     Image(systemName: "airplane")
