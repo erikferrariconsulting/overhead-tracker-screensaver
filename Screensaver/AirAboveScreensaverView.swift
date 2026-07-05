@@ -247,11 +247,11 @@ public final class AirAboveScreensaverView: ScreenSaverView {
     }
     
     public override var configureSheet: NSWindow? {
-        weak var weakSelf = self
+        weak let weakSelf = self
         
         let settingsView = SettingsView {
             if let window = weakSelf?.configSheetWindow {
-                NSApp.endSheet(window)
+                window.sheetParent?.endSheet(window)
                 window.orderOut(nil)
                 weakSelf?.configSheetWindow = nil
                 weakSelf?.reloadSettingsAndSnapshot()

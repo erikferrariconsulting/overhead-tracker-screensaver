@@ -549,7 +549,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.screensaver;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.saver;
 				PRODUCT_MODULE_NAME = AirAboveScreensaver;
 				PRODUCT_NAME = AirAbove;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -576,7 +576,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.screensaver;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.saver;
 				PRODUCT_MODULE_NAME = AirAboveScreensaver;
 				PRODUCT_NAME = AirAbove;
 				PROVISIONING_PROFILE_SPECIFIER = "";
