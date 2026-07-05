@@ -11,6 +11,9 @@ struct MainView: View {
     @State private var alertTitle = ""
     @State private var currentFlights: [Flight] = []
     @State private var flightFeedClient = FlightFeedClient()
+    @State private var requestSequence = 0
+    @State private var routeHydrationTask: Task<Void, Never>? = nil
+    private static let routeHydrationController = RouteHydrationController()
     private let rotationController = RotationController(flights: [])
     
     // Settings and Timers
@@ -302,6 +305,9 @@ struct MainView: View {
         let lat = viewModel.homeLatitude
         let lon = viewModel.homeLongitude
         let radiusNm = flightFeedClient.radiusNm
+        requestSequence += 1
+        let requestID = requestSequence
+        routeHydrationTask?.cancel()
         
         Task {
             do {
@@ -310,6 +316,7 @@ struct MainView: View {
                 print("MainView: fetchFlights success, count=\(flights.count)")
                 
                 await MainActor.run {
+                    guard self.requestSequence == requestID else { return }
                     self.currentFlights = flights
                     let maxDistanceKm = Double(self.flightFeedClient.radiusNm) * 1.852
                     let insideCircleFlights = flights.filter { $0.isInsideGeofence(radiusKm: maxDistanceKm) }
@@ -322,6 +329,7 @@ struct MainView: View {
             } catch {
                 print("MainView: fetchFlights failed: \(error.localizedDescription) (Full: \(error))")
                 await MainActor.run {
+                    guard self.requestSequence == requestID else { return }
                     if !isRefreshingLiveContent {
                         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                             self.viewModel.state = .offline(message: error.localizedDescription)
@@ -339,7 +347,7 @@ struct MainView: View {
         return false
     }
     
-    private func updateState(with flights: [Flight]) {
+    private func updateState(with flights: [Flight], shouldHydrateRoutes: Bool = true) {
         viewModel.updateTrails(with: flights)
         
         guard let currentFlight = rotationController.currentFlight else {
@@ -362,8 +370,12 @@ struct MainView: View {
         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
             viewModel.state = .live(activeFlights, index: index)
         }
+
+        if shouldHydrateRoutes {
+            scheduleRouteHydration(flights: activeFlights, focusIndex: index)
+        }
     }
-    
+
     private func advanceCard() {
         let maxDistanceKm = Double(self.flightFeedClient.radiusNm) * 1.852
         let insideCircleCount = self.currentFlights.filter { $0.distanceKm <= maxDistanceKm }.count
@@ -371,6 +383,28 @@ struct MainView: View {
         
         self.rotationController.advance()
         self.updateState(with: self.currentFlights)
+    }
+
+    private func scheduleRouteHydration(flights: [Flight], focusIndex: Int) {
+        routeHydrationTask?.cancel()
+        let requestID = requestSequence
+
+        routeHydrationTask = Task { [weak self] in
+            guard let self else { return }
+            let hydrated = await Self.routeHydrationController.hydrate(flights: flights, focusIndex: focusIndex)
+            guard !Task.isCancelled else { return }
+
+            await MainActor.run {
+                guard self.requestSequence == requestID else { return }
+
+                self.currentFlights = hydrated
+                let maxDistanceKm = Double(self.flightFeedClient.radiusNm) * 1.852
+                let insideCircleFlights = hydrated.filter { $0.isInsideGeofence(radiusKm: maxDistanceKm) }
+                self.rotationController.update(flights: insideCircleFlights)
+                self.viewModel.updateStats(with: hydrated)
+                self.updateState(with: hydrated, shouldHydrateRoutes: false)
+            }
+        }
     }
     
     // Installer Settings Drawer View

@@ -31,12 +31,14 @@ class TransparentHostingView<Content: View>: NSHostingView<Content> {
 @MainActor
 public final class AirAboveScreensaverView: ScreenSaverView {
     private let flightFeedClient = FlightFeedClient()
+    private let routeHydrationController = RouteHydrationController()
     private let rotationController = RotationController(flights: [])
     private let viewModel: ScreensaverViewModel
     private let hostingView: TransparentHostingView<AirAboveScreensaverRootView>
     private var refreshTimer: Timer?
     private var rotationTimer: Timer?
     private var activeDataTask: URLSessionDataTask?
+    private var routeHydrationTask: Task<Void, Never>?
     private var loadingWatchdog: DispatchWorkItem?
     private var requestSequence = 0
     private var currentFlights: [Flight] = []
@@ -86,6 +88,8 @@ public final class AirAboveScreensaverView: ScreenSaverView {
         rotationTimer = nil
         activeDataTask?.cancel()
         activeDataTask = nil
+        routeHydrationTask?.cancel()
+        routeHydrationTask = nil
         loadingWatchdog?.cancel()
         loadingWatchdog = nil
         super.stopAnimation()
@@ -328,6 +332,7 @@ public final class AirAboveScreensaverView: ScreenSaverView {
         let isRefreshingLiveContent = isShowingLiveContent
 
         activeDataTask?.cancel()
+        routeHydrationTask?.cancel()
         loadingWatchdog?.cancel()
         loadingWatchdog = nil
 
@@ -435,7 +440,7 @@ public final class AirAboveScreensaverView: ScreenSaverView {
         return false
     }
 
-    private func updateState(with flights: [Flight]) {
+    private func updateState(with flights: [Flight], shouldHydrateRoutes: Bool = true) {
         viewModel.updateTrails(with: flights)
 
         guard let currentFlight = rotationController.currentFlight else {
@@ -465,6 +470,10 @@ public final class AirAboveScreensaverView: ScreenSaverView {
         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
             viewModel.state = .live(activeFlights, index: index)
         }
+
+        if shouldHydrateRoutes {
+            scheduleRouteHydration(flights: activeFlights, focusIndex: index)
+        }
     }
 
     private func advanceCard() {
@@ -485,6 +494,30 @@ public final class AirAboveScreensaverView: ScreenSaverView {
             screensaverLogger.info("advanceCard current flight became nil total=\(self.currentFlights.count, privacy: .public)")
         }
         self.updateState(with: self.currentFlights)
+    }
+
+    private func scheduleRouteHydration(flights: [Flight], focusIndex: Int) {
+        guard !previewMode else { return }
+
+        routeHydrationTask?.cancel()
+        let requestID = requestSequence
+
+        routeHydrationTask = Task { [weak self] in
+            guard let self else { return }
+            let hydrated = await self.routeHydrationController.hydrate(flights: flights, focusIndex: focusIndex)
+            guard !Task.isCancelled else { return }
+
+            await MainActor.run {
+                guard self.requestSequence == requestID else { return }
+
+                self.currentFlights = hydrated
+                let maxDistanceKm = Double(self.flightFeedClient.radiusNm) * 1.852
+                let insideCircleFlights = hydrated.filter { $0.isInsideGeofence(radiusKm: maxDistanceKm) }
+                self.rotationController.update(flights: insideCircleFlights)
+                self.viewModel.updateStats(with: hydrated)
+                self.updateState(with: hydrated, shouldHydrateRoutes: false)
+            }
+        }
     }
 
     private func showPreviewData() {
@@ -523,7 +556,7 @@ public final class AirAboveScreensaverView: ScreenSaverView {
         let insideCircleFlights = flights.filter { $0.distanceKm <= maxDistanceKm }
         rotationController.update(flights: insideCircleFlights)
         currentFlights = flights
-        updateState(with: flights)
+        updateState(with: flights, shouldHydrateRoutes: false)
     }
 }
 
