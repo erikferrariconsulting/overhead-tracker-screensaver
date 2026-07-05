@@ -1,4 +1,5 @@
 import AppKit
+import CryptoKit
 import SwiftUI
 import MapKit
 import OverheadTrackerScreensaverCore
@@ -439,21 +440,86 @@ private struct FlightArtworkTileView: View {
 private final class FlightImageCache {
     static let shared = FlightImageCache()
     private var artworks: [String: CachedArtwork] = [:]
+    private let diskCacheVersion = "v1"
 
     func image(for key: String) -> NSImage? {
         artworks[key]?.image
     }
 
     func artwork(for key: String) -> CachedArtwork? {
-        artworks[key]
+        if let memoryArtwork = artworks[key] {
+            return memoryArtwork
+        }
+        if let diskArtwork = loadArtworkFromDisk(for: key) {
+            artworks[key] = diskArtwork
+            return diskArtwork
+        }
+        return nil
     }
 
     func store(_ artwork: CachedArtwork, for key: String) {
         artworks[key] = artwork
+        saveArtworkToDisk(artwork, for: key)
     }
 
     func store(_ image: NSImage, attribution: String? = nil, for key: String) {
-        artworks[key] = CachedArtwork(image: image, attribution: attribution)
+        store(CachedArtwork(image: image, attribution: attribution), for: key)
+    }
+
+    private func loadArtworkFromDisk(for key: String) -> CachedArtwork? {
+        let imageURL = artworkImageURL(for: key)
+        guard let data = try? Data(contentsOf: imageURL),
+              let image = NSImage(data: data) else {
+            return nil
+        }
+
+        let attributionURL = artworkMetadataURL(for: key)
+        let attribution: String?
+        if let metaData = try? Data(contentsOf: attributionURL),
+           let metadata = try? JSONDecoder().decode(ArtworkMetadata.self, from: metaData) {
+            attribution = metadata.attribution
+        } else {
+            attribution = nil
+        }
+
+        return CachedArtwork(image: image, attribution: attribution)
+    }
+
+    private func saveArtworkToDisk(_ artwork: CachedArtwork, for key: String) {
+        let imageURL = artworkImageURL(for: key)
+        let metadataURL = artworkMetadataURL(for: key)
+        do {
+            try FileManager.default.createDirectory(at: cacheDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+            if let pngData = artwork.image.overheadPNGData() {
+                try pngData.write(to: imageURL, options: .atomic)
+                let metadata = ArtworkMetadata(attribution: artwork.attribution)
+                let metadataData = try JSONEncoder().encode(metadata)
+                try metadataData.write(to: metadataURL, options: .atomic)
+            }
+        } catch {
+            return
+        }
+    }
+
+    private var cacheDirectoryURL: URL {
+        let base = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
+        return base
+            .appendingPathComponent("com.overheadtracker.screensaver", isDirectory: true)
+            .appendingPathComponent("flight-artwork-cache-\(diskCacheVersion)", isDirectory: true)
+    }
+
+    private func artworkImageURL(for key: String) -> URL {
+        cacheDirectoryURL.appendingPathComponent(diskCacheKey(for: key)).appendingPathExtension("png")
+    }
+
+    private func artworkMetadataURL(for key: String) -> URL {
+        cacheDirectoryURL.appendingPathComponent(diskCacheKey(for: key)).appendingPathExtension("json")
+    }
+
+    private func diskCacheKey(for key: String) -> String {
+        let digest = SHA256.hash(data: Data(key.utf8))
+        return digest.compactMap { String(format: "%02x", $0) }.joined()
     }
 }
 
@@ -561,6 +627,10 @@ private enum FlightArtworkFetcher {
 
 private struct CachedArtwork {
     let image: NSImage
+    let attribution: String?
+}
+
+private struct ArtworkMetadata: Codable {
     let attribution: String?
 }
 
@@ -682,6 +752,16 @@ private extension String {
         }
         return replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
             .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+private extension NSImage {
+    func overheadPNGData() -> Data? {
+        guard let tiffData = tiffRepresentation,
+              let bitmap = NSBitmapImageRep(data: tiffData) else {
+            return nil
+        }
+        return bitmap.representation(using: .png, properties: [:])
     }
 }
 
