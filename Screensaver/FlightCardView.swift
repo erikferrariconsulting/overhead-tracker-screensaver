@@ -193,7 +193,7 @@ struct FlightCardView: View {
                             }
                             
                             if !hasOrigin && !hasDestination {
-                                return "Local / Untracked Route"
+                                return "Route unavailable"
                             } else if hasOrigin && !hasDestination {
                                 return "Departing \(formatAirport(origin))"
                             } else if !hasOrigin && hasDestination {
@@ -607,7 +607,6 @@ private enum FlightArtworkFetcher {
             }
 
             let attribution = imageInfo.bestAttribution
-            guard let attribution, !attribution.isEmpty else { return nil }
 
             var photoRequest = URLRequest(url: photoURL)
             photoRequest.setValue("AirAboveScreensaver/1.0 (+https://airabove.com)", forHTTPHeaderField: "User-Agent")
