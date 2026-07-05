@@ -630,6 +630,36 @@ private struct WikimediaCommonsImageInfo: Decodable {
 private struct WikimediaCommonsMetadata: Decodable {
     let value: String?
 
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if container.decodeNil() {
+            value = nil
+            return
+        }
+
+        if let stringValue = try? container.decode(String.self) {
+            value = stringValue
+            return
+        }
+
+        if let doubleValue = try? container.decode(Double.self) {
+            value = String(doubleValue)
+            return
+        }
+
+        if let intValue = try? container.decode(Int.self) {
+            value = String(intValue)
+            return
+        }
+
+        if let boolValue = try? container.decode(Bool.self) {
+            value = String(boolValue)
+            return
+        }
+
+        value = nil
+    }
+
     var plainTextValue: String? {
         guard let value else { return nil }
         return value.htmlToPlainText()
