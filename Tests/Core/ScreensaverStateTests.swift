@@ -1,5 +1,5 @@
 import XCTest
-@testable import OverheadTrackerScreensaverCore
+@testable import AirAboveScreensaverCore
 
 final class ScreensaverStateTests: XCTestCase {
     func testNoFlightsProducesNoFlightsState() {

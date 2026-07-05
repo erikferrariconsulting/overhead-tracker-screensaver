@@ -1,12 +1,12 @@
 import AppKit
 import Combine
 import ScreenSaver
-import OverheadTrackerScreensaverCore
+import AirAboveScreensaverCore
 import os
 import SwiftUI
 import MapKit
 
-private let screensaverLogger = Logger(subsystem: "com.overheadtracker.screensaver", category: "screensaver")
+private let screensaverLogger = Logger(subsystem: "com.airabove.screensaver", category: "screensaver")
 
 @MainActor
 class TransparentHostingView<Content: View>: NSHostingView<Content> {
@@ -27,13 +27,13 @@ class TransparentHostingView<Content: View>: NSHostingView<Content> {
     }
 }
 
-@objc(OverheadTrackerScreensaverView)
+@objc(AirAboveScreensaverView)
 @MainActor
-public final class OverheadTrackerScreensaverView: ScreenSaverView {
+public final class AirAboveScreensaverView: ScreenSaverView {
     private let flightFeedClient = FlightFeedClient()
     private let rotationController = RotationController(flights: [])
     private let viewModel: ScreensaverViewModel
-    private let hostingView: TransparentHostingView<OverheadTrackerScreensaverRootView>
+    private let hostingView: TransparentHostingView<AirAboveScreensaverRootView>
     private var refreshTimer: Timer?
     private var rotationTimer: Timer?
     private var activeDataTask: URLSessionDataTask?
@@ -51,7 +51,7 @@ public final class OverheadTrackerScreensaverView: ScreenSaverView {
         viewModel.homeLongitude = settings.longitude
         viewModel.geofenceRadiusKm = Double(settings.radiusNm) * 1.852
         self.viewModel = viewModel
-        hostingView = TransparentHostingView(rootView: OverheadTrackerScreensaverRootView(viewModel: viewModel))
+        hostingView = TransparentHostingView(rootView: AirAboveScreensaverRootView(viewModel: viewModel))
         super.init(frame: frame, isPreview: isPreview)
         wantsLayer = true
         layer?.backgroundColor = NSColor.black.cgColor
@@ -837,7 +837,7 @@ struct MapSnapshotView: View {
 }
 
 @MainActor
-struct OverheadTrackerScreensaverRootView: View {
+struct AirAboveScreensaverRootView: View {
     @ObservedObject var viewModel: ScreensaverViewModel
 
     var body: some View {

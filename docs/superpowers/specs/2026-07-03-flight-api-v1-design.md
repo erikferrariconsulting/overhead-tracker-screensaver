@@ -1,7 +1,7 @@
 # Flight API v1 Design
 
 ## Goal
-Provide a small, versioned backend API for the screensaver to fetch nearby live aircraft data from `https://api.overheadtracker.com` without depending on the current upstream vendor or response format.
+Provide a small, versioned backend API for the screensaver to fetch nearby live aircraft data from `https://api.airabove.com` without depending on the current upstream vendor or response format.
 
 This API is not a general aviation platform. It only needs to support the data the screensaver already consumes.
 

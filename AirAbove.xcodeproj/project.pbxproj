@@ -8,46 +8,46 @@
 
 /* Begin PBXBuildFile section */
 		10DA75009E18666A8CEA265E /* IataUtils in Frameworks */ = {isa = PBXBuildFile; productRef = C4F157F36A4FFD42825DA2DF /* IataUtils */; };
-		1AE4A9D5E3494C1AA1B1F001 /* OverheadTrackerScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F011 /* OverheadTrackerScreensaverView.swift */; };
+		1AE4A9D5E3494C1AA1B1F001 /* AirAboveScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F011 /* AirAboveScreensaverView.swift */; };
 		1AE4A9D5E3494C1AA1B1F002 /* FlightCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F012 /* FlightCardView.swift */; };
 		1AE4A9D5E3494C1AA1B1F003 /* StatusViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */; };
 		1AE4A9D5E3494C1AA1B1F004 /* FlightFeedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F014 /* FlightFeedClient.swift */; };
 		1AE4A9D5E3494C1AA1B1F005 /* RotationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F015 /* RotationController.swift */; };
 		1AE4A9D5E3494C1AA1B1F006 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F016 /* ScreenSaver.framework */; };
-		1AE4A9D5E3494C1AA1B1F007 /* OverheadTrackerScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; };
-		1AE4A9D5E3494C1AA1B1F008 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1AE4A9D5E3494C1AA1B1F007 /* AirAboveScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* AirAboveScreensaverCore.framework */; };
+		1AE4A9D5E3494C1AA1B1F008 /* AirAboveScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* AirAboveScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2992368DB0B828CFE1AC2FEF /* ProxyFlightResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29B2150CF2DD185194D7782 /* ProxyFlightResponse.swift */; };
 		3B1D9F5AC2E54E71BFB7E7C1 /* FlightOrdererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D1E3B8F6F44D8E8E5E9D31 /* FlightOrdererTests.swift */; };
-		4185A600E31423A9288648B1 /* OverheadTrackerScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F011 /* OverheadTrackerScreensaverView.swift */; };
+		4185A600E31423A9288648B1 /* AirAboveScreensaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F011 /* AirAboveScreensaverView.swift */; };
 		41AA06E08245C5589EF3ED0E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81662F153474DD295BD54130 /* SettingsView.swift */; };
 		4A187D1926D74659D8D88F40 /* ScreensaverStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8422DC284A3AB28330E11AC /* ScreensaverStateTests.swift */; };
 		4F70C4917BB324857B52BCD3 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81662F153474DD295BD54130 /* SettingsView.swift */; };
 		5B0415C19D95F054400C138D /* FlightFeedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F014 /* FlightFeedClient.swift */; };
 		5C2F10C5A7C84D5E8C1E7B3A /* RotationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5A0DA0D1E2445D9A5A2D3E /* RotationControllerTests.swift */; };
 		6745A98FDC89BD3A55A65C76 /* ScreensaverState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F87E7C302A45921F12C785A /* ScreensaverState.swift */; };
-		6EAB818210257DDD120D9DFB /* OverheadTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD4EFBE86874D170DC3942C /* OverheadTrackerApp.swift */; };
+		6EAB818210257DDD120D9DFB /* AirAboveApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD4EFBE86874D170DC3942C /* AirAboveApp.swift */; };
 		6FD9BB6BCA7F532D8AD9478E /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057DF892382E377BF9F97D9E /* SettingsManager.swift */; };
 		7B66FBC813AB3B93D8F4F6EB /* ScreensaverInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E497D8F08F934F3F27C07B3 /* ScreensaverInstaller.swift */; };
 		7B900688E212BCA211FF5653 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5174C51272DA1DA05B33746C /* Assets.xcassets */; };
 		81900DC01833C35B47BEB73C /* FlightPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D0F10B3BA2CFE96C82E782 /* FlightPhase.swift */; };
-		8B919A4DEAF407122B7BA5D8 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8B919A4DEAF407122B7BA5D8 /* AirAboveScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* AirAboveScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8E7B52B9F1C448C9A4B0E4C1 /* FlightFeedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6E9D0E9A9D4E8E97E7C111 /* FlightFeedRequest.swift */; };
 		95231AE850E16B18780152F9 /* StatusViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */; };
 		9A8F62A1A4C24D5EA6D9C0B7 /* FlightOrderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6D8D8D70D44B0EB5A4C01F /* FlightOrderer.swift */; };
 		9DF8560D0232B460FFD17523 /* FlightPhaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1EA55D7AA294ADBE1C1A1B /* FlightPhaseTests.swift */; };
 		9F6B7D4B3C14451DB8F8B73A /* ProxyFlightResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */; };
-		A1CCD47AB138A68A742D8C65 /* OverheadTrackerScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; };
+		A1CCD47AB138A68A742D8C65 /* AirAboveScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* AirAboveScreensaverCore.framework */; };
 		A26EA5ED24F941AFCC02CC29 /* FlightCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F012 /* FlightCardView.swift */; };
 		A5E2D8F3C8FD4F49A4C0C299 /* FlightPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D99 /* FlightPresentationTests.swift */; };
 		A5E2D8F3C8FD4F49A4C0C2B2 /* FlightFeedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */; };
 		CE4BE939AC0E1902CCB39BC1 /* thumbnail@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 97E901428275DCF118613A02 /* thumbnail@2x.png */; };
-		D3A66B9F61151F7A74E6AD66 /* OverheadTrackerScreensaver.saver in Resources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */; };
+		D3A66B9F61151F7A74E6AD66 /* AirAboveScreensaver.saver in Resources */ = {isa = PBXBuildFile; fileRef = 1AE4A9D5E3494C1AA1B1F017 /* AirAboveScreensaver.saver */; };
 		D7B44E7D3089005167512047 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88BF4944B104C78F19FD00A /* Cocoa.framework */; };
 		E6B6C7B8F8E42D8E45932A7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE64C899DE7C05D707B1BC4 /* MainView.swift */; };
-		E82E382F3C90729A4C032639 /* OverheadTrackerScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; };
+		E82E382F3C90729A4C032639 /* AirAboveScreensaverCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* AirAboveScreensaverCore.framework */; };
 		F08A99D2BA832EA58221F8FF /* thumbnail.png in Resources */ = {isa = PBXBuildFile; fileRef = CF8531E909DAE97E127C2C5D /* thumbnail.png */; };
 		F2ACBA17D5B853173FB9BD9D /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FBFAFB254698F28F73DB3C5 /* LocationManager.swift */; };
-		FDF8E28EBDAF7C690C0B6106 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FDF8E28EBDAF7C690C0B6106 /* AirAboveScreensaverCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 25F0E10E5CAC3E8EBB3A1EC0 /* AirAboveScreensaverCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		FF6D91064BACF5CFCB3F0960 /* Flight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79EB7380DD6D271AEBA1D6E3 /* Flight.swift */; };
 /* End PBXBuildFile section */
 
@@ -57,21 +57,21 @@
 			containerPortal = 4E8522B40B923DB6EC67D9C6 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 22BA2CC6D25EF10F4705469F;
-			remoteInfo = OverheadTrackerScreensaverCore;
+			remoteInfo = AirAboveScreensaverCore;
 		};
 		D0AAB790CD85FEF2945DF042 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4E8522B40B923DB6EC67D9C6 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 1AE4A9D5E3494C1AA1B1F031;
-			remoteInfo = OverheadTrackerScreensaver;
+			remoteInfo = AirAboveScreensaver;
 		};
 		D951A26C85ECC37D452E2827 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4E8522B40B923DB6EC67D9C6 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 22BA2CC6D25EF10F4705469F;
-			remoteInfo = OverheadTrackerScreensaverCore;
+			remoteInfo = AirAboveScreensaverCore;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -82,7 +82,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				1AE4A9D5E3494C1AA1B1F008 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */,
+				1AE4A9D5E3494C1AA1B1F008 /* AirAboveScreensaverCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -93,7 +93,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				FDF8E28EBDAF7C690C0B6106 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */,
+				FDF8E28EBDAF7C690C0B6106 /* AirAboveScreensaverCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -104,7 +104,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8B919A4DEAF407122B7BA5D8 /* OverheadTrackerScreensaverCore.framework in Embed Frameworks */,
+				8B919A4DEAF407122B7BA5D8 /* AirAboveScreensaverCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -114,21 +114,21 @@
 /* Begin PBXFileReference section */
 		057DF892382E377BF9F97D9E /* SettingsManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		0D64D38A23B641C2890A5E3F /* ProxyFlightResponseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyFlightResponseTests.swift; sourceTree = "<group>"; };
-		1AE4A9D5E3494C1AA1B1F011 /* OverheadTrackerScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverheadTrackerScreensaverView.swift; sourceTree = "<group>"; };
+		1AE4A9D5E3494C1AA1B1F011 /* AirAboveScreensaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirAboveScreensaverView.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F012 /* FlightCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightCardView.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusViews.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F014 /* FlightFeedClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFeedClient.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F015 /* RotationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationController.swift; sourceTree = "<group>"; };
 		1AE4A9D5E3494C1AA1B1F016 /* ScreenSaver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ScreenSaver.framework; sourceTree = SDKROOT; };
-		1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OverheadTrackerScreensaver.saver; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AE4A9D5E3494C1AA1B1F017 /* AirAboveScreensaver.saver */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirAboveScreensaver.saver; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C5A0DA0D1E2445D9A5A2D3E /* RotationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotationControllerTests.swift; sourceTree = "<group>"; };
 		1FE64C899DE7C05D707B1BC4 /* MainView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MainView.swift; path = App/MainView.swift; sourceTree = "<group>"; };
-		25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OverheadTrackerScreensaverCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		25F0E10E5CAC3E8EBB3A1EC0 /* AirAboveScreensaverCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AirAboveScreensaverCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D6E9D0E9A9D4E8E97E7C111 /* FlightFeedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFeedRequest.swift; sourceTree = "<group>"; };
-		2DD4EFBE86874D170DC3942C /* OverheadTrackerApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OverheadTrackerApp.swift; path = App/OverheadTrackerApp.swift; sourceTree = "<group>"; };
+		2DD4EFBE86874D170DC3942C /* AirAboveApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AirAboveApp.swift; path = App/AirAboveApp.swift; sourceTree = "<group>"; };
 		3E497D8F08F934F3F27C07B3 /* ScreensaverInstaller.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScreensaverInstaller.swift; path = App/ScreensaverInstaller.swift; sourceTree = "<group>"; };
 		3F87E7C302A45921F12C785A /* ScreensaverState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensaverState.swift; sourceTree = "<group>"; };
-		456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OverheadTrackerScreensaverCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		456547AD3E857BA67D0D7BCD /* AirAboveScreensaverCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirAboveScreensaverCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5174C51272DA1DA05B33746C /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = App/Assets.xcassets; sourceTree = "<group>"; };
 		5D6D8D8D70D44B0EB5A4C01F /* FlightOrderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightOrderer.swift; sourceTree = "<group>"; };
 		6B47E7F1E3D24E7F8B6D7D44 /* FlightFeedRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightFeedRequestTests.swift; sourceTree = "<group>"; };
@@ -153,7 +153,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AE4A9D5E3494C1AA1B1F006 /* ScreenSaver.framework in Frameworks */,
-				1AE4A9D5E3494C1AA1B1F007 /* OverheadTrackerScreensaverCore.framework in Frameworks */,
+				1AE4A9D5E3494C1AA1B1F007 /* AirAboveScreensaverCore.framework in Frameworks */,
 				10DA75009E18666A8CEA265E /* IataUtils in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,7 +162,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1CCD47AB138A68A742D8C65 /* OverheadTrackerScreensaverCore.framework in Frameworks */,
+				A1CCD47AB138A68A742D8C65 /* AirAboveScreensaverCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,7 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7B44E7D3089005167512047 /* Cocoa.framework in Frameworks */,
-				E82E382F3C90729A4C032639 /* OverheadTrackerScreensaverCore.framework in Frameworks */,
+				E82E382F3C90729A4C032639 /* AirAboveScreensaverCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,7 +196,7 @@
 		1AE4A9D5E3494C1AA1B1F021 /* Screensaver */ = {
 			isa = PBXGroup;
 			children = (
-				1AE4A9D5E3494C1AA1B1F011 /* OverheadTrackerScreensaverView.swift */,
+				1AE4A9D5E3494C1AA1B1F011 /* AirAboveScreensaverView.swift */,
 				1AE4A9D5E3494C1AA1B1F012 /* FlightCardView.swift */,
 				1AE4A9D5E3494C1AA1B1F013 /* StatusViews.swift */,
 				1AE4A9D5E3494C1AA1B1F014 /* FlightFeedClient.swift */,
@@ -209,7 +209,7 @@
 		1D9E7E5358FE2968D1E1BF17 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				2DD4EFBE86874D170DC3942C /* OverheadTrackerApp.swift */,
+				2DD4EFBE86874D170DC3942C /* AirAboveApp.swift */,
 				1FE64C899DE7C05D707B1BC4 /* MainView.swift */,
 				3E497D8F08F934F3F27C07B3 /* ScreensaverInstaller.swift */,
 				7FBFAFB254698F28F73DB3C5 /* LocationManager.swift */,
@@ -222,9 +222,9 @@
 		33F287992BFC0F9A22531952 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */,
-				1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */,
-				456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */,
+				25F0E10E5CAC3E8EBB3A1EC0 /* AirAboveScreensaverCore.framework */,
+				1AE4A9D5E3494C1AA1B1F017 /* AirAboveScreensaver.saver */,
+				456547AD3E857BA67D0D7BCD /* AirAboveScreensaverCoreTests.xctest */,
 				BC16FAA4A8E7CE80E108C98C /* AirAbove.app */,
 			);
 			name = Products;
@@ -285,9 +285,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1AE4A9D5E3494C1AA1B1F031 /* OverheadTrackerScreensaver */ = {
+		1AE4A9D5E3494C1AA1B1F031 /* AirAboveScreensaver */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1AE4A9D5E3494C1AA1B1F035 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaver" */;
+			buildConfigurationList = 1AE4A9D5E3494C1AA1B1F035 /* Build configuration list for PBXNativeTarget "AirAboveScreensaver" */;
 			buildPhases = (
 				1AE4A9D5E3494C1AA1B1F032 /* Sources */,
 				1AE4A9D5E3494C1AA1B1F033 /* Frameworks */,
@@ -299,19 +299,19 @@
 			dependencies = (
 				1AE4A9D5E3494C1AA1B1F038 /* PBXTargetDependency */,
 			);
-			name = OverheadTrackerScreensaver;
+			name = AirAboveScreensaver;
 			packageProductDependencies = (
 				B8D14851B2E88D071A59567C /* Ip2LocationIataIcao */,
 				C4F157F36A4FFD42825DA2DF /* IataUtils */,
 				00D39C8FFA8D709BA3A6D825 /* AirlineLogos */,
 			);
-			productName = OverheadTrackerScreensaver;
-			productReference = 1AE4A9D5E3494C1AA1B1F017 /* OverheadTrackerScreensaver.saver */;
+			productName = AirAboveScreensaver;
+			productReference = 1AE4A9D5E3494C1AA1B1F017 /* AirAboveScreensaver.saver */;
 			productType = "com.apple.product-type.bundle";
 		};
-		22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */ = {
+		22BA2CC6D25EF10F4705469F /* AirAboveScreensaverCore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5CB240CD1810F83E314AD3E7 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaverCore" */;
+			buildConfigurationList = 5CB240CD1810F83E314AD3E7 /* Build configuration list for PBXNativeTarget "AirAboveScreensaverCore" */;
 			buildPhases = (
 				F46CBCC5970EFF2385302F7E /* Sources */,
 			);
@@ -319,14 +319,14 @@
 			);
 			dependencies = (
 			);
-			name = OverheadTrackerScreensaverCore;
-			productName = OverheadTrackerScreensaverCore;
-			productReference = 25F0E10E5CAC3E8EBB3A1EC0 /* OverheadTrackerScreensaverCore.framework */;
+			name = AirAboveScreensaverCore;
+			productName = AirAboveScreensaverCore;
+			productReference = 25F0E10E5CAC3E8EBB3A1EC0 /* AirAboveScreensaverCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		436C2F50266D1966C3511CF5 /* OverheadTrackerScreensaverCoreTests */ = {
+		436C2F50266D1966C3511CF5 /* AirAboveScreensaverCoreTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9DE5A9665FA439301DA8B13E /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaverCoreTests" */;
+			buildConfigurationList = 9DE5A9665FA439301DA8B13E /* Build configuration list for PBXNativeTarget "AirAboveScreensaverCoreTests" */;
 			buildPhases = (
 				C6A59CAE12346C2DA7C29525 /* Sources */,
 				3E93698BBC0778877337D53E /* Frameworks */,
@@ -337,9 +337,9 @@
 			dependencies = (
 				37ABCBE008FF4BCEB2E78D9D /* PBXTargetDependency */,
 			);
-			name = OverheadTrackerScreensaverCoreTests;
-			productName = OverheadTrackerScreensaverCoreTests;
-			productReference = 456547AD3E857BA67D0D7BCD /* OverheadTrackerScreensaverCoreTests.xctest */;
+			name = AirAboveScreensaverCoreTests;
+			productName = AirAboveScreensaverCoreTests;
+			productReference = 456547AD3E857BA67D0D7BCD /* AirAboveScreensaverCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		A57713991FCF6ACADFAF5A77 /* OverheadRadar */ = {
@@ -358,7 +358,7 @@
 				92A4CBE498AD437A79A39E0E /* PBXTargetDependency */,
 			);
 			name = OverheadRadar;
-			productName = OverheadTracker;
+			productName = AirAbove;
 			productReference = BC16FAA4A8E7CE80E108C98C /* AirAbove.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -371,7 +371,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 			};
-			buildConfigurationList = 5D0E30A19E631808811C2659 /* Build configuration list for PBXProject "OverheadTrackerScreensaver" */;
+			buildConfigurationList = 5D0E30A19E631808811C2659 /* Build configuration list for PBXProject "AirAboveScreensaver" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -390,9 +390,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */,
-				436C2F50266D1966C3511CF5 /* OverheadTrackerScreensaverCoreTests */,
-				1AE4A9D5E3494C1AA1B1F031 /* OverheadTrackerScreensaver */,
+				22BA2CC6D25EF10F4705469F /* AirAboveScreensaverCore */,
+				436C2F50266D1966C3511CF5 /* AirAboveScreensaverCoreTests */,
+				1AE4A9D5E3494C1AA1B1F031 /* AirAboveScreensaver */,
 				A57713991FCF6ACADFAF5A77 /* OverheadRadar */,
 			);
 		};
@@ -403,7 +403,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D3A66B9F61151F7A74E6AD66 /* OverheadTrackerScreensaver.saver in Resources */,
+				D3A66B9F61151F7A74E6AD66 /* AirAboveScreensaver.saver in Resources */,
 				7B900688E212BCA211FF5653 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -424,7 +424,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1AE4A9D5E3494C1AA1B1F001 /* OverheadTrackerScreensaverView.swift in Sources */,
+				1AE4A9D5E3494C1AA1B1F001 /* AirAboveScreensaverView.swift in Sources */,
 				1AE4A9D5E3494C1AA1B1F002 /* FlightCardView.swift in Sources */,
 				1AE4A9D5E3494C1AA1B1F003 /* StatusViews.swift in Sources */,
 				1AE4A9D5E3494C1AA1B1F004 /* FlightFeedClient.swift in Sources */,
@@ -438,9 +438,9 @@
 			files = (
 				A26EA5ED24F941AFCC02CC29 /* FlightCardView.swift in Sources */,
 				5B0415C19D95F054400C138D /* FlightFeedClient.swift in Sources */,
-				4185A600E31423A9288648B1 /* OverheadTrackerScreensaverView.swift in Sources */,
+				4185A600E31423A9288648B1 /* AirAboveScreensaverView.swift in Sources */,
 				95231AE850E16B18780152F9 /* StatusViews.swift in Sources */,
-				6EAB818210257DDD120D9DFB /* OverheadTrackerApp.swift in Sources */,
+				6EAB818210257DDD120D9DFB /* AirAboveApp.swift in Sources */,
 				E6B6C7B8F8E42D8E45932A7D /* MainView.swift in Sources */,
 				7B66FBC813AB3B93D8F4F6EB /* ScreensaverInstaller.swift in Sources */,
 				F2ACBA17D5B853173FB9BD9D /* LocationManager.swift in Sources */,
@@ -482,24 +482,24 @@
 /* Begin PBXTargetDependency section */
 		1AE4A9D5E3494C1AA1B1F038 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */;
+			target = 22BA2CC6D25EF10F4705469F /* AirAboveScreensaverCore */;
 			targetProxy = 1A9202FE46D1D401979976B0 /* PBXContainerItemProxy */;
 		};
 		37ABCBE008FF4BCEB2E78D9D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */;
+			target = 22BA2CC6D25EF10F4705469F /* AirAboveScreensaverCore */;
 			targetProxy = 1A9202FE46D1D401979976B0 /* PBXContainerItemProxy */;
 		};
 		92A4CBE498AD437A79A39E0E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = OverheadTrackerScreensaver;
-			target = 1AE4A9D5E3494C1AA1B1F031 /* OverheadTrackerScreensaver */;
+			name = AirAboveScreensaver;
+			target = 1AE4A9D5E3494C1AA1B1F031 /* AirAboveScreensaver */;
 			targetProxy = D0AAB790CD85FEF2945DF042 /* PBXContainerItemProxy */;
 		};
 		FBD393CE71282095DB013EF9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = OverheadTrackerScreensaverCore;
-			target = 22BA2CC6D25EF10F4705469F /* OverheadTrackerScreensaverCore */;
+			name = AirAboveScreensaverCore;
+			target = 22BA2CC6D25EF10F4705469F /* AirAboveScreensaverCore */;
 			targetProxy = D951A26C85ECC37D452E2827 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -534,17 +534,17 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = KMRQ76B22J;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSPrincipalClass = OverheadTrackerScreensaverView;
+				INFOPLIST_KEY_NSPrincipalClass = AirAboveScreensaverView;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.overheadradar.screensaver;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.screensaver;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -558,17 +558,17 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
+				COMBINE_HIDPI_IMAGES = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = KMRQ76B22J;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSPrincipalClass = OverheadTrackerScreensaverView;
+				INFOPLIST_KEY_NSPrincipalClass = AirAboveScreensaverView;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.overheadradar.screensaver;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airabove.screensaver;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -664,7 +664,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = App/OverheadTracker.entitlements;
+				CODE_SIGN_ENTITLEMENTS = App/AirAbove.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -716,7 +716,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = App/OverheadTracker.entitlements;
+				CODE_SIGN_ENTITLEMENTS = App/AirAbove.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -831,7 +831,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1AE4A9D5E3494C1AA1B1F035 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaver" */ = {
+		1AE4A9D5E3494C1AA1B1F035 /* Build configuration list for PBXNativeTarget "AirAboveScreensaver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1AE4A9D5E3494C1AA1B1F036 /* Debug */,
@@ -840,7 +840,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		5CB240CD1810F83E314AD3E7 /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaverCore" */ = {
+		5CB240CD1810F83E314AD3E7 /* Build configuration list for PBXNativeTarget "AirAboveScreensaverCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1CD83019155E267123EE5785 /* Debug */,
@@ -849,7 +849,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		5D0E30A19E631808811C2659 /* Build configuration list for PBXProject "OverheadTrackerScreensaver" */ = {
+		5D0E30A19E631808811C2659 /* Build configuration list for PBXProject "AirAboveScreensaver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EBB2FC3D3FE2CA87793E97CB /* Debug */,
@@ -867,7 +867,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9DE5A9665FA439301DA8B13E /* Build configuration list for PBXNativeTarget "OverheadTrackerScreensaverCoreTests" */ = {
+		9DE5A9665FA439301DA8B13E /* Build configuration list for PBXNativeTarget "AirAboveScreensaverCoreTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1280B4DE25F71EEAECF35058 /* Debug */,

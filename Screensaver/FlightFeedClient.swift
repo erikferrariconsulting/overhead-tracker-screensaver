@@ -1,5 +1,5 @@
 import Foundation
-import OverheadTrackerScreensaverCore
+import AirAboveScreensaverCore
 
 public struct FlightFeedClient {
     public static let defaultHomeLatitude = -33.7749
@@ -14,7 +14,7 @@ public struct FlightFeedClient {
     //public static let defaultHomeLatitude = 39.431111
     //public static let defaultHomeLongitude = -77.397222
     public static let defaultRadiusNm = 20
-    public static let defaultBaseURL = URL(string: "https://overhead-tracker-flight-api.cyberkallen.workers.dev")!
+    public static let defaultBaseURL = URL(string: "https://airabove-flight-api.cyberkallen.workers.dev")!
 
     let session: URLSession
     let baseURL: URL

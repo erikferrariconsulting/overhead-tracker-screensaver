@@ -1,7 +1,7 @@
 import SwiftUI
 import MapKit
 import Combine
-import OverheadTrackerScreensaverCore
+import AirAboveScreensaverCore
 
 @MainActor
 public final class LocationSearchViewModel: NSObject, ObservableObject, MKLocalSearchCompleterDelegate {
