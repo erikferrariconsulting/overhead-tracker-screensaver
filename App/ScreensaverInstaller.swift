@@ -45,6 +45,13 @@ public struct ScreensaverInstaller {
             throw InstallError.copyFailed(error)
         }
         
+        // 4.5 Strip quarantine extended attributes to bypass Gatekeeper warning for local build
+        let task = Process()
+        task.launchPath = "/usr/bin/xattr"
+        task.arguments = ["-cr", destinationURL.path]
+        try? task.run()
+        task.waitUntilExit()
+        
         // 5. Open it to launch macOS system installation
         if !NSWorkspace.shared.open(destinationURL) {
             throw InstallError.openFailed
