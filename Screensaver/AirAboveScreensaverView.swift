@@ -249,7 +249,7 @@ public final class AirAboveScreensaverView: ScreenSaverView {
     public override var configureSheet: NSWindow? {
         weak let weakSelf = self
         
-        let settingsView = SettingsView {
+        let settingsView = SettingsView(presentAsDraftSheet: true) {
             if let window = weakSelf?.configSheetWindow {
                 window.sheetParent?.endSheet(window)
                 window.orderOut(nil)
@@ -257,13 +257,13 @@ public final class AirAboveScreensaverView: ScreenSaverView {
                 weakSelf?.reloadSettingsAndSnapshot()
             }
         }
-        .frame(width: 320, height: 420)
+        .frame(width: 320, height: 460)
         
         let hostingController = NSHostingController(rootView: settingsView)
         
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 320, height: 420),
-            styleMask: [.titled, .closable],
+            contentRect: NSRect(x: 0, y: 0, width: 320, height: 460),
+            styleMask: [.titled],
             backing: .buffered,
             defer: false
         )

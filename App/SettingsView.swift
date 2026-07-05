@@ -4,6 +4,34 @@ import Combine
 import AirAboveScreensaverCore
 
 @MainActor
+private struct SettingsDraft {
+    var locationMode: LocationMode
+    var latitude: Double
+    var longitude: Double
+    var radiusNm: Int
+    var refreshInterval: Double
+    var rotationInterval: Double
+
+    init(settings: SettingsManager) {
+        locationMode = settings.locationMode
+        latitude = settings.latitude
+        longitude = settings.longitude
+        radiusNm = settings.radiusNm
+        refreshInterval = settings.refreshInterval
+        rotationInterval = settings.rotationInterval
+    }
+
+    func apply(to settings: SettingsManager) {
+        settings.locationMode = locationMode
+        settings.latitude = latitude
+        settings.longitude = longitude
+        settings.radiusNm = radiusNm
+        settings.refreshInterval = refreshInterval
+        settings.rotationInterval = rotationInterval
+    }
+}
+
+@MainActor
 public final class LocationSearchViewModel: NSObject, ObservableObject, MKLocalSearchCompleterDelegate {
     private let completer = MKLocalSearchCompleter()
     
@@ -59,12 +87,81 @@ public final class LocationSearchViewModel: NSObject, ObservableObject, MKLocalS
 struct SettingsView: View {
     @ObservedObject var settings = SettingsManager.shared
     @StateObject private var searchViewModel = LocationSearchViewModel()
+    @State private var draft: SettingsDraft
+    @FocusState private var searchFieldFocused: Bool
     
     @State private var latText = ""
     @State private var lonText = ""
     @State private var showSearchList = false
     
+    private let presentAsDraftSheet: Bool
     var onDismiss: (() -> Void)? = nil
+
+    init(presentAsDraftSheet: Bool = false, onDismiss: (() -> Void)? = nil) {
+        self.presentAsDraftSheet = presentAsDraftSheet
+        self.onDismiss = onDismiss
+        _draft = State(initialValue: SettingsDraft(settings: SettingsManager.shared))
+    }
+
+    private var locationModeBinding: Binding<LocationMode> {
+        if presentAsDraftSheet {
+            return $draft.locationMode
+        }
+        return Binding(
+            get: { settings.locationMode },
+            set: { settings.locationMode = $0 }
+        )
+    }
+
+    private var latitudeBinding: Binding<Double> {
+        if presentAsDraftSheet {
+            return $draft.latitude
+        }
+        return Binding(
+            get: { settings.latitude },
+            set: { settings.latitude = $0 }
+        )
+    }
+
+    private var longitudeBinding: Binding<Double> {
+        if presentAsDraftSheet {
+            return $draft.longitude
+        }
+        return Binding(
+            get: { settings.longitude },
+            set: { settings.longitude = $0 }
+        )
+    }
+
+    private var radiusBinding: Binding<Int> {
+        if presentAsDraftSheet {
+            return $draft.radiusNm
+        }
+        return Binding(
+            get: { settings.radiusNm },
+            set: { settings.radiusNm = $0 }
+        )
+    }
+
+    private var refreshIntervalBinding: Binding<Double> {
+        if presentAsDraftSheet {
+            return $draft.refreshInterval
+        }
+        return Binding(
+            get: { settings.refreshInterval },
+            set: { settings.refreshInterval = $0 }
+        )
+    }
+
+    private var rotationIntervalBinding: Binding<Double> {
+        if presentAsDraftSheet {
+            return $draft.rotationInterval
+        }
+        return Binding(
+            get: { settings.rotationInterval },
+            set: { settings.rotationInterval = $0 }
+        )
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -74,7 +171,7 @@ struct SettingsView: View {
                     .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                 Spacer()
-                if let onDismiss = onDismiss {
+                if !presentAsDraftSheet, let onDismiss = onDismiss {
                     Button(action: onDismiss) {
                         Image(systemName: "xmark")
                             .foregroundColor(.white.opacity(0.6))
@@ -97,20 +194,20 @@ struct SettingsView: View {
                         HStack(spacing: 8) {
                             Button(action: {
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
-                                    settings.locationMode = .gps
+                                    locationModeBinding.wrappedValue = .gps
                                 }
                             }) {
                                 HStack(spacing: 6) {
-                                    Image(systemName: settings.locationMode == .gps ? "location.fill" : "location")
+                                    Image(systemName: locationModeBinding.wrappedValue == .gps ? "location.fill" : "location")
                                     Text("Automatic (GPS)")
                                 }
                                 .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(settings.locationMode == .gps ? .white : .white.opacity(0.5))
+                                .foregroundColor(locationModeBinding.wrappedValue == .gps ? .white : .white.opacity(0.5))
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
                                 .background(
                                     RoundedRectangle(cornerRadius: 6)
-                                        .fill(settings.locationMode == .gps ? Color.blue.opacity(0.85) : Color.white.opacity(0.06))
+                                        .fill(locationModeBinding.wrappedValue == .gps ? Color.blue.opacity(0.85) : Color.white.opacity(0.06))
                                 )
                                 .contentShape(Rectangle())
                             }
@@ -118,27 +215,27 @@ struct SettingsView: View {
                             
                             Button(action: {
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
-                                    settings.locationMode = .custom
+                                    locationModeBinding.wrappedValue = .custom
                                 }
                             }) {
                                 HStack(spacing: 6) {
-                                    Image(systemName: settings.locationMode == .custom ? "mappin.circle.fill" : "mappin.circle")
+                                    Image(systemName: locationModeBinding.wrappedValue == .custom ? "mappin.circle.fill" : "mappin.circle")
                                     Text("Custom Coords")
                                 }
                                 .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(settings.locationMode == .custom ? .white : .white.opacity(0.5))
+                                .foregroundColor(locationModeBinding.wrappedValue == .custom ? .white : .white.opacity(0.5))
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
                                 .background(
                                     RoundedRectangle(cornerRadius: 6)
-                                        .fill(settings.locationMode == .custom ? Color.blue.opacity(0.85) : Color.white.opacity(0.06))
+                                        .fill(locationModeBinding.wrappedValue == .custom ? Color.blue.opacity(0.85) : Color.white.opacity(0.06))
                                 )
                                 .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
                         }
                         
-                        if settings.locationMode == .custom {
+                        if locationModeBinding.wrappedValue == .custom {
                             VStack(alignment: .leading, spacing: 10) {
                                 // Search Completer
                                 Text("Search Location")
@@ -153,6 +250,7 @@ struct SettingsView: View {
                                     })
                                     .textFieldStyle(.plain)
                                     .foregroundColor(.white)
+                                    .focused($searchFieldFocused)
                                     
                                     if !searchViewModel.searchQuery.isEmpty {
                                         Button(action: {
@@ -206,26 +304,26 @@ struct SettingsView: View {
                                         Text("Latitude")
                                             .font(.system(size: 10, weight: .bold))
                                             .foregroundColor(.white.opacity(0.6))
-                                        TextField("-33.77490", text: $latText)
-                                            .textFieldStyle(.roundedBorder)
-                                            .onChange(of: latText) { oldValue, newValue in
-                                                if let val = Double(newValue) {
-                                                    settings.latitude = val
+                                            TextField("-33.77490", text: $latText)
+                                                .textFieldStyle(.roundedBorder)
+                                                .onChange(of: latText) { oldValue, newValue in
+                                                    if let val = Double(newValue) {
+                                                        latitudeBinding.wrappedValue = val
+                                                    }
                                                 }
-                                            }
                                     }
                                     
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Longitude")
                                             .font(.system(size: 10, weight: .bold))
                                             .foregroundColor(.white.opacity(0.6))
-                                        TextField("151.28783", text: $lonText)
-                                            .textFieldStyle(.roundedBorder)
-                                            .onChange(of: lonText) { oldValue, newValue in
-                                                if let val = Double(newValue) {
-                                                    settings.longitude = val
+                                            TextField("151.28783", text: $lonText)
+                                                .textFieldStyle(.roundedBorder)
+                                                .onChange(of: lonText) { oldValue, newValue in
+                                                    if let val = Double(newValue) {
+                                                        longitudeBinding.wrappedValue = val
+                                                    }
                                                 }
-                                            }
                                     }
                                 }
                             }
@@ -250,13 +348,13 @@ struct SettingsView: View {
                                     .font(.system(size: 12, weight: .semibold))
                                     .foregroundColor(.white.opacity(0.8))
                                 Spacer()
-                                Text("\(settings.radiusNm) NM")
+                                Text("\(radiusBinding.wrappedValue) NM")
                                     .font(.system(size: 11, weight: .bold))
                                     .foregroundColor(.orange)
                             }
                             Slider(value: Binding(
-                                get: { Double(settings.radiusNm) },
-                                set: { settings.radiusNm = Int($0) }
+                                get: { Double(radiusBinding.wrappedValue) },
+                                set: { radiusBinding.wrappedValue = Int($0) }
                             ), in: 10...100, step: 5)
                         }
                         
@@ -266,11 +364,11 @@ struct SettingsView: View {
                                     .font(.system(size: 12, weight: .semibold))
                                     .foregroundColor(.white.opacity(0.8))
                                 Spacer()
-                                Text("\(Int(settings.refreshInterval)) seconds")
+                                Text("\(Int(refreshIntervalBinding.wrappedValue)) seconds")
                                     .font(.system(size: 11, weight: .bold))
                                     .foregroundColor(.orange)
                             }
-                            Slider(value: $settings.refreshInterval, in: 5...30, step: 1)
+                            Slider(value: refreshIntervalBinding, in: 5...30, step: 1)
                         }
                         
                         VStack(alignment: .leading, spacing: 4) {
@@ -279,15 +377,40 @@ struct SettingsView: View {
                                     .font(.system(size: 12, weight: .semibold))
                                     .foregroundColor(.white.opacity(0.8))
                                 Spacer()
-                                Text("\(Int(settings.rotationInterval)) seconds")
+                                Text("\(Int(rotationIntervalBinding.wrappedValue)) seconds")
                                     .font(.system(size: 11, weight: .bold))
                                     .foregroundColor(.orange)
                             }
-                            Slider(value: $settings.rotationInterval, in: 5...30, step: 1)
+                            Slider(value: rotationIntervalBinding, in: 5...30, step: 1)
                         }
                     }
                 }
                 .padding(.trailing, 8)
+            }
+
+            if presentAsDraftSheet {
+                Divider()
+                    .background(Color.white.opacity(0.15))
+                    .padding(.top, 2)
+
+                HStack(spacing: 10) {
+                    Spacer()
+                    Button("Cancel") {
+                        onDismiss?()
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(Color.white.opacity(0.14))
+                    .foregroundColor(.white)
+                    .keyboardShortcut(.cancelAction)
+
+                    Button("OK") {
+                        draft.apply(to: settings)
+                        onDismiss?()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.blue)
+                    .keyboardShortcut(.defaultAction)
+                }
             }
         }
         .padding(20)
@@ -295,8 +418,22 @@ struct SettingsView: View {
         .background(Color(red: 0.08, green: 0.09, blue: 0.12).opacity(0.98))
         .colorScheme(.dark)
         .onAppear {
-            latText = String(format: "%.5f", settings.latitude)
-            lonText = String(format: "%.5f", settings.longitude)
+            if presentAsDraftSheet {
+                draft = SettingsDraft(settings: settings)
+            }
+            latText = String(format: "%.5f", presentAsDraftSheet ? draft.latitude : settings.latitude)
+            lonText = String(format: "%.5f", presentAsDraftSheet ? draft.longitude : settings.longitude)
+            searchFieldFocused = presentAsDraftSheet && locationModeBinding.wrappedValue == .custom
+        }
+        .onChange(of: locationModeBinding.wrappedValue) { _, newValue in
+            if presentAsDraftSheet {
+                searchFieldFocused = newValue == .custom
+            }
+        }
+        .onExitCommand {
+            if presentAsDraftSheet {
+                onDismiss?()
+            }
         }
     }
     
@@ -304,8 +441,15 @@ struct SettingsView: View {
         searchViewModel.selectCompletion(completion) { coordinate in
             guard let coordinate = coordinate else { return }
             DispatchQueue.main.async {
-                settings.latitude = coordinate.latitude
-                settings.longitude = coordinate.longitude
+                if presentAsDraftSheet {
+                    draft.locationMode = .custom
+                    draft.latitude = coordinate.latitude
+                    draft.longitude = coordinate.longitude
+                } else {
+                    settings.locationMode = .custom
+                    settings.latitude = coordinate.latitude
+                    settings.longitude = coordinate.longitude
+                }
                 latText = String(format: "%.5f", coordinate.latitude)
                 lonText = String(format: "%.5f", coordinate.longitude)
                 searchViewModel.searchQuery = ""
