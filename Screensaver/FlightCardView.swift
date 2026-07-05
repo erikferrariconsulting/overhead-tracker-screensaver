@@ -8,6 +8,17 @@ import IataUtils
 import AirlineLogos
 
 private func findSPMBundle(named name: String) -> Bundle? {
+    let classBundle = Bundle(for: AirlineDatabase.self)
+    if let url = classBundle.url(forResource: name, withExtension: "bundle") {
+        if let b = Bundle(url: url) {
+            return b
+        }
+    }
+    if let url = classBundle.url(forResource: "\(name)_\(name)", withExtension: "bundle") {
+        if let b = Bundle(url: url) {
+            return b
+        }
+    }
     for bundle in Bundle.allBundles {
         if let ident = bundle.bundleIdentifier, ident.lowercased().contains(name.lowercased()) {
             return bundle
@@ -43,7 +54,8 @@ struct FlightCardView: View {
         self.positionText = positionText
         
         let prefix = airlinePrefix(from: flight.callsign)
-        let key = "logo:\(prefix)"
+        let icao = icaoPrefix(from: prefix)
+        let key = "logo:\(icao)"
         if let cached = FlightImageCache.shared.image(for: key) {
             _logoImage = State(initialValue: cached)
         } else {
@@ -53,6 +65,10 @@ struct FlightCardView: View {
 
     private var prefix: String {
         airlinePrefix(from: flight.callsign)
+    }
+
+    private var icao: String {
+        icaoPrefix(from: prefix)
     }
 
     private var isAustralianAmbulance: Bool {
@@ -78,7 +94,7 @@ struct FlightCardView: View {
     }
 
     private var logoKey: String {
-        "logo:\(prefix)"
+        "logo:\(icao)"
     }
 
     private var accentColor: Color {
@@ -277,7 +293,7 @@ struct FlightCardView: View {
                 logoImage = nil
                 return
             }
-            guard !prefix.isEmpty else {
+            guard !icao.isEmpty else {
                 logoImage = nil
                 return
             }
@@ -286,7 +302,7 @@ struct FlightCardView: View {
                 logoImage = cachedLogo
             } else {
                 logoImage = nil
-                if let loadedLogo = await FlightArtworkFetcher.loadAirlineLogo(prefix: prefix) {
+                if let loadedLogo = await FlightArtworkFetcher.loadAirlineLogo(prefix: icao) {
                     logoImage = loadedLogo
                     FlightImageCache.shared.store(loadedLogo, for: logoKey)
                 }
@@ -571,8 +587,25 @@ private enum FlightArtworkFetcher {
             ))
         }
 
+        let airline = flight.airline.trimmingCharacters(in: .whitespacesAndNewlines)
         let type = flight.aircraftType.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let family = aircraftFamilyLabel(for: type) {
+        let family = aircraftFamilyLabel(for: type)
+
+        if !airline.isEmpty, let family = family {
+            candidates.append(PhotoSearchCandidate(
+                cacheKey: "commons:airline_family:\(airline.uppercased()):\(family.uppercased())",
+                searchTerm: "\"\(airline)\" \(family)"
+            ))
+        }
+
+        if !airline.isEmpty, !type.isEmpty {
+            candidates.append(PhotoSearchCandidate(
+                cacheKey: "commons:airline_type:\(airline.uppercased()):\(type.uppercased())",
+                searchTerm: "\"\(airline)\" \(type)"
+            ))
+        }
+
+        if let family = family {
             candidates.append(PhotoSearchCandidate(
                 cacheKey: "commons:family:\(family.uppercased())",
                 searchTerm: family
@@ -825,6 +858,19 @@ private func aircraftFamilyLabel(for aircraftType: String) -> String? {
 private func airlinePrefix(from callsign: String) -> String {
     let prefix = callsign.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
     return prefix.split(whereSeparator: { !$0.isLetter }).first.map(String.init) ?? ""
+}
+
+private func icaoPrefix(from prefix: String) -> String {
+    let clean = prefix.uppercased()
+    if clean.count == 3 {
+        return clean
+    }
+    for (icao, iata) in icaoToIataCallsignMap {
+        if iata == clean {
+            return icao
+        }
+    }
+    return AirlineDatabase.shared.icaoCode(forIata: clean) ?? clean
 }
 
 private func airlineBrandColor(for prefix: String) -> Color? {
@@ -1275,6 +1321,19 @@ public final class AirlineDatabase: @unchecked Sendable {
         let cleaned = icao.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         guard !cleaned.isEmpty else { return nil }
         return lock.withLock { icaoToIata[cleaned] }
+    }
+
+    public func icaoCode(forIata iata: String) -> String? {
+        let cleaned = iata.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        guard !cleaned.isEmpty else { return nil }
+        return lock.withLock {
+            for (icao, iataCode) in icaoToIata {
+                if iataCode == cleaned {
+                    return icao
+                }
+            }
+            return nil
+        }
     }
 
     private var cacheFileURL: URL? {
