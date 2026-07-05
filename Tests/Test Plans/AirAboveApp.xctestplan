@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "7F4CF7A7-6C10-45B0-9D71-1D9E5A6B5D21",
+      "name" : "Configuration 1",
+      "options" : {
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:AirAbove.xcodeproj",
+      "identifier" : "22BA2CC6D25EF10F4705469F",
+      "name" : "AirAboveScreensaverCore"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AirAbove.xcodeproj",
+        "identifier" : "436C2F50266D1966C3511CF5",
+        "name" : "AirAboveScreensaverCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

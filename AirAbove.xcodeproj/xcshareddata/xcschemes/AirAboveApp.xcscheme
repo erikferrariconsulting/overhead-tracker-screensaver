@@ -78,6 +78,12 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:Tests/Test Plans/AirAboveApp.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

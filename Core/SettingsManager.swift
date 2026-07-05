@@ -16,7 +16,7 @@ public final class SettingsManager: ObservableObject {
         #if canImport(ScreenSaver)
         let bundleId = Bundle.main.bundleIdentifier ?? ""
         if bundleId.contains("ScreenSaver") || bundleId.contains("legacyScreenSaver") {
-            return ScreenSaverDefaults(forModuleWithName: "com.erikferrari.overheadradar.screensaver")
+            return ScreenSaverDefaults(forModuleWithName: "com.erikferrari.airabove.screensaver")
         }
         #endif
         return UserDefaults.standard

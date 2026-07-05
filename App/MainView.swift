@@ -475,7 +475,7 @@ struct MainView: View {
     
     private var installerSettingsPanelContent: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("OVERHEAD TRACKER")
+            Text("AirAbove")
                 .font(.system(size: 11, weight: .bold, design: .rounded))
                 .foregroundColor(.orange)
                 .tracking(2.0)
