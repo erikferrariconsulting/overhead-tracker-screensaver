@@ -8,6 +8,8 @@ public struct Flight: Equatable, Sendable {
     public let registration: String
     public let originCity: String
     public let destinationCity: String
+    public let originAirportCode: String?
+    public let destinationAirportCode: String?
     public let altitudeFt: Int
     public let speedKt: Int
     public let distanceKm: Double
@@ -27,6 +29,8 @@ public struct Flight: Equatable, Sendable {
         registration: String,
         originCity: String,
         destinationCity: String,
+        originAirportCode: String? = nil,
+        destinationAirportCode: String? = nil,
         altitudeFt: Int,
         speedKt: Int,
         distanceKm: Double,
@@ -45,6 +49,8 @@ public struct Flight: Equatable, Sendable {
         self.registration = registration
         self.originCity = originCity
         self.destinationCity = destinationCity
+        self.originAirportCode = originAirportCode
+        self.destinationAirportCode = destinationAirportCode
         self.altitudeFt = altitudeFt
         self.speedKt = speedKt
         self.distanceKm = distanceKm

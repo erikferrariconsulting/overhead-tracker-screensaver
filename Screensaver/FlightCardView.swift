@@ -201,24 +201,43 @@ struct FlightCardView: View {
                         let routeText: String = {
                             let origin = flight.originCity
                             let destination = flight.destinationCity
+                            let originCode = flight.originAirportCode
+                            let destinationCode = flight.destinationAirportCode
                             let hasOrigin = origin != "Unknown" && !origin.isEmpty
                             let hasDestination = destination != "Unknown" && !destination.isEmpty
                             
-                            func formatAirport(_ code: String) -> String {
-                                let cleaned = code.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-                                if let name = AirportDatabase.shared.airportName(for: cleaned) {
-                                    return "\(name) (\(cleaned))"
+                            func formatAirport(city: String, code: String?) -> String {
+                                let cleanedCity = city.trimmingCharacters(in: .whitespacesAndNewlines)
+                                let cleanedCode = code?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() ?? ""
+
+                                if let codeName = AirportDatabase.shared.airportName(for: cleanedCity) {
+                                    if !cleanedCode.isEmpty {
+                                        return "\(codeName) (\(cleanedCode))"
+                                    }
+                                    return codeName
                                 }
-                                return cleaned
+
+                                if let airportName = AirportDatabase.shared.airportName(for: cleanedCode) {
+                                    return cleanedCode.isEmpty ? airportName : "\(airportName) (\(cleanedCode))"
+                                }
+
+                                if !cleanedCode.isEmpty && cleanedCity.uppercased() != cleanedCode {
+                                    return "\(cleanedCity) (\(cleanedCode))"
+                                }
+
+                                if !cleanedCity.isEmpty {
+                                    return cleanedCity
+                                }
+                                return cleanedCode.isEmpty ? "Unknown" : cleanedCode
                             }
                             
                             if isAustralianAmbulance {
                                 if hasOrigin && hasDestination && isAustralianAirport(origin) && isAustralianAirport(destination) {
-                                    return "\(formatAirport(origin)) to \(formatAirport(destination))"
+                                    return "\(formatAirport(city: origin, code: originCode)) to \(formatAirport(city: destination, code: destinationCode))"
                                 } else if hasOrigin && isAustralianAirport(origin) {
-                                    return "Departing \(formatAirport(origin))"
+                                    return "Departing \(formatAirport(city: origin, code: originCode))"
                                 } else if hasDestination && isAustralianAirport(destination) {
-                                    return "Arriving at \(formatAirport(destination))"
+                                    return "Arriving at \(formatAirport(city: destination, code: destinationCode))"
                                 } else {
                                     return "Air Ambulance Mission"
                                 }
@@ -227,11 +246,11 @@ struct FlightCardView: View {
                             if !hasOrigin && !hasDestination {
                                 return "Route unavailable"
                             } else if hasOrigin && !hasDestination {
-                                return "Departing \(formatAirport(origin))"
+                                return "Departing \(formatAirport(city: origin, code: originCode))"
                             } else if !hasOrigin && hasDestination {
-                                return "Arriving at \(formatAirport(destination))"
+                                return "Arriving at \(formatAirport(city: destination, code: destinationCode))"
                             } else {
-                                return "\(formatAirport(origin)) to \(formatAirport(destination))"
+                                return "\(formatAirport(city: origin, code: originCode)) to \(formatAirport(city: destination, code: destinationCode))"
                             }
                         }()
 

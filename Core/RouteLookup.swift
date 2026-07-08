@@ -412,6 +412,8 @@ public actor RouteHydrationController {
             registration: flight.registration,
             originCity: preferredLabel(existing: flight.originCity, routeLabel: route.originCity, code: route.dep),
             destinationCity: preferredLabel(existing: flight.destinationCity, routeLabel: route.destinationCity, code: route.arr),
+            originAirportCode: preferredCode(existing: flight.originAirportCode, routeCode: route.dep),
+            destinationAirportCode: preferredCode(existing: flight.destinationAirportCode, routeCode: route.arr),
             altitudeFt: flight.altitudeFt,
             speedKt: flight.speedKt,
             distanceKm: flight.distanceKm,
@@ -423,5 +425,15 @@ public actor RouteHydrationController {
             longitude: flight.longitude,
             track: flight.track
         )
+    }
+
+    private func preferredCode(existing: String?, routeCode: String?) -> String? {
+        if let existing, !existing.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return existing
+        }
+        if let routeCode, !routeCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return routeCode
+        }
+        return nil
     }
 }
