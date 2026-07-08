@@ -75,6 +75,27 @@ final class RouteLookupTests: XCTestCase {
         XCTAssertEqual(qfa1Count, 1)
     }
 
+    func test_uses_fallback_route_fetcher_when_primary_returns_no_route() async throws {
+        let primary = NilRouteFetcher()
+        let fallback = SuccessRouteFetcher()
+        let controller = RouteHydrationController(
+            fetcher: CompositeRouteLookupClient(primary: primary, fallback: fallback)
+        )
+
+        let flights = [
+            flight(id: "1", callsign: "QFA1", distanceKm: 1)
+        ]
+
+        let hydrated = await controller.hydrate(flights: flights, focusIndex: 0, prefetchCount: 1)
+        let primaryCalls = await primary.calls()
+        let fallbackCalls = await fallback.calls()
+
+        XCTAssertEqual(hydrated[0].originCity, "Sydney")
+        XCTAssertEqual(hydrated[0].destinationCity, "Melbourne")
+        XCTAssertEqual(primaryCalls, ["QFA1"])
+        XCTAssertEqual(fallbackCalls, ["QFA1"])
+    }
+
     private func flight(id: String, callsign: String, distanceKm: Double) -> Flight {
         Flight(
             id: id,
@@ -124,5 +145,38 @@ private actor StubRouteFetcher: RouteLookupFetching {
 
     func count(for callsign: String) -> Int {
         calls.filter { $0 == callsign }.count
+    }
+}
+
+private actor NilRouteFetcher: RouteLookupFetching {
+    private(set) var recordedCalls: [String] = []
+
+    func fetchRoute(callsign: String) async throws -> RouteLookupResponse? {
+        recordedCalls.append(callsign)
+        return nil
+    }
+
+    func calls() -> [String] {
+        recordedCalls
+    }
+}
+
+private actor SuccessRouteFetcher: RouteLookupFetching {
+    private(set) var recordedCalls: [String] = []
+
+    func fetchRoute(callsign: String) async throws -> RouteLookupResponse? {
+        recordedCalls.append(callsign)
+        return RouteLookupResponse(
+            callsign: callsign,
+            dep: "YSSY",
+            arr: "YMML",
+            originCity: "Sydney",
+            destinationCity: "Melbourne",
+            unknown: false
+        )
+    }
+
+    func calls() -> [String] {
+        recordedCalls
     }
 }
