@@ -203,12 +203,30 @@ struct MainView: View {
         options.size = size // Dynamic size matching the window bounds
         
         if #available(macOS 13.0, *) {
-            let configuration = MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .muted)
-            configuration.pointOfInterestFilter = .excludingAll
-            configuration.showsTraffic = false
-            options.preferredConfiguration = configuration
+            switch settings.mapStyle {
+            case .standard:
+                let configuration = MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .muted)
+                configuration.pointOfInterestFilter = .excludingAll
+                configuration.showsTraffic = false
+                options.preferredConfiguration = configuration
+            case .satellite:
+                let configuration = MKImageryMapConfiguration(elevationStyle: .flat)
+                options.preferredConfiguration = configuration
+            case .hybrid:
+                let configuration = MKHybridMapConfiguration(elevationStyle: .flat)
+                configuration.pointOfInterestFilter = .excludingAll
+                configuration.showsTraffic = false
+                options.preferredConfiguration = configuration
+            }
         } else {
-            options.mapType = .mutedStandard
+            switch settings.mapStyle {
+            case .standard:
+                options.mapType = .mutedStandard
+            case .satellite:
+                options.mapType = .satellite
+            case .hybrid:
+                options.mapType = .hybrid
+            }
         }
         
         let snapshotter = MKMapSnapshotter(options: options)

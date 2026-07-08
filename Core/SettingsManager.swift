@@ -8,18 +8,29 @@ public enum LocationMode: String, Codable {
     case custom
 }
 
+public enum RadarMapStyle: String, Codable, CaseIterable, Identifiable {
+    case standard = "Standard"
+    case satellite = "Satellite"
+    case hybrid = "Hybrid"
+    
+    public var id: String { self.rawValue }
+}
+
 @MainActor
 public final class SettingsManager: ObservableObject {
     public static let shared = SettingsManager()
     
     private let defaults: UserDefaults? = {
         #if canImport(ScreenSaver)
-        let bundleId = Bundle.main.bundleIdentifier ?? ""
-        if bundleId.contains("ScreenSaver") || bundleId.contains("legacyScreenSaver") {
+        let bundleId = (Bundle.main.bundleIdentifier ?? "").lowercased()
+        if bundleId == "com.erikferrari.airabove.app" {
+            return UserDefaults.standard
+        } else {
             return ScreenSaverDefaults(forModuleWithName: "com.erikferrari.airabove.screensaver")
         }
-        #endif
+        #else
         return UserDefaults.standard
+        #endif
     }()
     
     // Keys
@@ -29,9 +40,13 @@ public final class SettingsManager: ObservableObject {
     private let keyRadius = "radius"
     private let keyRefreshInterval = "refreshInterval"
     private let keyRotationInterval = "rotationInterval"
+    private let keyMapStyle = "mapStyle"
     
     @Published public var locationMode: LocationMode = .gps {
         didSet { save(locationMode.rawValue, forKey: keyLocationMode) }
+    }
+    @Published public var mapStyle: RadarMapStyle = .standard {
+        didSet { save(mapStyle.rawValue, forKey: keyMapStyle) }
     }
     @Published public var latitude: Double = -33.7749 {
         didSet { save(latitude, forKey: keyLatitude) }
@@ -70,6 +85,11 @@ public final class SettingsManager: ObservableObject {
         
         let rot = defaults?.double(forKey: keyRotationInterval) ?? 0.0
         if rot != 0.0 { self.rotationInterval = rot }
+        
+        if let rawStyle = defaults?.string(forKey: keyMapStyle),
+           let style = RadarMapStyle(rawValue: rawStyle) {
+            self.mapStyle = style
+        }
     }
     
     private func save(_ value: Any, forKey key: String) {

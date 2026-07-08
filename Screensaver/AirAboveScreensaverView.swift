@@ -29,7 +29,7 @@ class TransparentHostingView<Content: View>: NSHostingView<Content> {
 
 @objc(AirAboveScreensaverView)
 @MainActor
-public final class AirAboveScreensaverView: ScreenSaverView {
+public final class AirAboveScreensaverView: ScreenSaverView, NSWindowDelegate {
     private let flightFeedClient = FlightFeedClient()
     private let routeHydrationController = RouteHydrationController()
     private let rotationController = RotationController(flights: [])
@@ -119,12 +119,30 @@ public final class AirAboveScreensaverView: ScreenSaverView {
         options.size = NSSize(width: width, height: height)
 
         if #available(macOS 13.0, *) {
-            let configuration = MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .muted)
-            configuration.pointOfInterestFilter = .excludingAll
-            configuration.showsTraffic = false
-            options.preferredConfiguration = configuration
+            switch settings.mapStyle {
+            case .standard:
+                let configuration = MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .muted)
+                configuration.pointOfInterestFilter = .excludingAll
+                configuration.showsTraffic = false
+                options.preferredConfiguration = configuration
+            case .satellite:
+                let configuration = MKImageryMapConfiguration(elevationStyle: .flat)
+                options.preferredConfiguration = configuration
+            case .hybrid:
+                let configuration = MKHybridMapConfiguration(elevationStyle: .flat)
+                configuration.pointOfInterestFilter = .excludingAll
+                configuration.showsTraffic = false
+                options.preferredConfiguration = configuration
+            }
         } else {
-            options.mapType = .mutedStandard
+            switch settings.mapStyle {
+            case .standard:
+                options.mapType = .mutedStandard
+            case .satellite:
+                options.mapType = .satellite
+            case .hybrid:
+                options.mapType = .hybrid
+            }
         }
 
         let snapshotter = MKMapSnapshotter(options: options)
@@ -251,15 +269,14 @@ public final class AirAboveScreensaverView: ScreenSaverView {
     }
     
     public override var configureSheet: NSWindow? {
-        weak let weakSelf = self
+        if let existingWindow = configSheetWindow {
+            return existingWindow
+        }
+
+        weak var weakSelf = self
         
         let settingsView = SettingsView(presentAsDraftSheet: true) {
-            if let window = weakSelf?.configSheetWindow {
-                window.sheetParent?.endSheet(window)
-                window.orderOut(nil)
-                weakSelf?.configSheetWindow = nil
-                weakSelf?.reloadSettingsAndSnapshot()
-            }
+            weakSelf?.dismissConfigureSheet()
         }
         .frame(width: 320, height: 460)
         
@@ -272,9 +289,22 @@ public final class AirAboveScreensaverView: ScreenSaverView {
             defer: false
         )
         window.contentViewController = hostingController
+        window.delegate = self
+        window.isReleasedWhenClosed = true
         self.configSheetWindow = window
         
         return window
+    }
+
+    public func windowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow, window == configSheetWindow else { return }
+        configSheetWindow = nil
+        reloadSettingsAndSnapshot()
+    }
+
+    private func dismissConfigureSheet() {
+        guard let window = configSheetWindow else { return }
+        window.sheetParent?.endSheet(window)
     }
     
     private func reloadSettingsAndSnapshot() {

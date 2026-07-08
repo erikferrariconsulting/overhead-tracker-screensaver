@@ -353,13 +353,9 @@ private struct FlightArtworkTileView: View {
         self.flight = flight
         self.accentColor = accentColor
 
-        if let cached = Self.cachedPhoto(for: flight) {
-            _photoImage = State(initialValue: cached.image)
-            _photoAttribution = State(initialValue: cached.attribution)
-        } else {
-            _photoImage = State(initialValue: nil)
-            _photoAttribution = State(initialValue: nil)
-        }
+        let cacheResult = Self.cachedPhoto(for: flight)
+        _photoImage = State(initialValue: cacheResult.artwork?.image)
+        _photoAttribution = State(initialValue: cacheResult.artwork?.attribution)
     }
 
     private var prefix: String {
@@ -430,12 +426,11 @@ private struct FlightArtworkTileView: View {
                 return
             }
 
-            if let cachedPhoto = Self.cachedPhoto(for: flight) {
-                photoImage = cachedPhoto.image
-                photoAttribution = cachedPhoto.attribution
-            } else {
-                photoImage = nil
-                photoAttribution = nil
+            let cacheResult = Self.cachedPhoto(for: flight)
+            photoImage = cacheResult.artwork?.image
+            photoAttribution = cacheResult.artwork?.attribution
+
+            if cacheResult.needsSearch {
                 if let loadedPhoto = await FlightArtworkFetcher.loadAircraftPhoto(flight: flight) {
                     photoImage = loadedPhoto.image
                     photoAttribution = loadedPhoto.attribution
@@ -455,13 +450,24 @@ private struct FlightArtworkTileView: View {
         ].joined(separator: "|")
     }
 
-    private static func cachedPhoto(for flight: Flight) -> CachedArtwork? {
+    private static func cachedPhoto(for flight: Flight) -> (artwork: CachedArtwork?, needsSearch: Bool) {
+        var bestArtwork: CachedArtwork? = nil
+        var hasUnsearchedSpecific = false
+
         for candidate in FlightArtworkFetcher.photoSearchCandidates(for: flight) {
             if let cached = FlightImageCache.shared.artwork(for: candidate.cacheKey) {
-                return cached
+                if !cached.notFound {
+                    bestArtwork = cached
+                    break
+                }
+            } else {
+                if bestArtwork == nil {
+                    hasUnsearchedSpecific = true
+                }
             }
         }
-        return nil
+
+        return (bestArtwork, hasUnsearchedSpecific)
     }
 }
 
@@ -492,26 +498,27 @@ private final class FlightImageCache {
     }
 
     func store(_ image: NSImage, attribution: String? = nil, for key: String) {
-        store(CachedArtwork(image: image, attribution: attribution), for: key)
+        store(CachedArtwork(image: image, attribution: attribution, notFound: false), for: key)
     }
 
     private func loadArtworkFromDisk(for key: String) -> CachedArtwork? {
+        let attributionURL = artworkMetadataURL(for: key)
+        guard let metaData = try? Data(contentsOf: attributionURL),
+              let metadata = try? JSONDecoder().decode(ArtworkMetadata.self, from: metaData) else {
+            return nil
+        }
+
+        if metadata.notFound == true {
+            return CachedArtwork(image: nil, attribution: nil, notFound: true)
+        }
+
         let imageURL = artworkImageURL(for: key)
         guard let data = try? Data(contentsOf: imageURL),
               let image = NSImage(data: data) else {
             return nil
         }
 
-        let attributionURL = artworkMetadataURL(for: key)
-        let attribution: String?
-        if let metaData = try? Data(contentsOf: attributionURL),
-           let metadata = try? JSONDecoder().decode(ArtworkMetadata.self, from: metaData) {
-            attribution = metadata.attribution
-        } else {
-            attribution = nil
-        }
-
-        return CachedArtwork(image: image, attribution: attribution)
+        return CachedArtwork(image: image, attribution: metadata.attribution, notFound: false)
     }
 
     private func saveArtworkToDisk(_ artwork: CachedArtwork, for key: String) {
@@ -519,9 +526,15 @@ private final class FlightImageCache {
         let metadataURL = artworkMetadataURL(for: key)
         do {
             try FileManager.default.createDirectory(at: cacheDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-            if let pngData = artwork.image.overheadPNGData() {
+            
+            if artwork.notFound {
+                let metadata = ArtworkMetadata(attribution: nil, notFound: true)
+                let metadataData = try JSONEncoder().encode(metadata)
+                try metadataData.write(to: metadataURL, options: .atomic)
+                try? FileManager.default.removeItem(at: imageURL)
+            } else if let image = artwork.image, let pngData = image.overheadPNGData() {
                 try pngData.write(to: imageURL, options: .atomic)
-                let metadata = ArtworkMetadata(attribution: artwork.attribution)
+                let metadata = ArtworkMetadata(attribution: artwork.attribution, notFound: false)
                 let metadataData = try JSONEncoder().encode(metadata)
                 try metadataData.write(to: metadataURL, options: .atomic)
             }
@@ -571,12 +584,18 @@ private enum FlightArtworkFetcher {
     static func loadAircraftPhoto(flight: Flight) async -> CachedArtwork? {
         for candidate in photoSearchCandidates(for: flight) {
             if let cached = FlightImageCache.shared.artwork(for: candidate.cacheKey) {
+                if cached.notFound {
+                    continue
+                }
                 return cached
             }
 
             if let fetched = await fetchCommonsPhoto(searchTerm: candidate.searchTerm) {
                 FlightImageCache.shared.store(fetched, for: candidate.cacheKey)
                 return fetched
+            } else {
+                let negativeArtwork = CachedArtwork(image: nil, attribution: nil, notFound: true)
+                FlightImageCache.shared.store(negativeArtwork, for: candidate.cacheKey)
             }
         }
 
@@ -663,7 +682,7 @@ private enum FlightArtworkFetcher {
             }
 
             guard let image = NSImage(data: photoData) else { return nil }
-            return CachedArtwork(image: image, attribution: attribution)
+            return CachedArtwork(image: image, attribution: attribution, notFound: false)
         } catch {
             return nil
         }
@@ -671,12 +690,14 @@ private enum FlightArtworkFetcher {
 }
 
 private struct CachedArtwork {
-    let image: NSImage
+    let image: NSImage?
     let attribution: String?
+    let notFound: Bool
 }
 
 private struct ArtworkMetadata: Codable {
     let attribution: String?
+    let notFound: Bool?
 }
 
 private struct PhotoSearchCandidate {
