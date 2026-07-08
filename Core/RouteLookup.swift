@@ -142,7 +142,9 @@ public actor RouteHydrationController {
 
     private let fetcher: any RouteLookupFetching
     private let hitTTL: TimeInterval = 60 * 60 * 24 * 7
-    private let missTTL: TimeInterval = 60 * 60 * 24
+    // Route misses are usually transient upstream failures, not permanent truth.
+    // Keep this short so a temporary 429 does not freeze the card in "unknown" all day.
+    private let missTTL: TimeInterval = 60 * 30
     private var cache: [String: CacheEntry] = [:]
     private var inFlight: [String: Task<RouteLookupResponse?, Error>] = [:]
 
