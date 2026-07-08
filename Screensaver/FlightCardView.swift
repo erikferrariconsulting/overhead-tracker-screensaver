@@ -609,7 +609,9 @@ private enum FlightArtworkFetcher {
                 return cached
             }
 
-            if let fetched = await fetchCommonsPhoto(searchTerm: candidate.searchTerm) {
+            let shouldValidate = candidate.cacheKey.hasPrefix("commons:reg:") || candidate.cacheKey.hasPrefix("commons:hex:")
+
+            if let fetched = await fetchCommonsPhoto(searchTerm: candidate.searchTerm, validateFor: shouldValidate ? flight : nil) {
                 FlightImageCache.shared.store(fetched, for: candidate.cacheKey)
                 return fetched
             } else {
@@ -671,7 +673,7 @@ private enum FlightArtworkFetcher {
         return candidates
     }
 
-    private static func fetchCommonsPhoto(searchTerm: String) async -> CachedArtwork? {
+    private static func fetchCommonsPhoto(searchTerm: String, validateFor flight: Flight? = nil) async -> CachedArtwork? {
         guard let url = commonsSearchURL(for: searchTerm) else { return nil }
 
         var request = URLRequest(url: url)
@@ -690,6 +692,12 @@ private enum FlightArtworkFetcher {
                 return nil
             }
 
+            if let flight = flight {
+                guard isValidPhoto(imageInfo, for: flight) else {
+                    return nil
+                }
+            }
+
             let attribution = imageInfo.bestAttribution
 
             var photoRequest = URLRequest(url: photoURL)
@@ -705,6 +713,73 @@ private enum FlightArtworkFetcher {
         } catch {
             return nil
         }
+    }
+
+    private static func isValidPhoto(_ imageInfo: WikimediaCommonsImageInfo, for flight: Flight) -> Bool {
+        guard let family = aircraftFamilyLabel(for: flight.aircraftType) else {
+            return true
+        }
+
+        var metadataText = ""
+        if let title = imageInfo.extmetadata?["ObjectName"]?.plainTextValue {
+            metadataText += " " + title
+        }
+        if let desc = imageInfo.extmetadata?["ImageDescription"]?.plainTextValue {
+            metadataText += " " + desc
+        }
+        if let cats = imageInfo.extmetadata?["Categories"]?.plainTextValue {
+            metadataText += " " + cats
+        }
+        metadataText = metadataText.lowercased()
+
+        let type = flight.aircraftType.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let familyLower = family.lowercased()
+
+        var manufacturers: [String] = []
+        if type.hasPrefix("a3") || type.hasPrefix("a2") {
+            manufacturers.append("airbus")
+        } else if type.hasPrefix("b7") || type.hasPrefix("b3") {
+            manufacturers.append("boeing")
+        } else if type.hasPrefix("e1") || type.hasPrefix("e7") || type.hasPrefix("e9") || type.hasPrefix("e2") {
+            manufacturers.append("embraer")
+        } else if type.hasPrefix("crj") {
+            manufacturers.append("bombardier")
+            manufacturers.append("crj")
+        } else if type.hasPrefix("dh") {
+            manufacturers.append("de havilland")
+            manufacturers.append("dash")
+        } else if type.hasPrefix("at") {
+            manufacturers.append("atr")
+        }
+
+        for m in ["airbus", "boeing", "corporation", "embraer", "bombardier", "de havilland", "atr"] {
+            if familyLower.contains(m) {
+                manufacturers.append(m)
+            }
+        }
+
+        if !manufacturers.isEmpty {
+            let hasManufacturer = manufacturers.contains { manufacturer in
+                metadataText.contains(manufacturer)
+            }
+            if !hasManufacturer {
+                return false
+            }
+        }
+
+        var typeKeywords: [String] = [type]
+        let words = familyLower.split(separator: " ").map { String($0) }
+        for word in words {
+            if word.hasPrefix("a3") || word.hasPrefix("a2") || word.hasPrefix("b7") || word.contains("737") || word.contains("747") || word.contains("777") || word.contains("787") || word.hasPrefix("e-") || word.hasPrefix("e1") || word.contains("crj") || word.contains("dash") || word.contains("atr") {
+                typeKeywords.append(word)
+            }
+        }
+
+        let hasTypeKeyword = typeKeywords.contains { kw in
+            metadataText.contains(kw)
+        }
+
+        return hasTypeKeyword
     }
 }
 

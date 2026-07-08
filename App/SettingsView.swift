@@ -11,6 +11,7 @@ private struct SettingsDraft {
     var radiusNm: Int
     var refreshInterval: Double
     var rotationInterval: Double
+    var mapStyle: RadarMapStyle
 
     init(settings: SettingsManager) {
         locationMode = settings.locationMode
@@ -19,6 +20,7 @@ private struct SettingsDraft {
         radiusNm = settings.radiusNm
         refreshInterval = settings.refreshInterval
         rotationInterval = settings.rotationInterval
+        mapStyle = settings.mapStyle
     }
 
     func apply(to settings: SettingsManager) {
@@ -28,6 +30,7 @@ private struct SettingsDraft {
         settings.radiusNm = radiusNm
         settings.refreshInterval = refreshInterval
         settings.rotationInterval = rotationInterval
+        settings.mapStyle = mapStyle
     }
 }
 
@@ -162,8 +165,216 @@ struct SettingsView: View {
             set: { settings.rotationInterval = $0 }
         )
     }
+
+    private var mapStyleBinding: Binding<RadarMapStyle> {
+        if presentAsDraftSheet {
+            return $draft.mapStyle
+        }
+        return Binding(
+            get: { settings.mapStyle },
+            set: { settings.mapStyle = $0 }
+        )
+    }
     
     var body: some View {
+        Group {
+            if presentAsDraftSheet {
+                nativeSheetBody
+            } else {
+                customSettingsBody
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            if presentAsDraftSheet {
+                draft = SettingsDraft(settings: settings)
+            }
+            latText = String(format: "%.5f", presentAsDraftSheet ? draft.latitude : settings.latitude)
+            lonText = String(format: "%.5f", presentAsDraftSheet ? draft.longitude : settings.longitude)
+            searchFieldFocused = presentAsDraftSheet && locationModeBinding.wrappedValue == .custom
+        }
+        .onChange(of: locationModeBinding.wrappedValue) { _, newValue in
+            if presentAsDraftSheet {
+                searchFieldFocused = newValue == .custom
+            }
+        }
+        .onExitCommand {
+            if presentAsDraftSheet {
+                onDismiss?()
+            }
+        }
+    }
+
+    private var nativeSheetBody: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Radar Configuration")
+                .font(.title3.weight(.semibold))
+
+            Divider()
+
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Radar Location")
+                            .font(.headline)
+
+                        Picker("Location Mode", selection: locationModeBinding) {
+                            Text("Automatic (GPS)").tag(LocationMode.gps)
+                            Text("Custom Coords").tag(LocationMode.custom)
+                        }
+                        .pickerStyle(.segmented)
+
+                        if locationModeBinding.wrappedValue == .custom {
+                            VStack(alignment: .leading, spacing: 10) {
+                                TextField("Search Location", text: $searchViewModel.searchQuery, onEditingChanged: { isEditing in
+                                    showSearchList = isEditing || !searchViewModel.searchQuery.isEmpty
+                                })
+                                .textFieldStyle(.roundedBorder)
+                                .focused($searchFieldFocused)
+
+                                if showSearchList && !searchViewModel.completions.isEmpty {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        ForEach(searchViewModel.completions.prefix(5), id: \.self) { completion in
+                                            Button(action: { selectCompletion(completion) }) {
+                                                VStack(alignment: .leading, spacing: 2) {
+                                                    Text(completion.title)
+                                                        .font(.system(size: 13, weight: .semibold))
+                                                    Text(completion.subtitle)
+                                                        .font(.system(size: 11))
+                                                        .foregroundStyle(.secondary)
+                                                }
+                                                .padding(.vertical, 6)
+                                                .padding(.horizontal, 8)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .contentShape(Rectangle())
+                                            }
+                                            .buttonStyle(.plain)
+
+                                            if completion != searchViewModel.completions.prefix(5).last {
+                                                Divider()
+                                            }
+                                        }
+                                    }
+                                    .background(Color(nsColor: .controlBackgroundColor))
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color(nsColor: .separatorColor), lineWidth: 1))
+                                }
+
+                                HStack(spacing: 12) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Latitude")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        TextField("-33.77490", text: $latText)
+                                            .textFieldStyle(.roundedBorder)
+                                            .onChange(of: latText) { _, newValue in
+                                                if let val = Double(newValue) {
+                                                    latitudeBinding.wrappedValue = val
+                                                }
+                                            }
+                                    }
+
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Longitude")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        TextField("151.28783", text: $lonText)
+                                            .textFieldStyle(.roundedBorder)
+                                            .onChange(of: lonText) { _, newValue in
+                                                if let val = Double(newValue) {
+                                                    longitudeBinding.wrappedValue = val
+                                                }
+                                            }
+                                    }
+                                }
+                            }
+                            .transition(.opacity)
+                        }
+                    }
+
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Radar Settings")
+                            .font(.headline)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text("Radar Range")
+                                Spacer()
+                                Text("\(radiusBinding.wrappedValue) NM")
+                                    .foregroundStyle(.secondary)
+                            }
+                            Slider(value: Binding(
+                                get: { Double(radiusBinding.wrappedValue) },
+                                set: { radiusBinding.wrappedValue = Int($0) }
+                            ), in: 10...100, step: 5)
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text("Telemetry Update Frequency")
+                                Spacer()
+                                Text("\(Int(refreshIntervalBinding.wrappedValue)) seconds")
+                                    .foregroundStyle(.secondary)
+                            }
+                            Slider(value: refreshIntervalBinding, in: 5...30, step: 1)
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text("Flight Card Rotation Time")
+                                Spacer()
+                                Text("\(Int(rotationIntervalBinding.wrappedValue)) seconds")
+                                    .foregroundStyle(.secondary)
+                            }
+                            Slider(value: rotationIntervalBinding, in: 5...30, step: 1)
+                        }
+                    }
+
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Map Style")
+                            .font(.headline)
+
+                        Picker("Style", selection: mapStyleBinding) {
+                            ForEach(RadarMapStyle.allCases) { style in
+                                Text(style.rawValue).tag(style)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                    }
+                }
+                .padding(.top, 2)
+                .padding(.trailing, 2)
+                .padding(.bottom, 4)
+            }
+
+            Divider()
+
+            HStack {
+                Spacer()
+                Button("Cancel") {
+                    onDismiss?()
+                }
+                .buttonStyle(.bordered)
+                .keyboardShortcut(.cancelAction)
+
+                Button("OK") {
+                    draft.apply(to: settings)
+                    onDismiss?()
+                }
+                .keyboardShortcut(.defaultAction)
+                .buttonStyle(.borderedProminent)
+            }
+        }
+        .padding(18)
+        .background(Color(nsColor: .windowBackgroundColor))
+    }
+
+    private var customSettingsBody: some View {
         VStack(alignment: .leading, spacing: 18) {
             // Header
             HStack {
@@ -384,6 +595,25 @@ struct SettingsView: View {
                             Slider(value: rotationIntervalBinding, in: 5...30, step: 1)
                         }
                     }
+                    
+                    Divider()
+                        .background(Color.white.opacity(0.15))
+                    
+                    // Section 3: Map Style configuration
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("MAP STYLE")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.orange.opacity(0.8))
+                            .tracking(1.5)
+                        
+                        Picker("Style", selection: mapStyleBinding) {
+                            ForEach(RadarMapStyle.allCases) { style in
+                                Text(style.rawValue).tag(style)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                    }
                 }
                 .padding(.trailing, 8)
             }
@@ -414,27 +644,8 @@ struct SettingsView: View {
             }
         }
         .padding(20)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(red: 0.08, green: 0.09, blue: 0.12).opacity(0.98))
         .colorScheme(.dark)
-        .onAppear {
-            if presentAsDraftSheet {
-                draft = SettingsDraft(settings: settings)
-            }
-            latText = String(format: "%.5f", presentAsDraftSheet ? draft.latitude : settings.latitude)
-            lonText = String(format: "%.5f", presentAsDraftSheet ? draft.longitude : settings.longitude)
-            searchFieldFocused = presentAsDraftSheet && locationModeBinding.wrappedValue == .custom
-        }
-        .onChange(of: locationModeBinding.wrappedValue) { _, newValue in
-            if presentAsDraftSheet {
-                searchFieldFocused = newValue == .custom
-            }
-        }
-        .onExitCommand {
-            if presentAsDraftSheet {
-                onDismiss?()
-            }
-        }
     }
     
     private func selectCompletion(_ completion: MKLocalSearchCompletion) {

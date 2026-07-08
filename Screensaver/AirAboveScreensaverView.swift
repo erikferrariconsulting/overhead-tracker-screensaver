@@ -273,17 +273,17 @@ public final class AirAboveScreensaverView: ScreenSaverView, NSWindowDelegate {
             return existingWindow
         }
 
-        weak var weakSelf = self
+        weak let weakSelf = self
         
         let settingsView = SettingsView(presentAsDraftSheet: true) {
             weakSelf?.dismissConfigureSheet()
         }
-        .frame(width: 320, height: 460)
+        .frame(width: 380, height: 520)
         
         let hostingController = NSHostingController(rootView: settingsView)
         
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 320, height: 460),
+            contentRect: NSRect(x: 0, y: 0, width: 380, height: 520),
             styleMask: [.titled],
             backing: .buffered,
             defer: false
